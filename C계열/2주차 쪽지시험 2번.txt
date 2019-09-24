@@ -1,0 +1,38 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define LIMIT 50
+
+int main()
+{
+	int num = 0;
+	int tmpSum = 0, sum = 0, var = 1;
+	char str[LIMIT];
+
+	fgets(str, sizeof(str), stdin);
+	str[strlen(str) - 1] = 0;
+
+	for (int i = strlen(str) - 1; i >= 0; i--)
+	{
+		if (isdigit(str[i]))
+		{
+			str[i] = str[i] - '0';
+			tmpSum = str[i] * var;
+			var *= 10;
+			sum += tmpSum;
+		}
+
+		else
+		{
+			var = 1;
+			tmpSum = 0;
+		}
+	}
+
+	printf("%d", sum);
+
+	return 0;
+}

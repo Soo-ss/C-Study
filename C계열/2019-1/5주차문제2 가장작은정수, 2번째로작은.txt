@@ -1,0 +1,40 @@
+
+#include <stdio.h>
+
+int main()
+{
+	int n, arr[100], firstMin, secondMin;
+
+	printf("입력될 정수의 개수를 입력하세요 : \n");
+	scanf("%d", &n);
+
+	printf("정수를 입력하세요 : \n");
+
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	firstMin = arr[0];
+	secondMin = arr[1];
+
+	if (firstMin > secondMin)
+	{
+		firstMin = arr[1];
+		secondMin = arr[0];
+	}
+	
+	for (int i = 2; i < n; ++i)
+	{
+		if (arr[i] < firstMin)
+			firstMin = arr[i];
+
+		else if (firstMin <= arr[i] && arr[i] <= secondMin)
+			secondMin = arr[i];
+	}
+
+	printf("%d %d", firstMin, secondMin);
+	
+
+	return 0;
+}

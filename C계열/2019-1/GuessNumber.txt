@@ -1,0 +1,82 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// 전역변수
+// 함수의 외부에 선언된 변수
+// 프로그램 전체에서 사용가능
+// '프로그램' 실행이 시작될때 생성되고 '프로그램'이 종료할때 소멸됨
+int selectedNumber; // global variable
+
+void Play();
+void ChooseSecretNumber();
+void InitRandomGenerator();
+
+int main()
+{
+	char ch;
+
+	InitRandomGenerator();
+
+	printf("================= Welcome ===============\n");
+
+	while (1)
+	{
+		ChooseSecretNumber();
+
+		Play();
+
+		printf("Play again?");
+		scanf(" %c", &ch); // white space
+
+		if (ch != 'y' && ch != 'Y')
+			break;
+	}
+
+	return 0;
+}
+
+// 함수의 내부 혹은 매개변수로 선언된 변수를 지역변수라고 함.
+// 지역변수는 그 전까지는 없다가 자신이 속한 함수가 호출될때 생성되고 함수가 return되면 소멸.
+// 함수 재호출시에는 예를들어 int형이면 반드시 똑같은 자리에 4바이트가 할당되지않음.
+void Play()
+{
+	int guessedNumber;
+	int count = 0;
+
+	while (1)
+	{
+		printf("Guess Number : ");
+		scanf("%d", &guessedNumber);
+		count++;
+
+		if (guessedNumber < selectedNumber)
+		{
+			printf("Too low...\n");
+		}
+
+		else if (guessedNumber > selectedNumber)
+		{
+			printf("Too high...\n");
+		}
+
+		else
+		{
+			printf("You won in %d guesses.\n", count);
+			break;
+		}
+	}
+}
+
+void ChooseSecretNumber()
+{
+	selectedNumber = rand() % 100 + 1;
+}
+
+void InitRandomGenerator()
+{
+	srand((unsigned int)time(NULL));
+}

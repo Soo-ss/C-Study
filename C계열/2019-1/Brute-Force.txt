@@ -1,0 +1,59 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	
+	
+	return 0;
+}
+
+// 위치 (x,y)에서 dir 방향으로 연속된 len개의 digit로 만들어지는
+// 정수를 반환. 그런 값이 없으면 -1을 반환
+int ComputeValue(int x, int y, int dir, int len)
+{
+	int value = 0;
+
+	for (int i = 0; i < len; i++)
+	{
+		// 시작위치 (x,y)에서 dir방향으로 i칸 떨어진 자리에 있는 digit를 반환한다.
+		// 만약 그런 자리가 존재하지 않으면 -1을 반환.
+		int digit = GetDigit(x, y, dir, i);
+		
+		if (digit == -1)
+			return -1;
+
+		value = value * 10 + digit;
+	}
+
+	return value;
+}
+
+// -------------
+// | 7 | 0 | 1 |
+// | 6 |x,y| 2 |
+// | 5 | 4 | 3 |
+// -------------
+int GetDigit(int x, int y, int dir, int k)
+{
+	int newX = x, newY = y;
+
+	switch (dir)
+	{
+	case 0: newY -= k; break;
+	case 1: newX += k; newY -= k; break;
+	case 2: newX += k; break;
+	case 3: newX += k; newY += k; break;
+	case 4: newY += k; break;
+	case 5: newX -= k; newY += k; break;
+	case 6: newX -= k; break;
+	case 7: newX -= k; newY -= k; break;
+	}
+
+	if (newX < 0 || newX >= n || newY < 0 || newY >= n)
+		return -1;
+
+	return grid[newX][newY];
+}

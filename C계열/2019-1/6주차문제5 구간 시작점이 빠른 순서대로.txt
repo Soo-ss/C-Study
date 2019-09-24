@@ -1,0 +1,62 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, a, b, tmp, dataFirst[MAX], dataSecond[MAX];
+
+	printf("몇개의 구간을 입력하시겠습니까? : ");
+	scanf("%d", &n);
+
+	printf("구간을 입력하세요\n");
+
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d%d", &a, &b);
+
+		dataFirst[i] = a;
+		dataSecond[i] = b;
+	}
+
+	for (int i = n - 1; i > 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (dataFirst[j] > dataFirst[j + 1])
+			{
+				tmp = dataFirst[j];
+				dataFirst[j] = dataFirst[j + 1];
+				dataFirst[j + 1] = tmp;
+
+				tmp = dataSecond[j];
+				dataSecond[j] = dataSecond[j + 1];
+				dataSecond[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < n - 1; i++) // n - 1해야 맞는듯함.
+	{
+		if (dataFirst[i] == dataFirst[i + 1])
+		{
+			tmp = dataFirst[i];
+			dataFirst[i] = dataFirst[i + 1];
+			dataFirst[i + 1] = tmp;
+
+			tmp = dataSecond[i];
+			dataSecond[i] = dataSecond[i + 1];
+			dataSecond[i + 1] = tmp;
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d %d\n", dataFirst[i], dataSecond[i]);
+	}
+
+	return 0;
+}

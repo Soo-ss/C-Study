@@ -1,0 +1,41 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int arr[7], tmp, count = 1;
+
+	for (int i = 0; i < 7; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	for (int i = 6; i > 0; --i)
+	{
+		for (int j = 0; j < i; ++j)
+		{
+			if (arr[j] > arr[j + 1])
+			{
+				tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		if (arr[i + 1] - arr[i] == 1)
+			++count;
+	}
+
+	if (count == 5)
+		printf("YES");
+
+	else
+		printf("NO");
+
+	return 0;
+}

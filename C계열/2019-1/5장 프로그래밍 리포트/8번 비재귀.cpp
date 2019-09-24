@@ -1,0 +1,40 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int GCD(int a, int b);
+
+int main()
+{
+	int a, b;
+
+	printf("두 수를 입력하세요 : \n");
+	scanf("%d%d", &a, &b);
+
+	printf("값 : %d\n", GCD(a, b));
+
+	return 0;
+}
+
+int GCD(int a, int b)
+{
+	int r, temp;
+
+	// make a largest
+	if (a < b)
+	{
+		temp = a;
+		a = b;
+		b = temp;
+	}
+
+	while (b != 0)
+	{
+		r = a % b;
+		a = b;
+		b = r;
+	}
+
+	return a;
+}

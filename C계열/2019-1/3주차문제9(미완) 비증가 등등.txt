@@ -1,0 +1,47 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, b, c, iConvex = 0, iConcave = 0;
+
+	printf("정수를 입력하세요 : \n");
+	scanf("%d%d", &a, &b);
+
+	while (1)
+	{
+		scanf("%d", &c);
+
+		if (c == -1)
+			break;
+
+		if (a < b && b > c)
+		{
+			++iConvex;
+		}
+
+		else if (a > b && b < c)
+		{
+			++iConcave;			
+		}
+
+		if (b == c)
+			continue;	
+
+		a = b;
+		b = c;
+	}
+
+	if (iConvex == 1)
+		printf("Convex\n");
+
+	else if (iConcave == 1)
+		printf("Concave\n");
+
+	else if (iConvex >= 1 && iConcave >= 1)
+		printf("None\n");
+
+	else
+		printf("Both\n");
+
+	return 0;
+}

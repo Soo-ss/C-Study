@@ -1,0 +1,50 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int isPrime(int k)
+{
+	if (k <= 1)
+		return 0;
+
+	for (int i = 2; i*i <= k; i++)
+	{
+		if (k%i == 0)
+			return 0;
+	}
+
+	return 1;
+}
+
+void printPrimesStartAt(int s, int data[])
+{
+	int value = 0;
+
+	for (int i = 0; i < 6; i++)
+	{
+		value = value * 10 + data[s + i];
+		if (isPrime(value) == 1)
+		{
+			printf("%d\n", value);
+		}
+	}
+}
+
+int main()
+{
+	int n = 0, data[MAX];
+
+	FILE *fp = fopen("input1.txt", "r");
+	while (fscanf(fp, "%d", &data[n]) != EOF) n++;
+	fclose(fp);
+
+	for (int i = 0; i < n; i++)
+	{
+		printPrimesStartAt(i, data);
+	}
+
+	return 0;
+}

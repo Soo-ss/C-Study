@@ -1,0 +1,122 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+typedef struct PERSON
+{
+	char name[SIZE];
+	char address[SIZE];
+	char mobilePhone[SIZE];
+	char desc[SIZE];
+}PERSON;
+
+PERSON GetRecord();
+void Menu();
+void PrintRecord(PERSON data);
+void AddRecord(FILE *fp);
+void SearchRecord(FILE *fp);
+void UpdateRecord(FILE *fp);
+
+int main()
+{
+	FILE *fp;
+	int select;
+
+	// 이진 파일을 추가 모드로 오픈한다.
+	if ((fp = fopen("address.dat", "a+")) = NULL)
+	{
+		fprintf(stderr, "입력을 위한 파일을 열 수 없습니다.");
+		exit(1);
+	}
+
+	while (1)
+	{
+		Menu(); // 메뉴표시
+		printf("정수값을 입력하시오 : "); // 사용자로부터 정수를 받는다.
+		scanf("%d", &select);
+		switch (select)
+		{
+		case 1: AddRecord(fp); break; // 데이터 추가
+		case 2: UpdateRecord(fp); break; // 데이터 수정
+		case 3: SearchRecord(fp); break; // 데이터 탐색
+		case 4: return 0;
+		}
+	}
+
+	fclose(fp);
+
+	return 0;
+}
+
+// 사용자로부터 데이터를 받아서 구조체로 반환한다
+PERSON GetRecord()
+{
+	PERSON data;
+
+	getchar(); // 줄바꿈 문자 없애기
+	printf("이름 : "); gets_s(data.name, SIZE); // 이름을 입력받는다.
+	printf("주소 : "); gets_s(data.address, SIZE); // 주소를 입력받는다.
+	printf("휴대폰 : "); gets_s(data.mobilePhone, SIZE); // 휴대폰 번호를 입력받는다.
+	printf("특징 : "); gets_s(data.desc, SIZE); // 특징을 입력 받는다.
+
+	return data;
+}
+
+// 구조체 데이터를 화면에 출력한다.
+void PrintRecord(PERSON data)
+{
+	printf("이름 : %s\n", data.name);
+	printf("주소 : %s\n", data.address);
+	printf("휴대폰 : %s\n", data.mobilePhone);
+	printf("특징 : %s\n", data.desc);
+}
+
+// 메뉴를 화면에 표시하는 함수
+void Menu()
+{
+	printf("====================\n");
+	printf(" 1. 추가\n 2. 수정\n 3. 검색\n 4. 종료\n");
+	printf("====================\n");
+}
+
+// 데이터를 추가한다
+void AddRecord(FILE *fp)
+{
+	PERSON data;
+	data = GetRecord(); // 사용자로부터 데이터를 받아서 구조체에 저장
+	fseek(fp, 0, SEEK_END); // 파일의 끝으로 간다
+	fwrite(&data, sizeof(data), 1, fp); // 구조체 데이터를 파일에 쓴다.
+}
+
+// 데이터를 탐색한다
+void SearchRecord(FILE *fp)
+{
+	char name[SIZE];
+	PERSON data;
+
+	fseek(fp, 0, SEEK_SET); // 파일의 처음으로 간다.
+	getchar();
+	printf("탐색하고자 하는 사람의 이름 : ");
+	gets_s(name, SIZE); // 이름을 입력받는다.
+	while (!feof(fp)) // 파일의 끝까지 반복한다.
+	{
+		fread(&data, sizeof(data), 1, fp); // 현재 위치에서 데이터를 읽는다
+
+		if (strcmp(data.name, name) == 0) // 이름을 비교한다.
+		{
+			PrintRecord(data); // 일치하면 데이터를 화면에 출력한다.
+			break;
+		}
+	}
+}
+
+// 데이터를 수정한다
+void UpdateRecord(FILE *fp)
+{
+
+}

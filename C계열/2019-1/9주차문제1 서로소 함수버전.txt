@@ -1,0 +1,58 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int isRelativePrime(int a, int b)
+{
+	int num1, num2, q, r;
+
+	num1 = a;
+	num2 = b;
+
+	while(1)
+	{
+		q = num1 / num2;
+		r = num1 % num2;
+
+		if (r == 0)
+			break;
+
+		num1 = num2;
+		num2 = r;
+	}
+
+	if (num2 == 1)
+		return 1;
+
+	return 0;
+}
+
+int main()
+{
+	int count, coprimeCount = 0;
+
+	for (int a = 2; a <= 100; a++)
+	{
+		for (int b = a + 1; b <= 100; b++)
+		{
+			for (int c = b + 1; c <= 100; c++)
+			{
+				count = 0;
+
+				count += isRelativePrime(a, b);
+				count += isRelativePrime(b, c);
+				count += isRelativePrime(a, c);
+
+				if (count == 3)
+					coprimeCount++;
+			}
+		}
+	}
+
+	printf("%d\n", coprimeCount);
+
+	return 0;
+}

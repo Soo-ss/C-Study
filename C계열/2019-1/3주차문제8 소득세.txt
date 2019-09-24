@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+#define NUM1 12000000
+#define NUM2 46000000
+#define NUM3 88000000
+#define NUM4 150000000
+#define NUM5 500000000
+
+int main()
+{
+	int a, n;
+
+	printf("소득금액을 입력하세요 : ");
+	scanf("%d", &a);
+
+	if (a <= NUM1)
+	{
+		a *= 0.06;
+		n = a;
+	}
+
+	else if (a <= NUM2)
+	{
+		a = (a - NUM1) * 0.15;
+		n = a + NUM1 * 0.06;
+	}
+
+	else if (a <= NUM3)
+	{
+		a = (a - NUM2) * 0.24;
+		n = a + NUM1 * 0.06 + (NUM2 - NUM1) * 0.15;
+	}
+
+	else if (a <= NUM4)
+	{
+		a = (a - NUM3) * 0.35;
+		n = a + NUM1 * 0.06 + (NUM2 - NUM1) * 0.15 + (NUM3 - NUM2) * 0.24;
+	}
+
+	else if (a <= NUM5)
+	{
+		a = (a - NUM4) * 0.38;
+		n = a + NUM1 * 0.06 + (NUM2 - NUM1) * 0.15 + (NUM3 - NUM2) * 0.24 + (NUM4  - NUM3) * 0.35;
+	}
+
+	else
+	{
+		a = (a - NUM5) * 0.4;
+		n = a + NUM1 * 0.06 + (NUM2 - NUM1) * 0.15 + (NUM3 - NUM2) * 0.24 + (NUM4 - NUM3) * 0.35 + (NUM5 - NUM4) * 0.38;
+	}
+
+	printf("%d\n", n);
+	
+	return 0;
+}

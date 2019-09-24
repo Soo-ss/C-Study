@@ -1,0 +1,44 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+	int n;
+	int counter[365];
+	int count_dup = 0;
+
+	printf("사람의 수를 입력하세요 : ");
+	scanf("%d", &n);
+
+	for (int t = 0; t < 10000; ++t)
+	{
+		// reset counters
+		for (int i = 0; i < 365; ++i)
+		{
+			counter[i] = 0;
+		}
+
+		bool dup = false;
+
+		for (int i = 0; i < n; ++i)
+		{
+			int x = rand() % 365;
+			++counter[x];
+			if (counter[x] > 1)
+			{
+				dup = true;
+				break;
+			}
+		}
+
+		if (dup)
+			++count_dup;
+	}
+
+	printf("%f", (double)count_dup / 10000);
+
+	return 0;
+}

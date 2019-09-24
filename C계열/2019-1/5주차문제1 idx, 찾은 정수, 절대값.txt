@@ -1,0 +1,62 @@
+
+#include <stdio.h>
+
+int main()
+{
+	int n, k, arr[100], index, found, result, min;
+	printf("입력될 정수의 개수를 입력하세요 : \n");
+	scanf("%d", &n);
+
+	printf("정수를 입력하세요 : \n");
+
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	printf("비교할 정수 하나를 입력하세요 : \n");
+	scanf("%d", &k);
+
+	min = arr[0];
+
+	for (int i = 1; i < n; ++i)
+	{
+		if (min >= arr[i])
+			min = arr[i];
+	}
+
+	if (min > k)
+	{
+		printf("-1");
+		return 0;
+	}
+
+	found = min;
+
+	for (int i = 0; i < n - 1; ++i)
+	{
+		if (found <= arr[i] && arr[i] <= k)
+		{
+			found = arr[i];
+			index = i;
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		if (found == arr[i])
+		{
+			index = i;
+			break;
+		}
+	}
+
+	result = found - k;
+
+	if (result < 0)
+		result *= -1;
+
+	printf("%d %d %d", index, found, result);
+
+	return 0;
+}

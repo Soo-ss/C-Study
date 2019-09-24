@@ -1,0 +1,32 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	char seps[] = " ,\t\n";
+	char *token;
+	char s[100];
+	char *str[100];
+	int i = 0;
+	
+	printf("성과 이름을 대문자로 입력하시오 : ");
+	fgets(s, sizeof(s), stdin);
+	s[strlen(s) - 1] = '\0';
+	strlwr(s);
+
+	token = strtok(s, seps);
+
+	while (token != NULL)
+	{
+		str[i] = token;
+		token = strtok(NULL, seps);
+		i++;
+	}
+
+	printf("%s, %s\n", str[1], str[0]);
+
+	return 0;
+}

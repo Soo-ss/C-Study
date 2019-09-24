@@ -1,0 +1,139 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Stack overflow 발생하기때문에 조심.
+#define MAX 70
+
+int main()
+{
+	srand((unsigned int)time(NULL));
+
+	int N, start1, start2, start3, A[MAX][MAX][MAX], count = 0;
+	//int space[MAX][MAX] = { { 1,0 },{ -1,0 },{ 0,1 },{ 0,-1 } };
+
+	scanf_s("%d", &N);
+
+	for (int t = 0; t < 10000; t++)
+	{
+		// reset
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				for (int k = 0; k < N; k++)
+				{
+					A[i][j][k] = { 0 };
+				}
+			}
+		}
+
+		start1 = N / 2;
+		start2 = N / 2;
+		start3 = N / 2;
+		A[start1][start2][start3] = { 1 };
+		//printf("%d %d\n", start1, start2);
+
+		while (1)
+		{
+			if (start1 == 0 || start2 == 0 || start3 == 0 || 
+				start1 == N - 1 || start2 == N - 1 || start3 == N - 1)
+			{
+				count++;
+				break;
+			}
+
+			else if (A[start1 + 1][start2][start3] == 1 && A[start1][start2 + 1][start3] == 1 &&
+				A[start1 - 1][start2][start3] == 1 && A[start1][start2 - 1][start3] == 1 &&
+				A[start1][start2][start3 + 1] == 1 && A[start1][start2][start3 - 1] == 1)
+			{
+				break;
+			}
+
+			int random = rand() % 6;
+
+			switch (random)
+			{
+				// Right
+			case 0:
+				start1 += 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start1 -= 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+
+				// Left
+			case 1:
+				start1 -= 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start1 += 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+
+				// Up
+			case 2:
+				start2 += 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start2 -= 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+
+				// Down
+			case 3:
+				start2 -= 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start2 += 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+
+				// Front
+			case 4:
+				start3 += 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start3 -= 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+
+				// Back
+			case 5:
+				start3 -= 1;
+				if (A[start1][start2][start3] == 1)
+				{
+					start3 += 1;
+					continue;
+				}
+
+				A[start1][start2][start3] = 1;
+				break;
+			}
+			//printf("start1 : %d start2 : %d count : %d \n", start1, start2, count);
+
+		}
+
+	}
+
+	printf("%f", count / 10000.0);
+
+	return 0;
+}

@@ -1,0 +1,50 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define SET_BIT(w,k) ( (w) |= (0x01 << (k)) )
+#define CLR_BIT(w,k) ( (w) &= (~0x01 << (k)) )
+#define GET_BIT(w,k) ( ((w) >> (k)) & 0x01 )
+
+void display(char *arr) 
+{
+	for (int i = 0; arr[i] != NULL; i++)
+	{
+		printf("%c", arr[i]);
+	}
+}
+
+int main() {
+	char arr[100], key;
+	int i;
+
+	key = 0x21;
+
+	printf("암호를 입력하세요 : ");
+	gets(arr);
+
+	display(arr);
+	for (i = 0; arr[i] != NULL; i++)
+	{
+		arr[i] ^= key;
+	}
+
+	printf(" 가 ");
+	display(arr);
+	printf(" 로 엔코딩됨\n");
+
+	display(arr);
+
+	for (i = 0; arr[i] != NULL; i++)
+	{
+		arr[i] ^= key;
+	}
+
+	printf(" 가 ");
+	display(arr);
+	printf(" 로 디코딩됨\n");
+
+	return 0;
+}
+

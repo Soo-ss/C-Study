@@ -1,0 +1,100 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+void Intersect(int ver, int hor, int verX1[], int verY1[], int verY2[],
+	int horX1[], int horY1[], int horX2[], int resultX[], int resultY[], int *result);
+
+int main()
+{
+	int n, tmp, idx = 0, hor = 0, ver = 0, result = 0, arrX1[MAX], arrY1[MAX], arrX2[MAX], arrY2[MAX];
+	int horX1[MAX], horY1[MAX], horX2[MAX], horY2[MAX];
+	int verX1[MAX], verY1[MAX], verX2[MAX], verY2[MAX];
+	int resultX[MAX], resultY[MAX];
+
+	FILE *fp = fopen("input7.txt", "r");
+
+	fscanf(fp, "%d", &n);
+
+	while (fscanf(fp, "%d%d%d%d", &arrX1[idx], &arrY1[idx], &arrX2[idx], &arrY2[idx]) != EOF)
+		++idx;
+
+	fclose(fp);
+
+	for (int i = 0; i < idx; ++i)
+	{
+		if (arrY1[i] == arrY2[i])
+		{
+			horX1[hor] = arrX1[i];
+			horX2[hor] = arrX2[i];
+			horY1[hor] = arrY1[i];
+			horY2[hor] = arrY2[i];
+			++hor;
+		}
+
+		if (arrX1[i] == arrX2[i])
+		{
+			verX1[ver] = arrX1[i];
+			verX2[ver] = arrX2[i];
+			verY1[ver] = arrY1[i];
+			verY2[ver] = arrY2[i];
+			++ver;
+		}
+	}
+
+	Intersect(ver, hor, verX1, verY1, verY2, horX1, horY1, horX2, resultX, resultY, &result);
+
+	for (int i = 0; i < result; ++i)
+	{
+		for (int j = 0; j < result - 1; ++j)
+		{
+			if (resultX[j] > resultX[j + 1])
+			{
+				tmp = resultX[j];
+				resultX[j] = resultX[j + 1];
+				resultX[j + 1] = tmp;
+
+				tmp = resultY[j];
+				resultY[j] = resultY[j + 1];
+				resultY[j + 1] = tmp;
+			}
+
+			else if (resultX[j] == resultX[j + 1] && resultY[j] > resultY[j + 1])
+			{
+				tmp = resultX[j];
+				resultX[j] = resultX[j + 1];
+				resultX[j + 1] = tmp;
+
+				tmp = resultY[j];
+				resultY[j] = resultY[j + 1];
+				resultY[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < result; ++i)
+		printf("[%d, %d]\n", resultX[i], resultY[i]);
+
+	return 0;
+}
+
+void Intersect(int ver, int hor, int verX1[], int verY1[], int verY2[],
+	int horX1[], int horY1[], int horX2[], int resultX[], int resultY[], int *result)
+{
+	for (int i = 0; i < ver; ++i)
+	{
+		for (int j = 0; j < hor; ++j)
+		{
+			if ((verY1[i] <= horY1[j] && horY1[j] <= verY2[i]) &&
+				(horX1[j] <= verX1[i] && verX1[i] <= horX2[j]))
+			{
+				resultX[*result] = verX1[i];
+				resultY[*result] = horY1[j];
+				++*result;
+			}
+		}
+	}
+}

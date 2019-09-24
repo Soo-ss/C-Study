@@ -1,0 +1,28 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int data[MAX];
+	int n = 0, val;
+
+	while (1)
+	{
+		scanf("%d", &val);
+
+		if (val == -1)
+			break;
+
+		while (n > 0 && data[n - 1] > val)
+			--n;
+
+		data[n++] = val;
+		printf("%d\n", n);
+	}
+
+	return 0;
+}

@@ -1,0 +1,50 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, tmp;
+	int year[MAX], month[MAX], day[MAX];
+
+	FILE *fp = fopen("input3.txt", "r");
+
+	fscanf(fp, "%d", &n);
+
+	for (int i = 0; i < n; ++i)
+		fscanf(fp, "%d%d%d", &year[i], &month[i], &day[i]);
+
+	fclose(fp);
+
+	for (int i = n - 1; i > 0; --i)
+	{
+		for (int j = 0; j < i; ++j)
+		{
+			if (year[j] > year[j + 1] || year[j] == year[j + 1] && month[j] > month[j + 1] ||
+				year[j] == year[j + 1] && month[j] == month[j + 1] && day[j] > day[j + 1])
+			{
+				tmp = year[j];
+				year[j] = year[j + 1];
+				year[j + 1] = tmp;
+
+				tmp = month[j];
+				month[j] = month[j + 1];
+				month[j + 1] = tmp;
+
+				tmp = day[j];
+				day[j] = day[j + 1];
+				day[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		printf("%d %d %d\n", year[i], month[i], day[i]);
+	}
+
+	return 0;
+}

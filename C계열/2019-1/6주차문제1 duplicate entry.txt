@@ -1,0 +1,59 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int a, tmp, n = 0, data[MAX];
+
+	while (1)
+	{
+		bool dup = false;
+
+		scanf("%d", &a);
+
+		if (a == -1)
+			break;
+
+		for (int i = 0; i < n; ++i)
+		{
+			if (data[i] == a)
+			{
+				printf("duplicate entry\n");
+				dup = true;
+				break;
+			}
+		}
+
+		if (dup)
+			continue;
+
+		data[n] = a;
+		++n;
+
+		for (int i = n - 1; i > 0; --i)
+		{
+			for (int j = 0; j < i; ++j)
+			{
+				if (data[j] > data[j + 1])
+				{
+					tmp = data[j];
+					data[j] = data[j + 1];
+					data[j + 1] = tmp;
+				}
+			}
+		}
+
+		for (int i = 0; i < n; ++i)
+		{
+			printf("%d ", data[i]);
+		}
+
+		printf("\n");
+	}
+
+	return 0;
+}

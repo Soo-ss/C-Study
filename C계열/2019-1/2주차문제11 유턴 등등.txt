@@ -1,0 +1,104 @@
+#include <stdio.h>
+
+int main()
+{
+	int x1, y1, x2, y2, x3, y3, iErrorCount = 0;
+
+	printf("첫번째 점의 좌표를 입력하세요 : \n");
+	scanf("%d%d", &x1, &y1);
+	printf("두번째 점의 좌표를 입력하세요 : \n");
+	scanf("%d%d", &x2, &y2);
+	printf("세번째 점의 좌표를 입력하세요 : \n");
+	scanf("%d%d", &x3, &y3);
+
+	if (x2 != x1 && y2 != y1 || x3 != x2 && y3 != y2)
+		++iErrorCount;
+
+	if (iErrorCount == 0)
+	{
+		// 양의 y좌표방향일때
+		if (x2 - x1 == 0 && y2 - y1 > 0)
+		{
+			// Left
+			if (x3 - x2 < 0 && y3 - y2 == 0)
+				printf("Left\n");
+
+			// Straight
+			else if (x3 - x2 == 0 && y3 - y2 > 0)
+				printf("Straight\n");
+
+			// Right
+			else if (x3 - x2 > 0 && y3 - y2 == 0)
+				printf("Right\n");
+
+			// U-turn
+			else if (x3 - x2 == 0 && y3 - y2 < 0)
+				printf("U-turn\n");
+		}
+
+		// 양의 x좌표방향일때
+		else if (x2 - x1 > 0 && y2 - y1 == 0)
+		{
+			// Left
+			if (x3 - x2 == 0 && y3 - y2 > 0)
+				printf("Left\n");
+
+			// Straight
+			else if (x3 - x2 > 0 && y3 - y2 == 0)
+				printf("Straight\n");
+
+			// Right
+			else if (x3 - x2 == 0 && y3 - y2 < 0)
+				printf("Right\n");
+
+			// U-turn
+			else if (x3 - x2 < 0 && y3 - y2 == 0)
+				printf("U-turn\n");
+		}
+
+		// 음의 y좌표방향일때
+		else if (x2 - x1 == 0 && y2 - y1 < 0)
+		{
+			// Left
+			if (x3 - x2 > 0 && y3 - y2 == 0)
+				printf("Left\n");
+
+			// Straight
+			else if (x3 - x2 == 0 && y3 - y2 < 0)
+				printf("Straight\n");
+
+			// Right
+			else if (x3 - x2 < 0 && y3 - y2 == 0)
+				printf("Right\n");
+
+			// U-turn
+			else if (x3 - x2 == 0 && y3 - y2 > 0)
+				printf("U-turn\n");
+		}
+
+		// 음의 x좌표방향일때
+		else if (x2 - x1 < 0 && y2 - y1 == 0)
+		{
+			// Left
+			if (x3 - x2 == 0 && y3 - y2 < 0)
+				printf("Left\n");
+
+			// Straight
+			else if (x3 - x2 < 0 && y3 - y2 == 0)
+				printf("Straight\n");
+
+			// Right
+			else if (x3 - x2 == 0 && y3 - y2 > 0)
+				printf("Right\n");
+
+			// U-turn
+			else if (x3 - x2 > 0 && y3 - y2 == 0)
+				printf("U-turn\n");
+		}
+	}
+
+	else
+		printf("Input error\n");
+
+	return 0;
+}

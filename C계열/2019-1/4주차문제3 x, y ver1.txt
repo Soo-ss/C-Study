@@ -1,0 +1,30 @@
+
+#include <stdio.h>
+
+int main()
+{
+	int n;
+	printf("양의 정수 하나를 입력하세요 : ");
+	scanf("%d", &n);
+
+	for (int y = 0; y <= n; ++y)
+	{
+		if (y % 2 != 0)
+		{
+			for (int x = n; x >= 0; --x)
+			{
+				printf("%d %d\n", x, y);
+			}
+		}
+
+		else
+		{
+			for (int x = 0; x <= n; ++x)
+			{
+				printf("%d %d\n", x, y);
+			}
+		}
+	}
+
+	return 0;
+}

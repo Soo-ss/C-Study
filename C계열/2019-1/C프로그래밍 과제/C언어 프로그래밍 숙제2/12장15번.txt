@@ -1,0 +1,30 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	char str[10];
+	int a, b, result;
+
+	printf("연산을 입력하시오 : ");
+	scanf("%s %d %d", str, &a, &b);
+
+	if (strcmp(str, "add") == 0)
+		result = a + b;
+
+	else if (strcmp(str, "sub") == 0)
+		result = a - b;
+
+	else if (strcmp(str, "mul") == 0)
+		result = a * b;
+
+	else if (strcmp(str, "div") == 0)
+		result = a / b;
+
+	printf("연산의 결과 : %d\n", result);
+
+	return 0;
+}

@@ -1,0 +1,28 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	// strtok은 원본 문자열을 변화시킨다('\0'를 삽입한다.)
+	// 그래서 string literal(const)이 되면안됨
+	// strtok은 새로운 배열을 생성하지않는다. 즉 strdup와는 다르다.
+	char str[] = "now # is the time # to start preparing ### for the exam#";
+	char delim[] = "#";
+	char* token;
+
+	printf("Before:%s\n", str);
+	token = strtok(str, delim);
+
+	while (token != NULL)
+	{
+		printf("next token is: %s:%d\n", token, strlen(token));
+		token = strtok(NULL, delim);
+	}
+
+	// now + 공백 까지만 출력되는 이유? -> #을 \0으로 교체됨
+	// 문자열은 \0 이전까지만 인식하므로 now + 공백까지만 출력됨
+	printf("After:%s#\n", str);
+
+	return 0;
+}

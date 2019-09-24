@@ -1,0 +1,69 @@
+/*
+The strncmp subroutine makes the same comparison as the strcmp subroutine
+but compares up to the maximum number of pairs of bytes specified by the Number parameter
+the strcasecmp subroutine is not case sensitive
+Uppercase and lowercase letters are mapped to the same character set value
+EOF
+
+34인듯
+*/
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+	int num = 0, count = 0;
+
+	char* words[100];
+	char tmp[100];
+
+	while (scanf("%s", tmp) != EOF)
+	{
+		if (strcmp(tmp, "EOF") == 0)
+			break;
+
+		words[num] = strdup(tmp);
+		num++;
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < 100; j++)
+		{
+			if (words[i][j] == '\0')
+			{
+				break;
+			}
+
+			if (isupper(words[i][j]) != 0)
+			{
+				words[i][j] = tolower(words[i][j]);
+			}
+		}
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = i + 1; j < num; j++)
+		{
+			if (strcmp(words[j], words[i]) == 0)
+			{
+				// 새로운변수 k를 안해주면 3개이상의 중복된단어를 잡아낼수없음.
+				int k = j;
+
+				// 중복된거 찾은지점부터 앞으로땡긴다.
+				for (; k < num - 1; k++)
+				{
+					words[k] = words[k + 1];
+				}
+				num--;
+			}
+		}
+	}
+
+	printf("%d", num);
+
+	return 0;
+}

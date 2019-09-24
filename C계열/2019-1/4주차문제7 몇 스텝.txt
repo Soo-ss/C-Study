@@ -1,0 +1,53 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{	
+	int n, iCount = 0;
+	printf("정수를 입력하세요 : \n");
+	scanf("%d", &n);
+
+	srand((unsigned int)time(NULL));
+
+	for (int i = 1; i <= 1000; ++i)
+	{	
+		int x1 = 0, y1 = 0;
+
+		while (1)
+		{
+			// 0 : 동 1 : 서 2 : 남 3 : 북
+			int iMove = rand() % 4;
+
+			if (iMove == 0)
+			{
+				x1 += 1;
+			}
+
+			else if (iMove == 1)
+			{
+				x1 -= 1;
+			}
+
+			else if (iMove == 2)
+			{
+				y1 -= 1;
+			}
+
+			else if (iMove == 3)
+			{
+				y1 += 1;
+			}
+
+			++iCount;
+
+			if (x1 == n || x1 == -n || y1 == n || y1 == -n)
+				break;
+		}
+	}
+
+	printf("%d\n", iCount / 1000);
+
+	return 0;
+}

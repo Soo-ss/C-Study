@@ -1,0 +1,4 @@
+import re
+def camel2pothole(str1):
+    pat = re.compile("([A-Z0-9])")
+    return pat.sub('_\g<1>', str1).lower()

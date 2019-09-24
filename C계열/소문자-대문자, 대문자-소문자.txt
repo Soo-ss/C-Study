@@ -1,0 +1,27 @@
+for (int i = 0; i < LENGTH; i++)
+	{
+		if (buffer[i] == '\0')
+		{
+			break;
+		}
+
+		else if (isalpha(buffer[i]) != 0) // a~z, A~Z
+		{
+			// islower(c) ===> non-zero, zero
+			// isupper(c)
+			if (islower(buffer[i]) != 0) // 소문자
+			{
+				printf("%c", toupper(buffer[i]));
+			}
+
+			else
+			{
+				printf("%c", tolower(buffer[i]));
+			}
+		}
+
+		else // non-alphabet
+		{
+			printf("%c", buffer[i]);
+		}
+	}

@@ -1,0 +1,64 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int Min(int x, int y)
+{
+	int min;
+
+	min = (x <= y) ? x : y;
+
+	return min;
+}
+
+int Max(int x, int y)
+{
+	int max;
+
+	max = (x > y) ? x : y;
+
+	return max;
+}
+
+int lenOfOverlap(int sa, int ta, int sb, int tb)
+{
+	int width, height, result = 0;
+
+	width = ta - sa;
+	height = tb - sb;
+
+	if (width >= 0 && height >= 0)
+	{
+		result = height * width;
+	}
+
+	return result;
+}
+
+int main()
+{
+	int AX1, AY1, AX2, AY2;
+	int BX1, BY1, BX2, BY2;
+
+	scanf("%d%d%d%d%d%d%d%d", &AX1, &AY1, &AX2, &AY2, &BX1, &BY1, &BX2, &BY2);
+
+	int leftA = Min(AX1, AX2);
+	int rightA = Max(AX1, AX2);
+	int topA = Max(AY1, AY2);
+	int botA = Min(AY1, AY2);
+
+	int leftB = Min(BX1, BX2);
+	int rightB = Max(BX1, BX2);
+	int topB = Max(BY1, BY2);
+	int botB = Min(BY1, BY2);
+
+	int left = Max(leftA, leftB);   // 겹치는 사각형 왼쪽
+	int right = Min(rightA, rightB); // 겹치는 사각형 오른쪽
+	int bot = Max(botA, botB);     // 겹치는 사각형 아래
+	int top = Min(topA, topB);     // 겹치는 사각형 위
+
+	printf("%d\n", lenOfOverlap(left, right, bot, top));
+
+	return 0;
+}

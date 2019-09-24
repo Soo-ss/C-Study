@@ -1,0 +1,26 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+double VectorDotProd(double x[], double y[])
+{
+	double result = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		result += x[i] * y[i];
+	}
+
+	return result;
+}
+
+int main()
+{
+	double x[3] = { 1,2,3 };
+	double y[3] = { 1,2,3 };
+
+	printf("º¤ÅÍÀÇ ³»Àû = %f\n", VectorDotProd(x, y));
+
+	return 0;
+}

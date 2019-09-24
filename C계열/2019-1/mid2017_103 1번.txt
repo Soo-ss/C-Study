@@ -1,0 +1,23 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	double x, result = 1, top = 1, bottom = 1;
+
+	printf("실수 하나를 입력하세요 : ");
+	scanf("%lf", &x);
+
+	for (int i = 1; i < 100; ++i)
+	{
+		top *= x;
+		bottom *= i;
+		result += top / bottom;
+	}
+
+	printf("%f", result);
+
+	return 0;
+}

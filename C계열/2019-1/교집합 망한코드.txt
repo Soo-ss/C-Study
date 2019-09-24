@@ -1,0 +1,95 @@
+
+#pragma warning (disable:4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int arrX[100], arrY[100], indexX = 0, indexY = 0, n = -1, tmp;
+	int arrOr[100] = { 0 }, arrAnd[100] = { 0 }, arrMinus[100] = { 0 };
+	int sortData[100] = { 0 }, state = 0, equal = 0, a;
+
+	printf("집합 X를 입력하세요 : (0 : 입력종료)\n");
+	
+	for (int i = 0; i < 100; ++i)
+	{
+		scanf("%d", &arrX[i]);
+
+		indexX = i;
+
+		if (arrX[i] == 0)
+			break;
+	}
+
+	printf("집합 Y를 입력하세요 : (0 : 입력종료)\n");
+
+	for (int i = 0; i < 100; ++i)
+	{
+		scanf("%d", &arrY[i]);
+
+		indexY = i;
+
+		if (arrY[i] == 0)
+			break;
+	}
+
+	int z = indexX + indexY;
+
+	for (int i = 0; i < indexX; ++i)
+		sortData[i] = arrX[i];
+
+	for (int i = 0, j = indexX; i < indexY, j < z; ++i, ++j)
+		sortData[j] = arrY[i];
+	
+	for (int i = 0; i < z; ++i)
+	{
+		for (int j = 0; j < z - 1 - i; ++j)
+		{
+			if (sortData[j] >= sortData[j + 1])
+			{
+				tmp = sortData[j];
+				sortData[j] = sortData[j + 1];
+				sortData[j + 1] = tmp;
+			}
+		}
+	}
+	
+	for (int i = 0; i < z - 1; ++i)
+	{
+		if (sortData[i] == sortData[i + 1])
+		{
+			state = 1;
+		}
+
+		if (state)
+		{
+			for (int a = 0; a <= n + 1; ++a)
+			{
+				if (arrOr[a] == sortData[i])
+				{
+					equal = 1;
+					break;
+				}
+			}
+
+			if (equal)
+				equal = 0;
+
+			else
+				arrOr[++n] = sortData[i];
+
+			state = 0;
+		}
+	}
+
+	if (n > 0)
+	{
+		for (int i = 0; i <= n; ++i)
+			printf("%d ", arrOr[i]);
+	}
+
+	else
+		printf("교집합이 없습니다.\n");
+		
+	return 0;
+}

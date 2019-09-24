@@ -1,0 +1,90 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int compareLexicographic(int a, int b)
+{
+	int A[MAX], B[MAX], p = 0, q = 0;
+
+	while (a > 0)
+	{
+		A[p++] = a % 10;
+		a /= 10;
+	}
+
+	while (b > 0)
+	{
+		B[q++] = b % 10;
+		b /= 10;
+	}
+
+	int smaller = 2;
+
+	while (p >= 0 && q >= 0)
+	{
+		if (A[p] > B[q])
+		{
+			smaller = 1;
+			break;
+		}
+
+		else if (A[p] < B[q])
+		{
+			smaller = -1;
+			break;
+		}
+		p--, q--;
+	}
+
+	if (smaller == 2 && p < 0)
+		smaller = -1;
+
+	else if (smaller == 2 && q < 0)
+		smaller = 1;
+
+	else if (p == -1 && q == -1)
+		smaller = 0;
+
+	return smaller;
+}
+
+int main()
+{
+	int s, t, n = 0, temp, data[MAX];
+
+	FILE *fp = fopen("input5.txt", "r");
+
+	while (fscanf(fp, "%d", &data[n]) != EOF)
+		n++;
+
+	fclose(fp);
+
+	for (int i = n - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			s = data[j];
+			t = data[j + 1];
+
+			if (compareLexicographic(s, t) == 1)
+			{
+				temp = s;
+				s = t;
+				t = temp;
+			}
+
+			data[j] = s;
+			data[j + 1] = t;
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d ", data[i]);
+	}
+
+	return 0;
+}

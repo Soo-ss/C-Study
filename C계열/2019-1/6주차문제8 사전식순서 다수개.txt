@@ -1,0 +1,54 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+int main()
+{
+	char data[MAX][MAX], n = 0, tmp[MAX];
+	
+	FILE *fp = fopen("input6.txt", "r");
+
+	while (fscanf(fp, "%s", data[n]) != EOF)
+		++n;
+
+	fclose(fp);
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n - i - 1 ; ++j)
+		{
+			if (data[j][0] > data[j + 1][0])
+			{
+				strcpy(tmp, data[j]);
+				strcpy(data[j], data[j + 1]);
+				strcpy(data[j + 1], tmp);
+			}
+		}
+	}
+
+
+	for (int k = 0; k < 7; ++k)
+	{
+		for (int i = 0; i < n - 1; ++i)
+		{
+			for (int j = i; j < n - 1; ++j)
+			{
+				if ((data[j][i] == data[j + 1][i]) && (data[j][i + 1] > data[j + 1][i + 1]))
+				{
+					strcpy(tmp, data[j]);
+					strcpy(data[j], data[j + 1]);
+					strcpy(data[j + 1], tmp);
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+		printf("%s ", data[i]);
+
+	return 0;
+}

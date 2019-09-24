@@ -1,0 +1,27 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int a, b, c, d;
+	scanf("%d%d%d%d", &a, &b, &c, &d);
+
+	if (a < c && c < b && b < d)
+		printf("%d", b - c);
+
+	else if (a > c && a < d && d < b)
+		printf("%d", d - a);
+
+	else if (a > c && b < d)
+		printf("%d", b - a);
+
+	else if (a < c && d < b)
+		printf("%d", d - c);
+
+	else
+		printf("0");
+
+	return 0;
+}

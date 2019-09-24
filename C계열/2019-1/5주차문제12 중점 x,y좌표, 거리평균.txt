@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+#include <math.h>
+
+#define MAX 100
+
+int main()
+{
+	int n = 0, data[MAX];
+	double midX = 0, midY = 0, dis = 0;
+
+	FILE *fp = fopen("input12.txt", "r");
+
+	while (fscanf(fp, "%d", &data[n]) != EOF)
+		++n;
+
+	fclose(fp);
+
+	for (int i = 0; i < n; i += 2)
+	{
+		midX += data[i];
+		midY += data[i + 1];
+	}
+
+	
+	midX /= (n * 0.5);
+	midY /= (n * 0.5);
+
+	for (int i = 0; i < n; i += 2)
+	{
+		dis += sqrt((midX - data[i])*(midX - data[i]) + (midY - data[i + 1])*(midY - data[i + 1]));
+	}
+
+	dis /= (n * 0.5);
+
+	printf("%f %f\n%f", midX, midY, dis);
+
+	return 0;
+}

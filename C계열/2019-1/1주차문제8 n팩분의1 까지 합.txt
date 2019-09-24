@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main()
+{
+	int n, denom = 1;
+	double sum = 0;
+
+	printf("양의 정수 하나를 입력하세요 : ");
+	scanf("%d", &n);
+
+	for (int i = 1; i <= n; ++i)
+	{
+		denom *= i;
+		sum += 1.0 / denom;
+	}
+
+	printf("%lf\n", sum);
+
+	return 0;
+}

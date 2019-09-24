@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, iResult, iMinusCount = 0;
+
+	printf("10개의 정수를 입력하세요 : \n");
+	scanf("%d", &a);
+	iResult = a;
+
+	while (iResult < 0)
+	{
+		iResult = 0;
+		++iMinusCount;
+		break;
+	}
+	
+	for (int i = 0; i < 9; ++i)
+	{
+		scanf("%d", &a);
+		if (a >= 0 && iResult > a)
+			iResult = a;
+
+		else if (a < 0)
+			++iMinusCount;
+	}
+	
+	if (iResult < 0 || iMinusCount == 10)
+		printf("-1\n");
+
+	else
+		printf("%d\n", iResult);
+
+	return 0;
+}

@@ -1,0 +1,44 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int Problem(int numArr[], int varArr[], int var, int x, int n);
+
+int main()
+{
+	int n, x, var = 0, numArr[MAX], varArr[MAX], sum = 0;
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d%d", &numArr[i], &varArr[i]);
+	}
+
+	scanf("%d", &x);
+
+	printf("%d", Problem(numArr, varArr, var, x, n));
+
+	return 0;
+}
+
+int Problem(int numArr[], int varArr[], int var, int x, int n)
+{
+	int sum = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		var = 1;
+
+		for (int j = 0; j < varArr[i]; j++)
+		{
+			var *= x;
+		}
+
+		sum += numArr[i] * var;
+	}
+
+	return sum;
+}

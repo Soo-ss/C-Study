@@ -1,0 +1,50 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, data[MAX], count = 0, firstIndex, curIndex, curValue;
+	bool dup[MAX] = { false };
+
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &data[i]);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		firstIndex = i;
+		curValue = data[i];
+
+		while (dup[i] == false)
+		{
+			if (firstIndex == curValue)
+			{
+				count++;
+				dup[i] = true;
+				continue;
+			}
+
+			for (int j = 1; j < n; j++)
+			{
+				if (curValue == j)
+				{
+					curIndex = j;
+					curValue = data[j];
+					dup[j] = true;
+					break;
+				}
+			}
+		} // while end
+	}
+
+	printf("%d\n", count);
+
+	return 0;
+}

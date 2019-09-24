@@ -1,0 +1,180 @@
+#include <stdio.h>
+
+int main()
+{
+	int x1 = 0, y1 = 0, x2 = 0, y2 = 0, n, iMove;
+
+	printf("교차로의 개수를 입력하세요 : \n");
+	scanf("%d", &n);
+
+	printf("방향을 입력하세요(0 : 좌회전 1 : 직진 2 : 우회전 3 : U-turn) : \n");
+	scanf("%d", &iMove);
+
+	// 처음은 양의 x축 방향으로 이동한다.
+
+	// 좌회전
+	if (iMove == 0)
+	{
+		x2 = x1;
+		y2 = y1 + 10;
+	}
+
+	// 직진
+	else if (iMove == 1)
+	{
+		x2 = x1 + 10;
+		y2 = y1;
+	}
+
+	// 우회전
+	else if (iMove == 2)
+	{
+		x2 = x1;
+		y2 = y1 - 10;
+	}
+
+	// 유턴
+	else if (iMove == 3)
+	{
+		x2 = x1 - 10;
+		y2 = y1;
+	}
+
+	for (int i = 0; i < n - 1; ++i)
+	{
+		printf("방향을 입력하세요(0 : 좌회전 1 : 직진 2 : 우회전 3 : U-turn) : \n");
+		scanf("%d", &iMove);
+
+		// 양의 x축 방향일때
+		if (x2 - x1 == 10 && y2 - y1 == 0)
+		{
+			// 좌회전
+			if (iMove == 0)
+			{
+				x2 = x1;
+				y2 = y1 + 10;
+			}
+
+			// 직진
+			else if (iMove == 1)
+			{
+				x2 = x1 + 10;
+				y2 = y1;
+			}
+
+			// 우회전
+			else if (iMove == 2)
+			{
+				x2 = x1;
+				y2 = y1 - 10;
+			}
+
+			// 유턴
+			else if (iMove == 3)
+			{
+				x2 = x1 - 10;
+				y2 = y1;
+			}
+		}
+
+		// 음의 x축 방향일때
+		else if (x2 - x1 == -10 && y2 - y1 == 0)
+		{
+			// 좌회전
+			if (iMove == 0)
+			{
+				x2 = x1;
+				y2 = y1 - 10;
+			}
+
+			// 직진
+			else if (iMove == 1)
+			{
+				x2 = x1 - 10;
+				y2 = y1;
+			}
+
+			// 우회전
+			else if (iMove == 2)
+			{
+				x2 = x1;
+				y2 = y1 + 10;
+			}
+
+			// 유턴
+			else if (iMove == 3)
+			{
+				x2 = x1 + 10;
+				y2 = y1;
+			}
+		}
+
+		// 양의 y축 방향일때
+		else if (x2 - x1 == 0 && y2 - y1 == 10)
+		{
+			// 좌회전
+			if (iMove == 0)
+			{
+				x2 = x1 - 10;
+				y2 = y1;
+			}
+
+			// 직진
+			else if (iMove == 1)
+			{
+				x2 = x1;
+				y2 = y1 + 10;
+			}
+
+			// 우회전
+			else if (iMove == 2)
+			{
+				x2 = x1 + 10;
+				y2 = y1;
+			}
+
+			// 유턴
+			else if (iMove == 3)
+			{
+				x2 = x1;
+				y2 = y1 - 10;
+			}
+		}
+
+		// 음의 y축 방향일때
+		else if (x2 - x1 == 0 && y2 - y1 == -10)
+		{
+			// 좌회전
+			if (iMove == 0)
+			{
+				x2 = x1 + 10;
+				y2 = y1;
+			}
+
+			// 직진
+			else if (iMove == 1)
+			{
+				x2 = x1;
+				y2 = y1 - 10;
+			}
+
+			// 우회전
+			else if (iMove == 2)
+			{
+				x2 = x1 - 10;
+				y2 = y1;
+			}
+
+			// 유턴
+			else if (iMove == 3)
+			{
+				x2 = x1;
+				y2 = y1 + 10;
+			}
+		}
+	}
+
+	printf("%d %d", x2, y2);
+
+	return 0;
+}

@@ -1,0 +1,63 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+#define DIV 50000000
+
+int main()
+{
+	int i, j, k, n, arr[MAX], result = 0, maxResult = 0;
+
+	scanf("%d", &n);
+
+	for (i = 0; i < n; i++)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	/*for (i = 0; i < n; i++)
+	{
+		for (j = 2; j < DIV; j++)
+		{
+			if (arr[i] % j == 0)
+				break;
+		}
+
+		if (arr[i] == j)
+			result = arr[i];
+
+		if (result > maxResult)
+			maxResult = result;
+	}*/
+
+	for (i = n - 1; i > 0; i--)
+	{
+		int sum = arr[i];
+		int num = 10;
+
+		for (j = i - 1; j >= 0; j--)
+		{
+			sum += arr[j] * num;
+
+			for (k = 2; k < DIV; k++)
+			{
+				if (sum % k == 0)
+					break;
+			}
+
+			if (sum == k)
+				result = sum;
+
+			if (result > maxResult)
+				maxResult = result;
+
+			num *= 10;
+		}
+	}
+
+	printf("%d\n", maxResult);
+
+	return 0;
+}

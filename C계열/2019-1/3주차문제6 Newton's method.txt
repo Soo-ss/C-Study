@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+int main()
+{
+	double x, y = 1, yNew, e, difY;
+
+	while (1)
+	{
+		scanf("%lf", &x);
+
+		yNew = (y + x / y) / 2.0;
+		e = 0.00001 * yNew;
+
+		difY = y - yNew;
+		
+		if (y - yNew < 0)
+			difY *= -1;
+			
+		if (difY <= e)
+			break;
+
+		printf("%lf %lf %lf %lf\n", y, x / y, yNew, e);
+
+		y = yNew;
+	}
+	
+	return 0;
+}

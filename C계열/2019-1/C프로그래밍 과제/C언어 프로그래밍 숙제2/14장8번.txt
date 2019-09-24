@@ -1,0 +1,52 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define HEIGHT 3
+#define WIDTH 3
+
+void ArrayCopy(int src[HEIGHT][WIDTH], int dst[HEIGHT][WIDTH])
+{
+	printf("<복사본 2차원 배열>\n");
+
+	for (int i = 0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+			int *p = &src[i][j];
+			dst[i][j] = *p;
+			printf("%d ", dst[i][j]);
+		}
+
+		printf("\n");
+	}
+}
+
+int main()
+{
+	int src[HEIGHT][WIDTH] =
+	{
+		{100, 30, 67},
+		{89, 50, 12},
+		{19, 60, 90}
+	};
+
+	int dst[HEIGHT][WIDTH];
+
+	printf("<원본 2차원 배열>\n");
+
+	for (int i = 0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+			printf("%d ", src[i][j]);
+		}
+
+		printf("\n");
+	}
+
+	ArrayCopy(src, dst);
+
+	return 0;
+}

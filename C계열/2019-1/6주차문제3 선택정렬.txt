@@ -1,0 +1,44 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int tmp, n = 0, data[MAX], max, idx;
+
+	FILE *fp = fopen("input3.txt", "r");
+
+	while (fscanf(fp, "%d", &data[n]) != EOF)
+		++n;
+
+	fclose(fp);
+
+	for (int i = n - 1; i > 0; --i)
+	{
+		max = data[0];
+		idx = 0;
+
+		for (int j = 0; j <= i; ++j)
+		{
+			if (max < data[j])
+			{
+				max = data[j];
+				idx = j;
+			}
+		}
+
+		tmp = data[i];
+		data[i] = data[idx];
+		data[idx] = tmp;
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		printf("%d ", data[i]);
+	}
+
+	return 0;
+}

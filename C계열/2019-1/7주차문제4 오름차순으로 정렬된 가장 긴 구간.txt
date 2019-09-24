@@ -1,0 +1,35 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, arr[MAX], maxLength = 0, length = 1;
+
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	for (int i = 1; i < n; ++i)
+	{
+		if (arr[i - 1] <= arr[i])
+		{
+			++length;
+			if (length > maxLength)
+				maxLength = length;
+		}
+
+		else
+			length = 1;
+	}
+
+	printf("%d\n", maxLength);
+
+	return 0;
+}

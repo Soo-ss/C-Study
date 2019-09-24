@@ -1,0 +1,45 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, sum, arr[MAX][MAX];
+
+	FILE *fp = fopen("input5.txt", "r");
+
+	fscanf(fp, "%d", &n);
+
+	for (int row = 0; row < n; row++)
+	{
+		for (int col = 0; col < n; col++)
+		{
+			fscanf(fp, "%d", &arr[row][col]);
+		}
+	}
+
+	fclose(fp);
+
+	int maxSum = arr[0][0];
+
+	for (int startRow = 0; startRow < n; startRow++)
+	{
+		for (int startCol = 0; startCol < n; startCol++)
+		{
+			sum = arr[startRow][startCol];
+			
+			for (int i = startRow; i < n; i++)
+			{
+				for (int j = startCol; j < n; j++)
+				{
+
+				}
+			}
+		}
+	}
+
+	return 0;
+}

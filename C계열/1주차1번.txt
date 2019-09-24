@@ -1,0 +1,45 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define BUFFER_SIZE 100
+
+int main()
+{
+	char* words[10000];
+	int num = 0; // number of strings
+	char buffer[BUFFER_SIZE];
+
+	FILE* fp = fopen("pride_and_prejudice.txt", "r");
+
+	if (fp == NULL)
+	{
+		printf("Open failed.\n");
+		return 1;
+	}
+
+	while (fscanf(fp, "%s", buffer) != EOF)
+	{
+		strlwr(buffer);
+
+		if (strlen(buffer) >= 7 && ('a' <= *buffer && *buffer <= 'z'))
+		{
+			words[num] = strdup(buffer);
+			num++;
+		}
+		//printf("%s", buffer);
+	}
+
+	fclose(fp);
+
+	for (int i = 1; i < num; i += 10)
+	{
+		printf("%s\n", words[i]);
+	}
+
+	return 0;
+}
+

@@ -1,0 +1,239 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+enum GENRE
+{
+	G_KOR,
+	G_POP,
+	G_CLASSIC,
+	G_MOVIEMUSIC
+};
+
+typedef struct MUSIC
+{
+	char songName[MAX];
+	char singerName[MAX];
+}MUSIC;
+
+MUSIC g_korArr[MAX];
+MUSIC g_popArr[MAX];
+MUSIC g_classicArr[MAX];
+MUSIC g_movieMusicArr[MAX];
+
+void MainMenu()
+{
+	printf("\n================================\n");
+	printf("1. 추가\n");
+	printf("2. 출력\n");
+	printf("3. 검색\n");
+	printf("4. 종료\n");
+	printf("================================\n");
+}
+
+void ClearInputBuffer()
+{
+	while (getchar() != '\n');    
+}
+
+int main()
+{
+	int n, g, index = 0;
+	char name[MAX], singer[MAX];
+
+	while (1)
+	{
+		MainMenu();
+
+		printf("정수값을 입력하시오 : ");
+		scanf("%d", &n);
+
+		switch (n)
+		{
+		case 1:
+			ClearInputBuffer();
+
+			printf("제목 : ");
+			fgets(name, sizeof(name), stdin);   
+			name[strlen(name) - 1] = '\0';          
+
+			printf("가수 : ");
+			fgets(singer, sizeof(singer), stdin);
+			singer[strlen(singer) - 1] = '\0';
+
+			printf("위치 : c:\\mp3\\oldpop\n");
+			printf("장르 (0: 가요, 1: 팝, 2: 클래식, 3: 영화음악) ");
+			scanf("%d", &g);
+
+			switch (g)
+			{
+			case G_KOR:
+				strcpy(g_korArr[index].songName, name);
+				strcpy(g_korArr[index].singerName, singer);
+				index++;
+				break;
+			case G_POP:
+				strcpy(g_popArr[index].songName, name);
+				strcpy(g_popArr[index].singerName, singer);
+				index++;
+				break;
+			case G_CLASSIC:
+				strcpy(g_classicArr[index].songName, name);
+				strcpy(g_classicArr[index].singerName, singer);
+				index++;
+				break;
+			case G_MOVIEMUSIC:
+				strcpy(g_movieMusicArr[index].songName, name);
+				strcpy(g_movieMusicArr[index].singerName, singer);
+				index++;
+				break;
+			}
+
+			printf("추가완료!!\n");
+
+			break;
+		case 2:
+			ClearInputBuffer();
+
+			printf("============== 출력 ==============\n");
+			printf("장르 (0: 가요, 1: 팝, 2: 클래식, 3: 영화음악)\n");
+			printf("어떤 장르를 출력하시겠습니까? : ");
+			scanf("%d", &g);
+
+			switch (g)
+			{
+			case G_KOR:
+				for (int i = 0; i < index; i++)
+				{
+					printf("제목 : %s \n", g_korArr[i].songName);
+					printf("가수 : %s \n", g_korArr[i].singerName);
+					printf("위치 : c:\\mp3\\oldpop\n");
+				}
+				break;
+			case G_POP:
+				for (int i = 0; i < index; i++)
+				{
+					printf("제목 : %s \n", g_popArr[i].songName);
+					printf("가수 : %s \n", g_popArr[i].singerName);
+					printf("위치 : c:\\mp3\\oldpop\n");
+				}
+				break;
+			case G_CLASSIC:
+				for (int i = 0; i < index; i++)
+				{
+					printf("제목 : %s \n", g_classicArr[i].songName);
+					printf("가수 : %s \n", g_classicArr[i].singerName);
+					printf("위치 : c:\\mp3\\oldpop\n");
+				}
+				break;
+			case G_MOVIEMUSIC:
+				for (int i = 0; i < index; i++)
+				{
+					printf("제목 : %s \n", g_movieMusicArr[i].songName);
+					printf("가수 : %s \n", g_movieMusicArr[i].singerName);
+					printf("위치 : c:\\mp3\\oldpop\n");
+				}
+				break;
+			}
+			break;
+		case 3:
+			ClearInputBuffer();
+			printf("============ 검색 =============\n");
+			printf("장르 (0: 가요, 1: 팝, 2: 클래식, 3: 영화음악)\n");
+			printf("어떤 장르를 검색하시겠습니까? : ");
+			scanf("%d", &g);
+
+			ClearInputBuffer();
+
+			switch (g)
+			{
+			case G_KOR:
+				printf("검색할 제목을 입력하세요 : ");
+				fgets(name, sizeof(name), stdin);  
+				name[strlen(name) - 1] = '\0';          
+
+				for (int i = 0; i < index; i++)
+				{
+					if (strcmp(name, g_korArr[i].songName) == 0)
+					{
+						printf("제목 : %s \n", g_korArr[i].songName);
+						printf("가수 : %s \n", g_korArr[i].singerName);
+						printf("위치 : c:\\mp3\\oldpop\n");
+						break;   
+					}
+
+					else
+						printf("찾지 못했습니다.\n");
+				}
+				break;
+			case G_POP:
+				printf("검색할 제목을 입력하세요 : ");
+				fgets(name, sizeof(name), stdin);  
+				name[strlen(name) - 1] = '\0';        
+
+				for (int i = 0; i < index; i++)
+				{
+					if (strcmp(name, g_popArr[i].songName) == 0)
+					{
+						printf("제목 : %s \n", g_popArr[i].songName);
+						printf("가수 : %s \n", g_popArr[i].singerName);
+						printf("위치 : c:\\mp3\\oldpop\n");
+						break;
+					}
+
+					else
+						printf("찾지 못했습니다.\n");
+				}
+				break;
+			case G_CLASSIC:
+				printf("검색할 제목을 입력하세요 : ");
+				fgets(name, sizeof(name), stdin);   
+				name[strlen(name) - 1] = '\0';     
+
+				for (int i = 0; i < index; i++)
+				{
+					if (strcmp(name, g_classicArr[i].songName) == 0)
+					{
+						printf("제목 : %s \n", g_classicArr[i].songName);
+						printf("가수 : %s \n", g_classicArr[i].singerName);
+						printf("위치 : c:\\mp3\\oldpop\n");
+						break;
+					}
+
+					else
+						printf("찾지 못했습니다.\n");
+				}
+				break;
+			case G_MOVIEMUSIC:
+				printf("검색할 제목을 입력하세요 : ");
+				fgets(name, sizeof(name), stdin);  
+				name[strlen(name) - 1] = '\0';       
+
+				for (int i = 0; i < index; i++)
+				{
+					if (strcmp(name, g_movieMusicArr[i].songName) == 0)
+					{
+						printf("제목 : %s \n", g_movieMusicArr[i].songName);
+						printf("가수 : %s \n", g_movieMusicArr[i].singerName);
+						printf("위치 : c:\\mp3\\oldpop\n");
+						break;
+					}
+
+					else
+						printf("찾지 못했습니다.\n");
+				}
+				break;
+			}
+			break;
+		case 4:
+			printf("프로그램을 종료합니다.\n");
+			return 0;
+		}
+	}
+
+	return 0;
+}

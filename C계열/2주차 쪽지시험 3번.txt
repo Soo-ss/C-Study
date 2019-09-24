@@ -1,0 +1,148 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define MAX 50
+#define BUFFER_SIZE 110
+
+char delim[] = "-";
+
+char* names[MAX];
+char* artists[MAX];
+int tracks[MAX];
+
+int n = 0; // number of people in phone directory
+int a;
+
+void Status();
+void ProcessCommand();
+int ExtractNumber(char str[]);
+void DelimBlank(char str[]);
+void Sort();
+
+int main()
+{
+	scanf("%d ", &a);
+
+	for (int i = 0; i < a; i++)
+	{
+		ProcessCommand();
+	}
+
+	Sort();
+	Status();
+
+	return 0;
+}
+
+void ProcessCommand()
+{
+	char buffer[BUFFER_SIZE]; // 한 라인을 통채로 읽어오기 위한 버퍼
+	char* token;
+	char* tmp;
+
+	fgets(buffer, BUFFER_SIZE, stdin);
+
+	buffer[strlen(buffer) - 1] = '\0';
+
+	while (1)
+	{
+		int count = 0;
+
+		token = strtok(buffer, delim);
+		tmp = token;
+		tmp[strlen(tmp) - 1] = '\0';
+		names[n] = strdup(tmp);
+		count++;
+
+		token = strtok(NULL, delim);
+		tmp = token;
+		DelimBlank(tmp);
+		artists[n] = strdup(tmp);
+		count++;
+
+		token = strtok(NULL, delim);
+		tracks[n] = ExtractNumber(token);
+		count++;
+
+		n++;
+
+		if (count == 3)
+			break;
+	}
+}
+
+int ExtractNumber(char str[])
+{
+	int tmpSum = 0, sum = 0, var = 1;
+
+	// -2한 이유?
+	// mp3에서 3땜에
+	for (int i = strlen(str) - 2; i >= 0; i--)
+	{
+		if (isdigit(str[i]))
+		{
+			str[i] -= '0';
+			tmpSum = str[i] * var;
+			var *= 10;
+			sum += tmpSum;
+		}
+
+		else
+		{
+			var = 1;
+			tmpSum = 0;
+		}
+	}
+
+	return sum;
+}
+
+void DelimBlank(char str[])
+{
+	for (int i = 1; i < strlen(str); i++)
+	{
+		str[i - 1] = str[i];
+	}
+
+	str[strlen(str) - 2] = '\0';
+}
+
+void Sort()
+{
+	char* tmpStr;
+	int tmp;
+
+	for (int i = a - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (tracks[j] > tracks[i])
+			{
+				tmp = tracks[i];
+				tracks[i] = tracks[j];
+				tracks[j] = tmp;
+
+				tmpStr = names[i];
+				names[i] = names[j];
+				names[j] = tmpStr;
+
+				tmpStr = artists[i];
+				artists[i] = artists[j];
+				artists[j] = tmpStr;
+			}
+		}
+	}
+}
+
+void Status()
+{
+	printf("\n");
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("%02d-%s-%s.mp3\n", tracks[i], names[i], artists[i]);
+	}
+}

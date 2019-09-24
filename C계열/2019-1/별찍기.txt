@@ -1,0 +1,38 @@
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	// 줄 수는 홀수
+	int line = 7;
+	int count = 0;
+
+	// 공백 : 3, 2, 1, 0, 1, 2, 3
+	// 별 : 1, 3, 5, 7, 5, 3, 1
+	for (int i = 0; i < line; i++)
+	{
+		count = i;
+
+		// i값 4, 5, 6
+		if (i > line / 2)
+		{
+			count = line - 1 - i;
+		}
+
+		for (int i = 0; i < line / 2 - count; i++)
+		{
+			cout << " ";
+		}
+
+		for (int i = 0; i < count * 2 + 1; i++)
+		{
+			cout << "*";
+		}
+
+		cout << endl;
+	}
+
+	return 0;
+}

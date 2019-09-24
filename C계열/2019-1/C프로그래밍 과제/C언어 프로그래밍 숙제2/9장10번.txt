@@ -1,0 +1,19 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+double Recursive(int n)
+{
+	if (n == 1)
+		return 1;
+
+	return 1.0 / n + Recursive(n - 1);
+}
+
+int main()
+{
+	printf("%f\n", Recursive(10));
+
+	return 0;
+}

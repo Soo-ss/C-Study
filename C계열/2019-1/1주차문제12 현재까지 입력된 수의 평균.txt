@@ -1,0 +1,18 @@
+#include <stdio.h>
+
+int main()
+{
+	int a;
+	double result = 0;
+
+	printf("10개의 정수를 입력하세요.\n");
+
+	for (int i = 1; i <= 10; ++i)
+	{
+		scanf("%d", &a);
+		result += (double)a;
+		printf("%lf\n", result / i);
+	}
+
+	return 0;
+}

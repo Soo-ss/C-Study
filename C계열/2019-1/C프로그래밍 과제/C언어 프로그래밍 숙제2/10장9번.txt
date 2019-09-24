@@ -1,0 +1,47 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{
+	int arr[5][3], arrMax[3], arrMin[3];
+
+	srand((unsigned int)time(NULL));
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			arr[i][j] = rand() % 101;
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		int examMax = arr[0][i];
+		int examMin = arr[0][i];
+
+		for (int j = 0; j < 5; j++)
+		{
+			if (examMax < arr[j][i])
+				examMax = arr[j][i];
+
+			if (examMin > arr[j][i])
+				examMin = arr[j][i];
+		}
+
+		arrMax[i] = examMax;
+		arrMin[i] = examMin;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		printf("시험 #%d의 최대점수 = %d\n", i + 1, arrMax[i]);
+		printf("시험 #%d의 최저점수 = %d\n", i + 1, arrMin[i]);
+	}
+
+	return 0;
+}

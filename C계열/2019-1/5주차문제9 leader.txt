@@ -1,0 +1,43 @@
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int data[MAX];
+	int leader[MAX];
+	int n = 0, count = 0, idx = 0;
+
+	FILE *fp = fopen("input9.txt", "r");
+
+	while (fscanf(fp, "%d", &data[n]) != EOF)
+		++n;
+
+	fclose(fp);
+
+	int max = data[0];
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < i; ++j)
+		{
+			if (max <= data[j])
+				max = data[j];
+		}
+
+		if (max <= data[i])
+		{	
+			++count;
+			leader[idx] = data[i];
+			++idx;
+		}
+	}
+
+	printf("%d: ", count);
+
+	for (int i = 0; i < idx; ++i)
+		printf("%d ", leader[i]);
+		
+	return 0;
+}

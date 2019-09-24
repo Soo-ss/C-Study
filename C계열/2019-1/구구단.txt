@@ -1,0 +1,22 @@
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	for (int i = 2; i < 11; i += 3)
+	{
+		for (int j = 1; j < 10; j++)
+		{
+			cout << i << " * " << j << " = " << i * j << "\t";
+			cout << i + 2 << " * " << j << " = " << (i + 2) * j << "\t";
+			cout << i + 3 << " * " << j << " = " << (i + 3) * j << "\t";
+			cout << endl;
+		}
+
+		cout << endl;
+	}
+
+	return 0;
+}

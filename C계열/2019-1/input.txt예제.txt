@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int data[MAX];
+	int n = 0;
+
+	FILE *fp = fopen("input.txt", "r");
+
+	while (fscanf(fp, "%d", &data[n]) != EOF)
+		++n;
+	
+	fclose(fp);
+
+	int target;
+	scanf("%d", &target);
+
+	int found = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (data[i] == target)
+		{
+			printf("%d\n", i);
+			found = 1;
+			break;
+		}
+	}
+
+	if(found == 0)
+	printf("-1");
+
+	return 0;
+}

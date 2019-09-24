@@ -1,0 +1,48 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, tmpRoot, arr[MAX], data[MAX], root[MAX];
+
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	for (int r = 0; r < n; ++r)
+	{
+		bool isExist = false;
+		data[0] = arr[r];
+		tmpRoot = data[0];
+
+		for (int k = 1; k < n; ++k)
+		{
+			data[k] = arr[tmpRoot];
+			if (data[k] == data[k - 1])
+			{
+				root[r] = data[k];
+				isExist = true;
+				break;
+			}
+
+			tmpRoot = data[k];
+		}
+
+		if (isExist == false)
+			root[r] = -1;
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		printf("%d ", root[i]);
+	}
+
+	return 0;
+}

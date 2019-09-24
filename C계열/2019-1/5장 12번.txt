@@ -1,0 +1,22 @@
+
+#include <stdio.h>
+
+int main()
+{
+	char a, b, c, d;
+	unsigned int val;
+
+	printf("첫번째문자 : ");
+	scanf("%c", &a);
+	printf("두번째문자 : ");
+	scanf(" %c", &b);
+	printf("세번째문자 : ");
+	scanf(" %c", &c);
+	printf("네번째문자 : ");
+	scanf(" %c", &d);
+
+	val = a | (b << 8) | (c << 16) | (d << 24);
+	printf("결과값 : %x\n", val);
+	
+	return 0;
+}

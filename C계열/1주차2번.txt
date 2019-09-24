@@ -1,0 +1,76 @@
+﻿
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+#define BUFFER_SIZE 100
+
+int main()
+{
+	char* words[100];
+	int num = 0;
+	char buffer[BUFFER_SIZE];
+	int max[100] = { 0 };
+	int length, t = 0;
+
+	int m, n;
+	scanf("%d %d ", &m, &n);
+
+	while (num < m*n && scanf("%s", buffer) != EOF)
+	{
+		words[num] = strdup(buffer);
+		num++;
+	}
+
+	int col = n; // 열
+
+	for (int total = 0; total < m; total++)
+	{
+		for (int b = col; b > 0; b--)
+		{
+			if (t % col == col - b)
+			{
+				length = strlen(words[t]);
+
+				if (max[col - b] < length)
+					max[col - b] = length;
+			}
+
+			t++;
+		}
+	}
+
+	int s = 0;
+
+	for (int total = 0; total < m; total++)
+	{
+		for (int b = col; b > 0; b--)
+		{
+			if (b == 1)
+			{
+				printf("%s", words[s]);
+				printf("\n");
+				s++;
+				continue;
+			}
+
+			if (s % col == col - b)
+			{
+				printf("%s ", words[s]);
+
+				length = strlen(words[s]);
+
+				for (int tmp = 0; tmp < max[col - b] - length; tmp++)
+				{
+					printf(" ");
+				}
+			}
+
+			s++;
+		}
+	}
+
+	
+	return 0;
+}

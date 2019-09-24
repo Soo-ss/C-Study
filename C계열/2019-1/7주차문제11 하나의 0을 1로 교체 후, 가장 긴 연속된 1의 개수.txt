@@ -1,0 +1,67 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n, arr[MAX], idxarr[MAX], maxLength = 0;
+	int zeroCount = 0, oneCount = 0;
+
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &arr[i]);
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		if (arr[i] == 0)
+			idxarr[zeroCount++] = i;
+
+		else if (arr[i] == 1)
+			++oneCount;
+	}
+
+	if (zeroCount == n)
+		printf("1\n");
+
+	else if (oneCount == n || oneCount == n - 1)
+		printf("%d\n", n);
+
+	else
+	{
+		for (int a = 0; a < zeroCount; ++a)
+		{
+			arr[idxarr[a]] = 1;
+
+			for (int i = 0; i < n - 1; ++i)
+			{
+				int length = 1;
+
+				for (int j = i; j < n - 1; ++j)
+				{
+					if (arr[j] == arr[j + 1])
+					{
+						++length;
+						if (length > maxLength)
+							maxLength = length;
+
+					}
+
+					if (arr[j] != arr[j + 1])
+						break;
+				}
+			}
+
+			arr[idxarr[a]] = 0;
+		}
+
+		printf("%d\n", maxLength);
+	}
+
+	return 0;
+}

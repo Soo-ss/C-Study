@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+int main()
+{
+	int iMin = 0, iMax = 0, a;
+
+	printf("ют╥б : \n");
+	scanf("%d", &a);
+	iMin = a;
+	iMax = a;
+	printf("%d\n", iMax - iMin);
+	for (int i = 0; i < 9; ++i)
+	{
+		scanf("%d", &a);
+
+		if (a < iMin)
+		{
+			iMin = a;
+			printf("%d\n", iMax - iMin);
+		}
+
+		else if (a >= iMin && a <= iMax)
+		{
+			printf("%d\n", iMax - iMin);
+		}
+
+		else if (a > iMax)
+		{
+			iMax = a;
+			printf("%d\n", iMax - iMin);
+		}
+	}
+
+	return 0;
+}

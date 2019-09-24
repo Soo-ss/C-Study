@@ -1,0 +1,33 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	char str[5];
+	bool isPalindrome = true;
+
+	printf("문자열을 입력하시오 : ");
+	scanf("%s", str);
+
+	int length = strlen(str);
+
+	for (int i = 0; i < length / 2; i++)
+	{
+		if (str[i] != str[length - 1 - i])
+		{
+			isPalindrome = false;
+			break;
+		}
+	}
+
+	if (isPalindrome)
+		printf("회문입니다.\n");
+
+	else
+		printf("회문이 아닙니다.\n");
+
+	return 0;
+}

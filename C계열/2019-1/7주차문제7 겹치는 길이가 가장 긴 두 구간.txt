@@ -1,0 +1,90 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n = 0, tmp, arrX[MAX], arrY[MAX], result[4], length = 0, maxLength = 0;
+
+	FILE *fp = fopen("input6.txt", "r");
+
+	while (fscanf(fp, "%d%d", &arrX[n], &arrY[n]) != EOF)
+		++n;
+
+	fclose(fp);
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n - 1; ++j)
+		{
+			if (arrX[j] > arrX[j + 1])
+			{
+				tmp = arrX[j];
+				arrX[j] = arrX[j + 1];
+				arrX[j + 1] = tmp;
+
+				tmp = arrY[j];
+				arrY[j] = arrY[j + 1];
+				arrY[j + 1] = tmp;
+			}
+		}
+	}
+	
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = i + 1; j < n; ++j)
+		{
+			if (arrX[i] < arrX[j] && arrY[i] > arrY[j])
+			{
+				length = arrY[j] - arrX[j];
+
+				if (length > maxLength)
+				{
+					maxLength = length;
+					result[0] = arrX[j];
+					result[1] = arrY[j];
+					result[2] = arrX[i];
+					result[3] = arrY[i];
+				}
+			}
+
+			else if (arrX[i] > arrX[j] && arrY[i] < arrY[j])
+			{
+				length = arrY[i] - arrX[i];
+
+				if (length > maxLength)
+				{
+					maxLength = length;
+					result[0] = arrX[j];
+					result[1] = arrY[j];
+					result[2] = arrX[i];
+					result[3] = arrY[i];
+				}
+			}
+
+			else
+			{
+				if (arrY[i] - arrX[j] > 0)
+				{
+					length = arrY[i] - arrX[j];
+
+					if (length > maxLength)
+					{
+						maxLength = length;
+						result[0] = arrX[j];
+						result[1] = arrY[j];
+						result[2] = arrX[i];
+						result[3] = arrY[i];
+					}
+				}
+			}
+		}
+	}
+
+	printf("[%d, %d], [%d, %d]\n", result[0], result[1], result[2], result[3]);
+
+	return 0;
+}

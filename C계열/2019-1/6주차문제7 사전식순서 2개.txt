@@ -1,0 +1,36 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	char data1[MAX], data2[MAX];
+	bool result = false;
+
+	scanf("%s", data1);
+	scanf("%s", data2);
+
+	for (int i = 0; i < MAX; ++i)
+	{
+		if (data1[i] != data2[i])
+		{
+			if (data1[i] > data2[i])
+			{
+				result = true;
+			}
+
+			break;
+		}
+	}
+
+	if (result)
+		printf("%s %s", data2, data1);
+
+	else
+		printf("%s %s", data1, data2);
+
+	return 0;
+}

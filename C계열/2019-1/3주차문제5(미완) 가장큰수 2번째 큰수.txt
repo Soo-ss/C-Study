@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, b, iMax, iMax2;
+
+	printf("정수를 입력하세요 : \n");
+	scanf("%d%d", &a, &b);
+
+	iMax = a;
+	iMax2 = b;
+
+	while (1)
+	{
+		scanf("%d", &a);
+
+		if (a == -1)
+			break;
+
+		if (a > iMax)
+			iMax = a;
+
+		else if (iMax >= a && a > iMax2)
+			iMax2 = a;
+	}
+
+	printf("%d %d", iMax, iMax2);
+	
+	return 0;
+}

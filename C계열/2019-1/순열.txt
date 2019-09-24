@@ -1,0 +1,62 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int data[] = { 1,2,3,4,5 };
+int r;
+
+void Swap(int i, int j);
+void Permutation(int n, int r, int start);
+
+int main()
+{
+	int n = sizeof(data) / sizeof(int);
+
+	printf("5개중 몇개의 r을 만들까요? : (5 P r)");
+	scanf("%d", &r);
+
+	Permutation(n, r, 0);
+
+	return 0;
+}
+
+void Swap(int i, int j)
+{
+	int temp;
+
+	if (i == j)
+		return;
+
+	temp = data[i];
+	data[i] = data[j];
+	data[j] = temp;
+
+	return;
+}
+
+void Permutation(int n, int r, int start)
+{
+	int i;
+
+	if (r == start)
+	{
+		for (i = 0; i < r; i++)
+		{
+			printf("%d ", data[i]);
+		}
+
+		printf("\n");
+
+		return;
+	}
+
+	for (i = start; i < n; i++)
+	{
+		Swap(i, start);
+		Permutation(n, r, start + 1);
+		Swap(i, start);
+	}
+
+	return;
+}

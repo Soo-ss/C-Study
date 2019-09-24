@@ -1,0 +1,31 @@
+
+#include <stdio.h>
+
+int main()
+{
+	int a, b, c, d, e, f, g, h, iResult;
+	printf("8개의정수를 입력하세요 : \n");
+	scanf("%d%d%d%d%d%d%d%d", &a, &b, &c, &d, &e, &f, &g, &h);
+
+	if (e < c && a < g && f < d && b < h)
+	{
+		iResult = (c - e)*(d - f);
+	}
+
+	else if ((c - a)*(d - b) < (g - e)*(h - f))
+	{
+		iResult = (c - a)*(d - b);
+	}
+
+	else if ((c - a)*(d - b) > (g - e)*(h - f))
+	{
+		iResult = (g - e)*(h - f);
+	}
+
+	else
+		iResult = 0;
+
+	printf("%d", iResult);
+
+	return 0;
+}

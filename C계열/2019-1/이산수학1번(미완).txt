@@ -1,0 +1,39 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int arr[11], n, idx, newidx, newarr[11];
+
+	scanf("%d", &n);
+	printf("\n");
+
+	idx = n % 11;
+	arr[idx] = n;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		scanf("%d", &n);
+		printf("\n");
+
+		newidx = n % 11;
+		newarr[idx] = n;
+
+		if (idx != newidx && arr[idx] == newarr[idx])
+		{
+			printf("Collision!");
+			break;
+		}
+
+		else
+		{
+			idx = n % 11;
+			arr[idx] = n;
+			printf("%d ", arr[idx]);
+		}
+	}
+
+	return 0;
+}

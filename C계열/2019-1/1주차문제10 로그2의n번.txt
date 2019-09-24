@@ -1,0 +1,18 @@
+#include <stdio.h>
+
+int main()
+{
+	int n, b, a = 2;
+
+	printf("양의 정수 하나를 입력하세요 : ");
+	scanf("%d", &n);
+
+	for (int i = 0; 1 < a; ++i)
+	{
+		a = n / 2;
+		printf("hello\n");
+		n = a;
+	}
+
+	return 0;
+}

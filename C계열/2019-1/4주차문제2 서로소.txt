@@ -1,0 +1,81 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int r, q, num1, num2, num3, count, coprimeCount = 0;
+
+	for (int a = 2; a <= 100; a++)
+	{
+		for (int b = a + 1; b <= 100; b++)
+		{
+			for (int c = b + 1; c <= 100; c++)
+			{
+				count = 0;
+
+				num1 = a;
+				num2 = b;
+
+				while (1)
+				{
+					q = num1 / num2;
+					r = num1 % num2;
+
+					if (r == 0)
+						break;
+
+					num1 = num2;
+					num2 = r;
+				}
+
+				if (num2 == 1)
+					count++;
+
+				num2 = b;
+				num3 = c;
+
+				while (1)
+				{
+					q = num2 / num3;
+					r = num2 % num3;
+
+					if (r == 0)
+						break;
+
+					num2 = num3;
+					num3 = r;
+				}
+
+				if (num3 == 1)
+					count++;
+
+				num1 = a;
+				num3 = c;
+
+				while (1)
+				{
+					q = num1 / num3;
+					r = num1 % num3;
+
+					if (r == 0)
+						break;
+
+					num1 = num3;
+					num3 = r;
+				}
+
+				if (num3 == 1)
+					count++;
+
+				if (count == 3)
+					coprimeCount++;
+			}
+		}
+	}
+
+	printf("%d\n", coprimeCount);
+
+	return 0;
+}

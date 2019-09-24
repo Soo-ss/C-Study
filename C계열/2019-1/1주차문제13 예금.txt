@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+int main()
+{
+	int a;
+	double r, result = 0;
+
+	printf("이자율r을 입력하세요 (0<r<1)\n");
+	scanf("%lf", &r);
+
+	printf("12개의 정수를 입력하세요.\n");
+
+	for (int i = 0; i < 12; ++i)
+	{
+		scanf("%d", &a);
+		result += a;
+		result = (double)(result*(1+r));
+		printf("%lf\n", result);
+	}
+	
+	return 0;
+}

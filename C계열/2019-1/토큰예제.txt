@@ -1,0 +1,20 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+char s[] = "Man is immortal, because he has a soul";
+char seps[] = " ,\t\n"; // 분리자는 스페이스문자와 쉼표, 탭문자, 줄바꿈 문자이다.
+char *token;
+
+int main()
+{
+	token = strtok(s, seps); // 문자열에서 첫번째 토큰을 얻는다.
+
+	while (token != NULL) // 문자열 s에 토큰이 있는 동안 반복한다.
+	{
+		printf("토큰 : %s\n", token);
+		token = strtok(NULL, seps); // 다음 토큰을 얻으려면 NULL을 인수로 준다.
+	}
+}

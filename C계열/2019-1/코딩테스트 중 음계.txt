@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, b, iCount = 0, iAscCount = 1, iDesCount = 1, iMixCount = 1;
+
+	scanf("%d", &a);
+
+	++iCount;
+
+	while (iCount <= 7)
+	{
+		scanf("%d", &b);
+		
+		if (b - a == 1)
+			++iAscCount;
+
+		else if (b - a == -1)
+			++iDesCount;
+
+		a = b;
+
+		++iCount;
+	}
+
+	if (iAscCount == 8)
+		printf("ascending");
+
+	else if (iDesCount == 8)
+		printf("descending");
+
+	else
+		printf("mixed");
+
+	return 0;
+}

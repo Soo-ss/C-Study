@@ -1,0 +1,34 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	//char text[100];
+	//int i;
+
+	//// 컴파일 타임 초기화 활용.
+	//char message[] = "Hello, I am a string; what are you?";
+	//printf("Original message: %s\n", message);
+
+	//i = 0;
+	//while (message[i] != '\0')
+	//{
+	//	text[i] = message[i];
+	//	i++;
+	//}
+
+	//text[i] = '\0'; // 아스키코드 0이랑 같음. 배열을 0으로 초기화 했다면 \0 없어도 출력 잘됨.
+	//printf("Copied message: %s\n", text);
+
+	char buffer[100];
+
+	// 화이트스페이스 기준으로 잘라서 앞에단어만 입력받게해줌.
+	//scanf("%s", buffer); // delimited by white characters
+
+	while (scanf("%s", buffer) != EOF) // 이렇게 해주면 해결.
+		printf("%s\n", buffer);
+
+	return 0;
+}

@@ -1,0 +1,64 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+// c언어는 참조에의한호출 없음.
+// ===============================
+// ...
+// int result = power(a,b); // a와 b를 actual parameter라고 부르고
+// }
+
+// int power(int n, int m) { // n과 m을 formal parameter라고 부른다.
+//	int result = 1;
+//	...
+// actual parameter와 formal parameter는 별개의 변수이다.
+// 다만 호출시 actual parameter의 값이 formal parameter로 한번 복사될 뿐이다.
+// 따라서 호출된 함수에서 formal parameter의 값을 변경하여도 actual parameter의
+// 값에는 아무 영향이 없다.
+void swap(int a, int b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+// 매개변수로 배열을 받으면 값이 알맞게나옴.
+// 비일관적인것같지만 맞는말임.
+// 그러므로 당분간 배열은 예외라고 생각하자. (포인터관련)
+void bubblesort(int n, int data[])
+{
+	for (int i = n - 1; i > 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (data[j] > data[j + 1])
+			{
+				swap(data[j], data[j + 1]);
+			}
+		}
+	}
+}
+
+int main()
+{
+	int n = 0, data[MAX];
+
+	FILE *fp = fopen("input1.txt", "r");
+	while (fscanf(fp, "%d", &data[n]) != EOF) n++;
+	fclose(fp);
+
+	// 배열을 매개변수로 넘겨줄때
+	bubblesort(n, data);
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d ", data[i]);
+	}
+
+	printf("\n");
+
+	return 0;
+}

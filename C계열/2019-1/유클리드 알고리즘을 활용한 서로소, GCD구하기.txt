@@ -1,0 +1,32 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+int main()
+{
+	int a, b, r, q;
+
+	scanf("%d%d", &a, &b);
+
+	while (1)
+	{
+		q = a / b;
+		r = a % b;
+		printf("%d = %d * %d + %d\n", a, q, b, r);
+
+		if (r == 0)
+			break;
+
+		a = b;
+		b = r;
+	}
+
+	if (b == 1) // 최대공약수가 1일 경우 서로소
+		printf("서로소이다.\n");
+
+	else
+		printf("최대공약수는 %d이다.\n", b);
+
+	return 0;
+}

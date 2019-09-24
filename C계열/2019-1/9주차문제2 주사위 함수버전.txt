@@ -1,0 +1,46 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <math.h>
+
+int bino(int n, int k)
+{
+	if (k == 0 || k == n)
+		return 1;
+
+	else if ((k > 0) && (k < n))
+		return bino(n - 1, k - 1) + bino(n - 1, k);
+
+	else
+		return 0;
+}
+
+double evalProbBySim(int N, int k, int T)
+{
+	double p = (double)1 / 6, q = (double)5 / 6, result, count = 0;
+
+	for (int i = 0; i < T; i++)
+	{
+		result = 1;
+
+		for (int j = 0; j < k; j++)
+		{
+			result -= bino(N, j) *pow(p, j) * pow(q, N - j);
+		}
+
+		count += result;
+	}
+
+	return count / T;
+}
+
+int main()
+{
+	for (int k = 1; k <= 6; k++)
+	{
+		printf("k = %d -> %f\n", k, evalProbBySim(6*k, k, 1000000));
+	}
+
+	return 0;
+}

@@ -1,0 +1,29 @@
+
+#include <stdio.h>
+
+#define MAX 100
+
+int main()
+{
+	int n = 0, data1[MAX], data2[MAX], data3[MAX + MAX];
+
+	FILE *fp1 = fopen("input11_1.txt", "r");
+	FILE *fp2 = fopen("input11_2.txt", "r");
+
+	while (fscanf(fp1, "%d", &data1[n]) != EOF && fscanf(fp2, "%d", &data2[n]) != EOF)
+		++n;
+
+	fclose(fp1);
+	fclose(fp2);
+	
+	for (int i = 0, j = 0; i < 2 * n, j < n; i += 2, ++j)
+	{
+		data3[i] = data1[j];
+		data3[i + 1] = data2[j];
+	}
+
+	for (int i = 0; i < 2 * n; ++i)
+		printf("%d ", data3[i]);
+	
+	return 0;
+}

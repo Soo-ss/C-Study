@@ -1,0 +1,279 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define NUM_RANKS	13
+#define NUM_SUITS	4
+#define NUM_CARDS	5
+#define TOTAL_CARDS 52
+
+// 1~13 쓸거임. 0은 쓰지않음.
+int numInRank[NUM_RANKS + 1];
+int numInSuit[NUM_SUITS];
+
+void ReadCards();
+void AnalyzeHand();
+void InitData();
+int CheckFourCards();
+int CheckFlush();
+int CheckStraight();
+int CheckThreeCards();
+int CountPairs();
+
+int main()
+{
+	char again;
+
+	// main함수는 무한루프를 돌면서 
+	// ReadCards, AnalyzeHand함수를 반복적으로 호출한다.
+	while (1)
+	{
+		ReadCards();
+		AnalyzeHand();
+
+		printf("\n계속하려면 아무 키를 입력하세요 : (종료 : n)\n");
+		scanf(" %c", &again);
+		
+		if (again == 'n' || again == 'N')
+			break;
+	}
+
+	printf("게임이 종료되었습니다.\n");
+
+	return 0;
+}
+
+// 게임 여러번 하기위해 초기화를 한다.
+void InitData()
+{
+	int rank, suit;
+	for (rank = 0; rank < NUM_RANKS; rank++)
+		numInRank[rank] = 0;
+
+	for (suit = 0; suit < NUM_SUITS; suit++)
+		numInSuit[suit] = 0;
+}
+
+// 5장의 카드를 사용자로부터 입력받아 전역변수에 저장한다.
+void ReadCards()
+{
+	char rankCh, suitCh;
+	int rank, suit;
+	InitData();
+	int cardsRead = 0;
+	int totalCards[NUM_SUITS][NUM_RANKS + 1] = { 0 };
+	bool dup;
+
+	while (cardsRead < NUM_CARDS)
+	{
+		dup = false;
+
+		printf("Enter a card : ");
+		scanf(" %c", &rankCh);
+
+		switch (rankCh)
+		{
+		case 'a': rank = 1; break;
+		case '2': rank = 2; break;
+		case '3': rank = 3; break;
+		case '4': rank = 4; break;
+		case '5': rank = 5; break;
+		case '6': rank = 6; break;
+		case '7': rank = 7; break;
+		case '8': rank = 8; break;
+		case '9': rank = 9; break;
+		case 't': rank = 10; break;
+		case 'j': rank = 11; break;
+		case 'q': rank = 12; break;
+		case 'k': rank = 13; break;
+		}
+
+		scanf(" %c", &suitCh);
+		switch (suitCh)
+		{
+		case 'c': suit = 0; break; // ♣
+		case 'd': suit = 1; break; // ◆
+		case 'h': suit = 2; break; // ♥
+		case 's': suit = 3; break; // ♠
+		}
+
+		totalCards[suit][rank]++;
+
+		if (rankCh != 'a' && rankCh != '2' && rankCh != '3' && rankCh != '4' &&
+			rankCh != '5' && rankCh != '6' && rankCh != '7' && rankCh != '8' &&
+			rankCh != '9' && rankCh != 't' && rankCh != 'j' && rankCh != 'q' && rankCh != 'k' ||
+			suitCh != 'c' && suitCh != 'd' && suitCh != 'h' && suitCh != 's')
+		{
+			printf("잘못 입력하였습니다. 다시 입력하세요\n");
+			continue;
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 1; j <= NUM_RANKS; j++)
+			{
+				if (totalCards[i][j] > 1)
+				{
+					dup = true;
+					printf("중복 입력하였습니다. 다시 입력하세요\n");
+					totalCards[i][j]--;
+					break;
+				}
+			}
+
+			if (dup)
+				break;
+		}
+
+		if (dup)
+			continue;
+
+		numInRank[rank]++;
+		numInSuit[suit]++;
+		cardsRead++;
+	}
+}
+
+// 전역변수에 저장된 카드들을 분석하여 결과를 출력한다.
+// 밑의 함수들을 이용하여 가장 높은 카드 패를 인식하여 출력한다.
+void AnalyzeHand()
+{
+	// Straight Flush
+	if (CheckStraight() == 1 && CheckFlush() == 1)
+	{
+		printf("Straight Flush\n");
+		return;
+	}
+
+	// Four Cards
+	if (CheckFourCards() == 1)
+	{
+		printf("Four Cards\n");
+		return;
+	}
+
+	// Full House
+	if (CheckThreeCards() == 1 && CountPairs() == 1)
+	{
+		printf("Full House\n");
+		return;
+	}
+
+	// Flush
+	if (CheckFlush() == 1)
+	{
+		printf("Flush\n");
+		return;
+	}
+
+	// Straight
+	if (CheckStraight() == 1)
+	{
+		printf("Straight\n");
+		return;
+	}
+
+	// Triple
+	if (CheckThreeCards() == 1)
+	{
+		printf("Triple\n");
+		return;
+	}
+
+	// Two Pairs
+	if (CountPairs() == 2)
+	{
+		printf("Two Pairs\n");
+		return;
+	}
+
+	// One Pair
+	if (CountPairs() == 1)
+	{
+		printf("One Pair\n");
+		return;
+	}
+
+	// High Card
+	printf("High Card");
+	return;
+}
+
+// 맞으면 1, 아니면 0 반환.
+int CheckFourCards()
+{
+	for (int i = 1; i <= NUM_RANKS; i++)
+	{
+		if (numInRank[i] == 4)
+			return 1;
+	}
+
+	return 0;
+}
+
+// flush이면 1, 아니면 0 반환
+int CheckFlush()
+{
+	for (int i = 0; i < NUM_SUITS; i++)
+	{
+		if (numInSuit[i] == 5)
+			return 1;
+	}
+
+	return 0;
+}
+
+// straight이면 1, 아니면 0을 반환
+int CheckStraight()
+{
+	int count = 0;
+
+	for (int i = 1; i < NUM_RANKS; i++)
+	{
+		if (numInRank[i] == 1 && numInRank[i + 1] == 1)
+			count++;
+	}
+
+	if (count == 4)
+		return 1;
+
+	if (numInRank[1] == 1 && numInRank[10] == 1 && numInRank[11] == 1 &&
+		numInRank[12] == 1 && numInRank[13] == 1)
+		return 1;
+
+	return 0;
+}
+
+// 맞으면 1, 아니면 0 반환.
+int CheckThreeCards()
+{
+	for (int i = 1; i <= NUM_RANKS; i++)
+	{
+		if (numInRank[i] == 3)
+			return 1;
+	}
+
+	return 0;
+}
+
+// pair -> 2장이 동일한 rank.
+// one pair이면 1, two pair이면 2, 아니면 0을 return한다.
+int CountPairs()
+{
+	int count = 0;
+
+	for (int i = 1; i <= NUM_RANKS; i++)
+	{
+		if (numInRank[i] == 2)
+			count++;
+	}
+
+	if (count == 2)
+		return 2;
+
+	else if (count == 1)
+		return 1;
+
+	return 0;
+}

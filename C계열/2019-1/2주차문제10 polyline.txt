@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+int main()
+{
+	int n, x1, y1, x2, y2, iResultX = 0, iResultY = 0;
+	int iErrorCount = 0;
+
+	printf("점의개수를 입력하세요 : \n");
+	scanf("%d", &n);
+
+	printf("좌표를 입력하세요 : \n");
+	scanf("%d%d", &x1, &y1);
+	scanf("%d%d", &x2, &y2);
+
+	iResultX += x2 - x1;
+	iResultY += y2 - y1;
+
+	if (x2 != x1 && y2 != y1)
+		++iErrorCount;
+
+	for (int i = 0; i < n - 2; ++i)
+	{
+		x1 = x2;
+		y1 = y2;
+		scanf("%d%d", &x2, &y2);
+
+		if (x2 - x1 < 0)
+		{
+			iResultX += x1 - x2;
+		}
+
+		else if (y2 - y1 < 0)
+		{
+			iResultY += y1 - y2;
+		}
+
+		else if (x2 - x1 > 0)
+		{
+			iResultX += x2 - x1;
+		}
+
+		else if (y2 - y1 > 0)
+		{
+			iResultY += y2 - y1;
+		}
+
+		if (x2 != x1 && y2 != y1)
+			++iErrorCount;
+	}
+
+	if (iErrorCount == 0)
+		printf("%d\n", iResultX + iResultY);
+
+	else
+		printf("Input error\n");
+
+	return 0;
+}

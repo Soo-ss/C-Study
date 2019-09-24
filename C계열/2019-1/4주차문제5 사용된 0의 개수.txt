@@ -1,0 +1,26 @@
+
+#include <stdio.h>
+
+int main()
+{
+	int n, iResult, iCount = 0;
+	printf("양의 정수 하나를 입력하세요 : ");
+	scanf("%d", &n);
+
+	for (int i = 1; i <= n; ++i)
+	{
+		iResult = i;
+
+		while (iResult)
+		{			
+			if (iResult % 10 == 0)
+				++iCount;
+
+			iResult /= 10;
+		}
+	}
+
+	printf("%d", iCount);
+
+	return 0;
+}

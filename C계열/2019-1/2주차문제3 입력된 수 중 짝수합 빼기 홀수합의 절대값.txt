@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+int main()
+{
+	int a;
+	int iSumEven = 0, iSumOdd = 0, iResult;
+
+	printf("10개의 양의 정수를 입력하세요 : \n");
+	
+	for (int i = 0; i < 10; ++i)
+	{
+		scanf("%d", &a);
+		if (a % 2 == 0)
+			iSumEven += a;
+
+		else if (a % 2 == 1)
+			iSumOdd += a;
+	}
+
+	iResult = iSumEven - iSumOdd;
+
+	if (iResult < 0)
+		iResult *= -1;
+
+	printf("%d\n", iResult);
+
+	return 0;
+}

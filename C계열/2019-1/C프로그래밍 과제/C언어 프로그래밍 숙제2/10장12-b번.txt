@@ -1,0 +1,41 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+void Transpose(int a[][3], int b[][3])
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			b[j][i] = a[i][j];
+		}
+	}
+}
+
+int main()
+{
+	int arr[3][3] =
+	{
+		{ 1,2,3 },
+		{ 4,5,6 },
+		{ 7,8,9 }
+	};
+
+	int resultArr[3][3];
+
+	Transpose(arr, resultArr);
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			printf("%d ", resultArr[i][j]);
+		}
+
+		printf("\n");
+	}
+
+	return 0;
+}

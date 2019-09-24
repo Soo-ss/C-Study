@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, b, c, d, e, f, g, h;
+	printf("8개의 정수를 입력하세요 : \n");
+	scanf("%d%d%d%d%d%d%d%d", &a, &b, &c, &d, &e, &f, &g, &h);
+
+	if (b == d && e == g && a < c && f < h)
+	{
+		if (f <= b && h >= b && c >= e && a <= e)
+			printf("Yes\n");
+
+		else
+			printf("No\n");
+	}
+
+	return 0;
+}

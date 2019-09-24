@@ -1,0 +1,62 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 1000
+
+int main()
+{
+	int n, a = 0, tmp, data[MAX], result[MAX], count[MAX] = { 0 };
+	printf("정수의 개수를 입력하세요 : ");
+	scanf("%d", &n);
+
+	printf("정수를 입력하세요 : \n");
+	
+	for (int i = 0; i < n; ++i)
+	{
+		scanf("%d", &data[i]);
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n - i - 1; ++j)
+		{
+			if (data[j] > data[j + 1])
+			{
+				tmp = data[j];
+				data[j] = data[j + 1];
+				data[j + 1] = tmp;
+			}
+		}
+	}
+
+	result[0] = data[0];
+
+	for (int i = 1; i < n; ++i)
+	{
+		if (result[a] != data[i])
+		{
+			result[a + 1] = data[i];
+			++a;
+		}
+	}
+
+	for (int i = 0; i <= a; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if (result[i] == data[j])
+			{
+				++count[i];
+			}
+		}
+	}
+
+	for (int i = 0; i <= a; ++i)
+	{
+		printf("%d : %d\n", result[i], count[i]);
+	}
+
+	return 0;
+}

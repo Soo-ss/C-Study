@@ -1,0 +1,37 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+typedef struct CARD
+{
+	int value;
+	char suit;
+}CARD;
+
+int main()
+{
+	CARD cardArr[52];
+
+	cardArr[0].suit = 'c';
+	cardArr[1].suit = 'd';
+	cardArr[2].suit = 'h';
+	cardArr[3].suit = 's';
+
+	for (int i = 0; i < 13; i++)
+	{
+		cardArr[i].value = i + 1;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 13; j++)
+		{
+			printf("%d : %c ", cardArr[j].value, cardArr[i].suit);
+		}
+
+		printf("\n");
+	}
+
+	return 0;
+}

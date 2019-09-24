@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main()
+{
+	int GCD = 0, x, y, tmp = 0, a = 0, b = 0, c = 0;
+
+	printf("두 양의 정수를 입력하세요 : \n");
+	scanf("%d%d", &x, &y);
+
+	if (x < y)
+	{
+		tmp = x;
+		x = y; 
+		y = tmp;
+	}
+
+	if (x % y == 0)
+	{
+		GCD = y;
+	}
+
+	else
+	{
+		for (int i = 1; i <= x; ++i)
+		{
+			if ((x % y) % i == 0)
+				a = i;
+
+			if (y % i == 0)
+				b = i;
+
+			if (a == b)
+				c = a;
+		}
+
+		GCD = c;
+	}
+
+	printf("%d", GCD);
+	
+	return 0;
+}

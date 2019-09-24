@@ -1,0 +1,24 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	char str[100];
+
+	FILE *fp = fopen("problem10.txt", "r");
+	
+	for (int i = 0; i < 7; i++)
+	{
+		fgets(str, 100, fp);
+		printf("%6d : %s", i + 1, str);
+	}
+
+	fclose(fp);
+
+	printf("\n");
+
+	return 0;
+}

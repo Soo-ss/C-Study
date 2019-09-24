@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main()
+{
+	int a, iEven = 0, iOdd = 0, iCount = 0;
+
+	printf("정수를 입력하세요 : \n");
+
+	while (1)
+	{
+		scanf("%d", &a);
+		if (a % 2 == 0)
+			iEven += a;
+
+		else if (a % 2 != 0)
+			iOdd += a;
+
+		++iCount;
+
+		if (iEven == iOdd)
+			break;
+	}
+
+	printf("%d", iCount);
+	return 0;
+}

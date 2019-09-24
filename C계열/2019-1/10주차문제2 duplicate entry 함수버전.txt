@@ -1,0 +1,75 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+
+#define MAX 100
+
+int Find(int n, int a, int data[], bool *dup);
+void Insert(int n, int data[]);
+
+int main()
+{
+	int a, n = 0, data[MAX];
+
+	while (1)
+	{
+		bool dup = false;
+
+		scanf("%d", &a);
+
+		if (a == -1)
+			break;
+
+		if (Find(n, a, data, &dup) != -1)
+		{
+			printf("duplicate entry: %d\n", Find(n, a, data, &dup));
+		}
+
+		if (dup)
+			continue;
+
+		data[n++] = a;	
+
+		Insert(n, data);	
+	}
+
+	return 0;
+}
+
+int Find(int n, int a, int data[], bool *dup)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (data[i] == a)
+		{
+			*dup = true;
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+void Insert(int n, int data[])
+{
+	for (int i = n - 1; i > 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (data[j] > data[j + 1])
+			{
+				int tmp = data[j];
+				data[j] = data[j + 1];
+				data[j + 1] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d ", data[i]);
+	}
+
+	printf("\n");
+}
