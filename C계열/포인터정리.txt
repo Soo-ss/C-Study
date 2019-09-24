@@ -1,0 +1,86 @@
+
+#include <iostream>
+
+using namespace std;
+
+struct _tagStudent
+{
+	int iKor;
+	int iEng;
+	int iMath;
+	int iTotal;
+	float fAvg;
+};
+
+int main()
+{
+	int iNumber = 100;
+
+	int iArray[10] = { 1,2,3,4,5,6,7,8,9,10 };
+	int *pArray = &iArray[0];
+
+	cout << pArray << endl;
+	cout << pArray + 2 << endl;
+	cout << *pArray << endl;
+	cout << *(pArray + 2) << endl;
+	cout << *pArray + 100 << endl;
+
+	char *pText = "테스트 문자열";
+
+	cout << pText << endl;
+	cout << (int*)pText << endl;
+
+	pText = "abcd";
+
+	cout << pText << endl;
+	cout << (int*)pText << endl;
+
+	_tagStudent tStudent = {};
+
+	tStudent.iKor = 100; 
+
+	_tagStudent *pStudent = &tStudent;
+
+	// 연산자 우선순위땜에
+	//(*pStudent).iKor = 50;
+
+	pStudent->iKor = 80;
+	cout << tStudent.iKor << endl;
+
+	// void : 타입이없다.
+	// void* 변수를 선언하게 되면 이 변수는 어떤 타입의 메모리 주소든
+	// 모두 저장가능. 단, 역참조가 불가능하고 메모리 주소만 저장 가능하다.
+	// 메모리 주소를 저장하기위한 버퍼로 쓸수있다.
+	void* pVoid = &iNumber;
+
+	cout << "iNumber Address : " << pVoid << endl;
+
+	// 이렇게하면 가능.
+	int* pConvert = (int*)pVoid;
+	*pConvert = 10101010;
+	// 이것도 가능.
+	//*((int*)pVoid) = 9999;
+
+	cout << iNumber << endl;
+
+	pVoid = &tStudent;
+
+	cout << "tStudent Address : " << pVoid << endl;
+
+	int iNumber1 = 1111;
+	iNumber = 2222;
+	int* pNum = &iNumber;
+
+	// 이중포인터 : *을 2개붙인다.
+	// 일반 포인터 변수가 일반 변수의 메모리 주소를 저장하는 변수라면
+	// 이중포인터는 포인터의 포인터이다. 즉, 이중포인터는 포인터 변수의 메모리 주소를
+	// 저장하는 포인터이다.
+	int** ppNum = &pNum;
+
+	// 이렇게 해서 가리키는 대상을 바꿔줄수있음.
+	*ppNum = &iNumber1;
+
+	cout << **ppNum << endl;
+
+	return 0;
+}

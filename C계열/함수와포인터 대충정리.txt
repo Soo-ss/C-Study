@@ -1,0 +1,160 @@
+
+#include <iostream>
+
+using namespace std;
+
+/*
+안녕하세요 NPCmaster 입니다.
+
+오늘은 조금 논쟁의 여지가 많은 주제에 대해서 포스팅 해보도록 하겠습니다.
+
+저희가 포인터쪽을 공부하다보면
+
+call by reference(콜 바이 레퍼런스)
+call by value (콜 바이 벨류)
+call by address( 콜 바이 어드레스)
+
+이렇게 3개정도의 단어를 접하게 돼는데요.
+
+call by value 나 call by reference 는 알겠는데 call by address는 대체 뭐냐! 하는 사람들이 많을꺼라 생각합니다.
+우선 C언어에서는 Reference 라는 개념 자체가 없었습니다.
+그러므로 call by reference 는 C에서는 애초에 없었고
+call by reference 는 C++ 에서 등장한 별명을 붙인다는 참조자 개념입니다.
+
+C에는 call by value 와 call by address 가 있었는데요.
+얘들을 엄밀하게 따져본다면 call by address는 주소가 들어가는 포인터 변수를 만들어서
+그 방안에 넘겨주고자 하는 원본의 주소의 값을 복사하는 call by value의 형태입니다.
+
+또한 call by address의 결과를 보면 주소를 참조하여 원본 데이터의 값을 바꾸는것이 가능합니다.
+그래서 결론적으로 보자면 이놈은 call by reference 라고도 볼수가 있습니다.
+
+하지만 call by address 와 call by reference 는 값을 변경했을때 
+원본 데이터가 바뀌는 결과는 같지만 엄현히 차이점이 존재하기 때문에 
+call by address 와 call by reference 엄연히 구분 지어주는게 좋다고 생각합니다.
+
+
+
+지금부터 Call By Value, Call By Address ,Call By Reference 의 특징들을 설명해 보도록 하겠습니다.
+
+
+
+우선 call by value 는 말그대로 값의 의한 전달 입니다.
+그렇기 때문에 함수로 값을 전달하면 그 값이 함수의 매개변수에 복사가 되며
+함수 내에서 값을 아무리 바꿔도 원본의 값은 바뀌지 않습니다.
+
+
+
+다음은 call by address를 살펴보면
+우선 함수에 매개변수로 포인터형 변수를 선언하고 
+( 포인터는 무조건 4바이트 라는 공간이 메모리에 할당됩니다.) 
+그 포인터 변수의 공간에 원본의 주소값을 복사합니다. 그후 그 주소를 참조하여 가르키는 곳의 값을 변경하면 원본의 데이터가 바뀝니다.
+
+
+
+이번엔 call by reference 를 살펴보면
+함수가 호출이 되는 시기에 매개변수 인 레퍼런스 변수가 받아오는 변수의 별명으로서 초기화가 이루어 집니다.
+즉 이 레퍼런스 변수는 메모리 공간을 할당 받는것이 아닌 원본 변수의 별명으로써 존재하는 것입니다. 
+레퍼런스 변수 는 그 변수 자체를 참조하여 값을 변경이 가능하기때문에 함수내에서 값을 변경을 해도 원본 변수의 값 역시 바뀌는 성질을 가지고 있습니다.
+
+call by address와 call by reference 둘다 결과적으론 원본 변수의 값을 변경한다는 동일성을 가지고 있습니다.
+하지만 이 둘 역시 차이점 또한 가지고 있습니다.
+위에서 설명했다 싶이 포인터 변수는 주소값을 가지는 변수로서 메모리공간 4바이트를 차지한다는것에비해 
+레퍼런스 변수는 메모리공간을 차지하지 않고 원본 변수의 별명으로 서 붙으며
+이것을 확인해볼수 있는 예제로 sizeof() 함수를 사용해보면 명확히 알수 있습니다.
+아래 예제 소스를 보면서 확인해보도록 하겠습니다.
+
+
+
+ex)
+
+#include <iostream>
+
+using namespace std;
+
+void CallByAddress(char* add);
+void CallByReference(char& ref);
+
+
+int main(void)
+{
+char nBuf;
+
+CallByAddress(&nBuf);    //여긴 주소값을 포인터 변수에 복사
+CallByReference(nBuf);   //여긴 값을 전달해서 그 값에 레퍼런스변수를 다는거라고 보면 됩니다.
+
+return 0;
+}
+
+void CallByAddress(char* add)
+{
+cout<<sizeof(add)<<endl;     // 사이즈 오브 연산자를 이용해서 add 의 크기을 보면 포인터 변수
+}                                          // 기때문에 확인해보면 4바이트라는 값을 출력하고
+
+void CallByReference(char& ref)
+{
+cout<<sizeof(ref)<<endl;      // 사이즈 오브 연산자를 이용해서 ref 의 크기를 보면 char형 변수
+}                                         //위에 별명이 붙은거기 때문에 1바이트 라는 값을 확인할수 있습니다
+
+
+
+
+
+위와같이 call by reference 와 call by address 는 엄연히 차이점이 존재하기 때문에 같이 묶어서 사용하는 것보다 
+따로 구분해서 사용하는 것이 더 좋다고 생각합니다.
+
+
+
+
+*/
+
+void CallByAddress(char* add)
+{
+	cout << sizeof(add) << endl;     // 사이즈 오브 연산자를 이용해서 add 의 크기을 보면 포인터 변수
+}                                          // 기때문에 확인해보면 4바이트라는 값을 출력하고
+
+void CallByReference(char& ref)
+{
+	cout << sizeof(ref) << endl;      // 사이즈 오브 연산자를 이용해서 ref 의 크기를 보면 char형 변수
+}                                         //위에 별명이 붙은거기 때문에 1바이트 라는 값을 확인할수 있습니다
+
+
+// 아래 함수처럼 인자를 넘겨받게 될 경우 이 인자는 이 함수 코드블럭의 지역에
+// 속해있다고 판단한다. 즉, 이 함수의 지역변수가 되고 stack에 할당된다.
+// 할당된 지역변수는 해당 지역변수가 소속된 코드블럭이 닫히게 되면 메모리에서 해제된다.
+void OutputNumber(int iNumber)
+{
+	cout << "Number : " << iNumber << endl;
+}
+
+// 아래 함수처럼 결과를 반환해주는 함수 형태를 call by value
+int Sum(int a, int b)
+{
+	return a + b;
+}
+
+// 아래 함수는 결과값을 인자로 받아와서 결과를 반환해주었다.
+// 이런 형태의 함수를 call by address라고 한다. (call by value의 일종임)
+// 결과를 직접 주소에다 넣어준다.
+void ChangeNumber1(int* pNumber)
+{
+	*pNumber = 2939;
+}
+
+int main()
+{
+	int iNumber = 0;
+
+	// 포인터니까 주소를 넘겨줘야되겠죠?
+	// 가리키게됨.
+	ChangeNumber1(&iNumber);
+
+	cout << iNumber << endl;
+
+	char nBuf;
+
+	CallByAddress(&nBuf);    //여긴 주소값을 포인터 변수에 복사
+	CallByReference(nBuf);   //여긴 값을 전달해서 그 값에 레퍼런스변수를 다는거라고 보면 됩니다.
+
+
+	return 0;
+}
