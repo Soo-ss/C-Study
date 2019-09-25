@@ -1,0 +1,37 @@
+
+/*
+auto variable == local variable
+
+the function fun() expects a double pointer
+Fun() modifies the value at address pptr. The value at address pptr is
+pointer p as we pass address of p to fun(). In fun(), value at pptr is
+changed to address of q. Therefore, pointer p fo main() is changed to point
+to a new variable q.
+
+Also, note that the program won't cause any out of scope problem because
+q is a static variable. Static variables exist in memory even
+after function return.
+For an auto variable, we might seen some unexpected output because auto variable
+may not exist int memory after functions return.
+*/
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void fun(int** pptr)
+{
+	static int q = 10;
+	*pptr = &q;
+}
+
+int main()
+{
+	int r = 20;
+	int *p = &r;
+	fun(&p);
+	printf("%d", *p);
+	printf("%d", *p);
+
+	return 0;
+}

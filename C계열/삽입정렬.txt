@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+
+void InsertionSort(int* arr, int size)
+{
+	int key, i, j;
+
+	for (i = 1; i < size; i++)
+	{
+		// 아우터루프 범위중 시작을 key값으로 지정.
+		key = *(arr + i);
+		// 정렬된 배열중 제일 큰 숫자를 j로 지정.
+		j = i - 1;
+		while (j >= 0 && *(arr + j) > key)
+		{
+			// tmp안써도되나? 생각하지만 이미 key에 보관되어있음.
+			*(arr + j + 1) = *(arr + j);
+			// j는 모든 데이터값(정렬된 배열)과 비교하기 위하여 하나 줄어듭니다.
+			j--;
+		}
+		// 다 오른쪽으로 이동해주고 마지막에 키값을 넣으면 오름차순 정렬 완료.
+		*(arr + j + 1) = key;
+	}
+}
+
+int main()
+{
+	int num[] = { 7,8,2,9,4,6 };
+	int size = sizeof(num) / sizeof(int);
+
+	InsertionSort(num, size);
+
+	for (int i = 0; i < size; i++)
+	{
+		printf("%d\n", num[i]);
+	}
+
+	return 0;
+}

@@ -84,7 +84,7 @@ void init_directory()
 void process_command()
 {
 	char command_line[BUFFER_SIZE]; // 한 라인을 통채로 읽어오기 위한 버퍼
-	char* command, * argument1, * argument2;
+	char* command, *argument1, *argument2;
 
 	while (1)
 	{
@@ -197,6 +197,8 @@ void add(char* name, char* number)
 	n++;
 }
 
+// 배열의 크기를 키우는 방법은 없음.
+// 그래서 기존 배열 버리고 새로운배열을 생성하는 방법으로 함.
 void reallocate()
 {
 	int i;
