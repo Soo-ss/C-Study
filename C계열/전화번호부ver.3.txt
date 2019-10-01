@@ -5,14 +5,13 @@
 
 #define INIT_CAPACITY 3 // 배열 재할당을 테스트하기 위해서 일부러 아주 작은 값으로
 #define CAPACITY 100
-#define BUFFER_SIZE 50
+#define BUFFER_SIZE 100
 
 // 포인터타입은 넣는 문자열의 시작주소를 저장함.
 // 그래서 그 시작주소로 가보면 내가 넣은 문자열이 있음.
 // char* 타입의 배열의 이름이므로 char** 타입의 변수이다.
 char** names;
 char** numbers;
-
 int capacity = INIT_CAPACITY; // size of arrays
 int n = 0; // number of people in phone directory
 
@@ -33,28 +32,6 @@ int main()
 {
 	init_directory(); // 이 함수에서 배열 names와 numbers를 생성한다.
 	process_command(); // 사용자의 명령을 받아 처리하는 부분을 별개의 함수로 만들었다.
-
-	char command[BUFFER_SIZE];
-	while (1)
-	{
-		printf("$ ");
-		scanf("%s", command);
-
-		if (strcmp(command, "add") == 0)
-			add();
-		else if (strcmp(command, "find") == 0)
-			find();
-		else if (strcmp(command, "status") == 0)
-			status();
-		else if (strcmp(command, "delete") == 0)
-			remove();
-		else if (strcmp(command, "read") == 0)
-			load();
-		else if (strcmp(command, "save") == 0)
-			save();
-		else if (strcmp(command, "exit") == 0)
-			break;
-	}
 
 	return 0;
 }
