@@ -1,11 +1,18 @@
 
-#pragma warning(disable : 4996)
+// 구조체는 호출시에 모든 멤버들이 복사됨
+// p = directory[i] 이런식으로
+// return문에서는 두번 복사됨. (이름없는임시객체, thePerson(구조체 변수)
+// 또다른 예를들면 add함수에서 0~1번사이에 새로운 사람을 삽입하려면
+// 그 뒤에는 한칸씩 다 뒤로 물리면서 '복사'해야함
+// 구조체는 복사되는 양이 많음 그러므로 좋은 방법이 아님.
+
+// 구조체포인터쓰면 단지 주소값이 복사됨.
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#define INIT_CAPACITY 3 // 배열 재할당을 테스트하기 위해서 일부러 아주 작은 값으로
+#define INIT_CAPACITY 100
 #define CAPACITY 100
 #define BUFFER_SIZE 100
 
@@ -26,8 +33,9 @@ typedef struct
 // char* 타입의 배열의 이름이므로 char** 타입의 변수이다.
 char** names;
 char** numbers;
-PERSON directory[CAPACITY];
-int capacity = INIT_CAPACITY; // size of arrays
+PERSON** directory;
+PERSON person;
+int capacity;
 int n = 0; // number of people in phone directory
 
 void add(char* name, char* number, char* email, char* group);
@@ -37,14 +45,15 @@ void remove(char*);
 void load(char*);
 void save(char* fileName);
 int read_line(FILE* fp, char str[], int n);
-void init_directory();
+void init();
 void process_command();
 void reallocate();
 int compose_name(char str[], int limit);
+void release_person(PERSON* p);
 
 int main()
 {
-	init_directory(); // 이 함수에서 배열 names와 numbers를 생성한다.
+	init();
 	process_command(); // 사용자의 명령을 받아 처리하는 부분을 별개의 함수로 만들었다.
 
 	return 0;
@@ -68,12 +77,11 @@ int read_line(FILE* fp, char str[], int n)
 	return i;
 }
 
-void init_directory()
+void init()
 {
-	// 할당할 메모리의 byte수를 지정한다.
-	// 직접 숫자로 지정하는 것 보다 이렇게 sizeof연산자를 사용하는것이 바람직함.
-	names = (char**)malloc(INIT_CAPACITY * sizeof(char*));
-	numbers = (char**)malloc(INIT_CAPACITY * sizeof(char*));
+	directory = (PERSON**)malloc(INIT_CAPACITY * sizeof(PERSON*));
+	capacity = INIT_CAPACITY;
+	n = 0;
 }
 
 // command_line의 남아있는 토큰들을 모두 합쳐 이름을 나타내는 문자열을 구성한다.
@@ -86,13 +94,13 @@ int compose_name(char str[], int limit)
 	ptr = strtok(NULL, " ");
 	if (ptr == NULL)
 		return 0;
-	int strSize = strlen(ptr);
+
 	strcpy(str, ptr);
-	length += strSize;
+	length += strlen(ptr);
 
 	while ((ptr = strtok(NULL, " ")) != NULL)
 	{
-		if (length + strSize + 1 < limit)
+		if (length + strlen(ptr) + 1 < limit)
 		{
 			str[length++] = ' ';
 			str[length] = '\0';
@@ -237,18 +245,25 @@ int search(char* name)
 // 처음으로 자신보다 작은 항목이 나오면 그것 바로 뒤에 삽입한다.
 void add(char* name, char* number, char* email, char* group)
 {
+	if (n >= capacity)
+		reallocate();
+
 	int i = n - 1;
-	while (i >= 0 && strcmp(directory[i].name, name) > 0)
+	while (i >= 0 && strcmp(directory[i]->name, name) > 0)
 	{
 		directory[i + 1] = directory[i];
 		i--;
 	}
 
+	// 이거 중요함.
+	directory[i + 1] = (PERSON*)malloc(sizeof(PERSON));
+
 	// 없는 경우에는 하나의 공백문자로 저장된다.
-	directory[i + 1].name = strdup(name);
-	directory[i + 1].number = strdup(number);
-	directory[i + 1].email = strdup(email);
-	directory[i + 1].group = strdup(group);
+	// strdup로 복제하지 않고 저장한다.
+	directory[i + 1]->name = name;
+	directory[i + 1]->number = number;
+	directory[i + 1]->email = email;
+	directory[i + 1]->group = group;
 
 	n++;
 }
@@ -257,32 +272,14 @@ void add(char* name, char* number, char* email, char* group)
 // 그래서 기존 배열 버리고 새로운배열을 생성하는 방법으로 함.
 void reallocate()
 {
-	int i;
-
-	// 먼저 크기가 2인 배열들을 할당한다.
 	capacity *= 2;
-	char** tmp1 = (char**)malloc(capacity * sizeof(char*));
-	char** tmp2 = (char**)malloc(capacity * sizeof(char*));
+	PERSON** tmp = (PERSON**)malloc(capacity * sizeof(PERSON*));
 
-	// 원본 배열 names와 numbers의 값을 새로운 배열에 모두 복사한다.
-	for (i = 0; i < n; i++)
-	{
-		tmp1[i] = names[i];
-		tmp2[i] = numbers[i];
-	}
+	for (int i = 0; i < n; i++)
+		tmp[i] = directory[i];
 
-	// 원본 배열 names와 numbers는 더이상 필요없다.
-	// 하지만 두 배열은 init_directory() 함수에서 동적메모리할당으로
-	// 만들어진 배열이므로 그냥 두면 없어지지 않고 계속 존재한다.
-	// 이런 메모리를 garbage라고 부른다.
-	// garbage는 free함수를 이용하여 반환한다.
-	free(names);
-	free(numbers);
-
-	// names와 numbers가 새로운 배열을 가리키도록 한다.
-	// 배열의 이름은 포인터 변수이다.
-	names = tmp1;
-	numbers = tmp2;
+	free(directory);
+	directory = tmp;
 }
 
 void find(char* name)
@@ -291,7 +288,7 @@ void find(char* name)
 	if (index == -1)
 		printf("No person named '%s' exists.\n", name);
 	else
-		print_person(directory[index]);
+		print_person(person);
 }
 
 void print_person(PERSON p)
@@ -307,7 +304,7 @@ void status()
 	int i;
 	for (i = 0; i < n; i++)
 	{
-		print_person(directory[i]);
+		print_person(person);
 	}
 
 	printf("Total %d persons.\n", n);
@@ -323,8 +320,9 @@ void remove(char* name)
 		return;
 	}
 
-	int j = i;
-	for (; j < n - 1; j++)
+	PERSON* p = directory[i];
+
+	for (int j = i; j < n - 1; j++)
 	{
 		// 구조체 변수간의 치환연산이 지원되므로
 		// 멤버 항목들을 따로따로 치환할 필요가 없다.
@@ -332,13 +330,24 @@ void remove(char* name)
 	}
 
 	n--;
+	release_person(p);
 	printf("'%s' was deleted successfully. \n", name);
+}
+
+void release_person(PERSON* p)
+{
+	free(p->name);
+	if (p->number != NULL) free(p->number);
+	if (p->email != NULL) free(p->email);
+	if (p->group != NULL) free(p->group);
+	free(p);
 }
 
 void load(char *fileName)
 {
 	char buffer[BUFFER_SIZE];
 	char* name, *number, *email, *group;
+	char* token;
 
 	FILE *fp = fopen(fileName, "r");
 
@@ -354,11 +363,34 @@ void load(char *fileName)
 			break;
 
 		name = strtok(buffer, "#");
-		number = strtok(NULL, "#");
-		email = strtok(NULL, "#");
-		group = strtok(NULL, "#");
-		add(name, number, email, group);
+		token = strtok(NULL, "#");
+
+		if (strcmp(token, " ") == 0)
+			number = NULL;
+
+		else
+			number = strdup(token);
+
+		token = strtok(NULL, "#");
+
+		if (strcmp(token, " ") == 0)
+			email = NULL;
+
+		else
+			email = strdup(token);
+
+		token = strtok(NULL, "#");
+
+		if (strcmp(token, " ") == 0)
+			group = NULL;
+
+		else
+			group = strdup(token);
+
+		add(strdup(name), number, email, group);
 	}
+
+	fclose(fp);
 }
 
 void save(char* fileName)
@@ -373,10 +405,10 @@ void save(char* fileName)
 
 	for (i = 0; i < n; i++)
 	{
-		fprintf(fp, "%s#", directory[i].name);
-		fprintf(fp, "%s#", directory[i].number);
-		fprintf(fp, "%s#", directory[i].email);
-		fprintf(fp, "%s#\n", directory[i].group);
+		fprintf(fp, "%s#", directory[i]->name);
+		fprintf(fp, "%s#", directory[i]->number);
+		fprintf(fp, "%s#", directory[i]->email);
+		fprintf(fp, "%s#\n", directory[i]->group);
 	}
 
 	fclose(fp);

@@ -1,0 +1,562 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define BUFFER_SIZE 200
+#define DATA 1500
+
+char* IP[DATA];
+char* TIME[DATA];
+char* URL[DATA];
+char* STATUS[DATA];
+char* trash[4]; // 첫줄은 건너뛸려고 만듬.
+int n = 0, trashNum = 0;
+int ipSum[DATA]; // 10.120.2.1 이면 1202가 되도록하자(가운데4개)
+
+void Output();
+void Input(FILE* fp);
+void Search(char*);
+void IPSort();
+
+int main()
+{
+	FILE* fp = fopen("webLog.txt", "r");
+	Input(fp);
+
+	char command_line[BUFFER_SIZE];
+	char* command;
+
+	while (1)
+	{
+		printf("$ ");
+		fgets(command_line, BUFFER_SIZE, stdin);
+		command_line[strlen(command_line) - 1] = '\0';
+
+		command = strtok(command_line, " ");
+
+		if (strcmp(command, "exit") == 0)
+			break;
+		else if (strcmp(command, "search") == 0)
+			Search(command);
+	}
+
+	return 0;
+}
+
+void Input(FILE* fp)
+{
+	char buffer[BUFFER_SIZE];
+
+	while (fgets(buffer, BUFFER_SIZE, fp) != NULL)
+	{
+		char* ptr = strtok(buffer, ",");
+
+		while (ptr != NULL)
+		{
+			// 첫줄에 있는 4개 항목은 건너뜀.
+			if (trashNum < 4)
+			{
+				trash[trashNum++] = strdup(ptr);
+				ptr = strtok(NULL, ",");
+			}
+
+			else
+			{
+				IP[n] = strdup(ptr);
+				ptr = strtok(NULL, ",");
+
+				TIME[n] = strdup(ptr);
+				ptr = strtok(NULL, ",");
+
+				URL[n] = strdup(ptr);
+				ptr = strtok(NULL, ",");
+
+				STATUS[n] = strdup(ptr);
+				ptr = strtok(NULL, ",");
+
+				n++;
+			}
+
+		}
+	}
+}
+
+// 거기에 해당하는 배열뿐만아니라 다른것도 모두 바꿔줘야함.
+void ChangeAll(int i, int j, char* IP[], char* TIME[], 
+	char* URL[], char* STATUS[], int ipSum[])
+{
+	char* tmpStr;
+
+	tmpStr = IP[i];
+	IP[i] = IP[j];
+	IP[j] = tmpStr;
+
+	tmpStr = TIME[i];
+	TIME[i] = TIME[j];
+	TIME[j] = tmpStr;
+
+	tmpStr = URL[i];
+	URL[i] = URL[j];
+	URL[j] = tmpStr;
+
+	tmpStr = STATUS[i];
+	STATUS[i] = STATUS[j];
+	STATUS[j] = tmpStr;
+
+	int tmp = ipSum[i];
+	ipSum[i] = ipSum[j];
+	ipSum[j] = tmp;
+}
+
+// IP배열을 사전식으로 정렬한다.
+void IPSort()
+{
+	int tmpSum, var, sum, indexNum = 0;
+
+	for (int a = 0; a < n; a++)
+	{
+		sum = 0, tmpSum = 0, var = 1;
+
+		for (int i = strlen(IP[a]) - 3; i >= 3; i--)
+		{
+			if (isdigit(IP[a][i]))
+			{
+				// 이거 안해주면 원본IP배열이 변경되어버림.
+				char tmp = IP[a][i];
+
+				tmp -= '0';
+				tmpSum = tmp * var;
+				var *= 10;
+				sum += tmpSum;
+			}
+		}
+
+		ipSum[indexNum++] = sum;
+	}
+
+	// 정렬
+	// 모두 바꿔줘야함.
+	for (int i = n - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (ipSum[j] > ipSum[i])
+			{
+				ChangeAll(i, j, IP, TIME, URL, STATUS, ipSum);
+			}
+		}
+	}
+}
+
+// 테스트용
+void Output()
+{
+	for (int i = 0; i < n; i++)
+	{
+		printf("%s %s %s %s", IP[i], TIME[i], URL[i], STATUS[i]);
+	}
+}
+
+// 데이터들을 보니 2017,2018년만 있으므로
+// 2017년 1월1일부터 지난시간을 계산하여 알아보기 쉽게 수식화한다.
+void DayTrans(int n, int daytrans[], int timetrans[], char* TIME[])
+{
+	int dayNum = 0, timeNum = 0;
+
+	for (int a = 0; a < n; a++)
+	{
+		// 날짜를 수식화
+		char tmpDay[12];
+
+		for (int i = 1; i <= 11; i++)
+		{
+			tmpDay[i - 1] = TIME[a][i];
+		}
+
+		// 널 캐릭터 넣는거 까먹지 말자.
+		tmpDay[11] = '\0';
+
+		char* day[1];
+		char* month;
+		char* year;
+
+		char* ptr = strtok(tmpDay, "/");
+
+		day[0] = ptr;
+		ptr = strtok(NULL, "/");
+		month = ptr;
+		ptr = strtok(NULL, " ");
+		year = ptr;
+
+		int d, m, y;
+
+		// 숫자로 변경
+		// 25이면 2*10 + 5
+		day[0][0] -= '0';
+		day[0][1] -= '0';
+		d = day[0][0] * 10 + day[0][1];
+
+		if (strcmp(month, "Jan") == 0)
+			m = 0;
+		else if (strcmp(month, "Feb") == 0)
+			m = 30;
+		else if (strcmp(month, "Mar") == 0)
+			m = 60;
+		else if (strcmp(month, "Apr") == 0)
+			m = 90;
+		else if (strcmp(month, "May") == 0)
+			m = 120;
+		else if (strcmp(month, "Jun") == 0)
+			m = 150;
+		else if (strcmp(month, "Jul") == 0)
+			m = 180;
+		else if (strcmp(month, "Aug") == 0)
+			m = 210;
+		else if (strcmp(month, "Sep") == 0)
+			m = 240;
+		else if (strcmp(month, "Oct") == 0)
+			m = 270;
+		else if (strcmp(month, "Nov") == 0)
+			m = 300;
+		else if (strcmp(month, "Dec") == 0)
+			m = 330;
+
+		if (strcmp(year, "2017") == 0)
+			y = 0;
+		else if (strcmp(year, "2018") == 0)
+			y = 360;
+
+		daytrans[dayNum++] = d + m + y;
+
+		// ===================================================
+
+		// 시간을 수식화
+		char tmpTime[9];
+
+		for (int i = 13; i <= 20; i++)
+		{
+			tmpTime[i - 13] = TIME[a][i];
+		}
+
+		tmpTime[8] = '\0';
+
+		char* hour[1];
+		char* minute[1];
+		char* sec[1];
+
+		char* ptrTwo = strtok(tmpTime, ":");
+
+		hour[0] = ptrTwo;
+		ptrTwo = strtok(NULL, ":");
+		minute[0] = ptrTwo;
+		ptrTwo = strtok(NULL, " ");
+		sec[0] = ptrTwo;
+
+		int h, min, s;
+
+		hour[0][0] -= '0';
+		hour[0][1] -= '0';
+		h = hour[0][0] * 10 + hour[0][1];
+
+		minute[0][0] -= '0';
+		minute[0][1] -= '0';
+		min = minute[0][0] * 10 + minute[0][1];
+
+		sec[0][0] -= '0';
+		sec[0][1] -= '0';
+		s = sec[0][0] * 10 + sec[0][1];
+
+		timetrans[timeNum++] = h * 3600 + min * 60 + s;
+	}
+}
+
+void Search(char* search)
+{
+	int ipNum = 0; // 인덱스
+	int daytrans[DATA]; // 날짜 수식화 배열
+	int timetrans[DATA]; // 시간 수식화 배열
+	int trashSum[DATA]; // 함수 돌릴려고 의미없는 배열 생성함.
+	char* trashIP[DATA]; // 함수 돌릴려고 의미없는 배열 생성함.
+
+	search = strtok(NULL, " ");
+
+	// -date일때
+	if (strcmp(search, "-date") == 0)
+	{
+		// 여기서 IPSort 안해주면 나중에 중복 확인할때 상당히 곤란함.
+		IPSort();
+
+		char* day[2];
+		char* month[2];
+		char* year[2];
+
+		search = strtok(NULL, "/");
+		day[0] = search;
+		search = strtok(NULL, "/");
+		month[0] = search;
+		search = strtok(NULL, " ");
+		year[0] = search;
+
+		search = strtok(NULL, "/");
+		day[1] = search;
+		search = strtok(NULL, "/");
+		month[1] = search;
+		search = strtok(NULL, " ");
+		year[1] = search;
+
+		int d, m, y, sum1, sum2;
+
+		day[0][0] -= '0';
+		day[0][1] -= '0';
+		d = day[0][0] * 10 + day[0][1];
+
+		if (strcmp(month[0], "Jan") == 0)
+			m = 0;
+		else if (strcmp(month[0], "Feb") == 0)
+			m = 30;			  
+		else if (strcmp(month[0], "Mar") == 0)
+			m = 60;			  
+		else if (strcmp(month[0], "Apr") == 0)
+			m = 90;			  
+		else if (strcmp(month[0], "May") == 0)
+			m = 120;		  
+		else if (strcmp(month[0], "Jun") == 0)
+			m = 150;		  
+		else if (strcmp(month[0], "Jul") == 0)
+			m = 180;		  
+		else if (strcmp(month[0], "Aug") == 0)
+			m = 210;		  
+		else if (strcmp(month[0], "Sep") == 0)
+			m = 240;		  
+		else if (strcmp(month[0], "Oct") == 0)
+			m = 270;		  
+		else if (strcmp(month[0], "Nov") == 0)
+			m = 300;		  
+		else if (strcmp(month[0], "Dec") == 0)
+			m = 330;
+
+		if (strcmp(year[0], "2017") == 0)
+			y = 0;
+		else if (strcmp(year[0], "2018") == 0)
+			y = 360;
+
+		sum1 = d + m + y;
+
+		day[1][0] -= '0';
+		day[1][1] -= '0';
+		d = day[1][0] * 10 + day[1][1];
+
+		if (strcmp(month[1], "Jan") == 0)
+			m = 0;
+		else if (strcmp(month[1], "Feb") == 0)
+			m = 30;
+		else if (strcmp(month[1], "Mar") == 0)
+			m = 60;
+		else if (strcmp(month[1], "Apr") == 0)
+			m = 90;
+		else if (strcmp(month[1], "May") == 0)
+			m = 120;
+		else if (strcmp(month[1], "Jun") == 0)
+			m = 150;
+		else if (strcmp(month[1], "Jul") == 0)
+			m = 180;
+		else if (strcmp(month[1], "Aug") == 0)
+			m = 210;
+		else if (strcmp(month[1], "Sep") == 0)
+			m = 240;
+		else if (strcmp(month[1], "Oct") == 0)
+			m = 270;
+		else if (strcmp(month[1], "Nov") == 0)
+			m = 300;
+		else if (strcmp(month[1], "Dec") == 0)
+			m = 330;
+
+		if (strcmp(year[1], "2017") == 0)
+			y = 0;
+		else if (strcmp(year[1], "2018") == 0)
+			y = 360;
+
+		sum2 = d + m + y;
+
+		DayTrans(n, daytrans, timetrans, TIME);
+
+		int found = 0, index = 0;
+		int dup[200] = { 0 }; // 몇개 중복됐는지 체크하기위한 배열
+		char* tmp[150], *result[150];
+
+		// 그 날짜 범위안에있으면 tmp배열에 넣자.
+		for (int i = 0; i < n; i++)
+		{
+			if (sum1 <= daytrans[i] && daytrans[i] <= sum2)
+				tmp[found++] = IP[i];
+		}
+
+		// 중복제거
+		result[0] = tmp[0];
+
+		for (int i = 1; i < found; i++)
+		{
+			if (strcmp(result[index], tmp[i]) == 0)
+			{
+				dup[index]++;
+			}
+
+			// 더 이상 중복이 안나오면 result 배열에 저장하자.
+			else
+			{
+				index++;
+				result[index] = tmp[i];
+			}
+		}
+
+		index++;
+
+		// 정렬
+		for (int i = index - 1; i >= 0; i--)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (dup[j] < dup[i])
+				{
+					char* tmpStr = result[i];
+					result[i] = result[j];
+					result[j] = tmpStr;
+
+					int tmp = dup[i];
+					dup[i] = dup[j];
+					dup[j] = tmp;
+				}
+			}
+		}
+
+		// ip사전식 정렬
+		// IPSort랑 똑같음.
+		// IPSort쓰면 될거같은데 일단 안씀
+		for (int i = index - 1; i >= 0; i--)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (dup[i] == dup[j])
+				{
+					int tmpSum = 0, var = 1, sumi = 0;
+
+					for (int k = strlen(result[i]) - 3; k >= 3; k--)
+					{
+						if (isdigit(result[i][k]))
+						{
+							char tmp = result[i][k];
+							tmp -= '0';
+							tmpSum = tmp * var;
+							var *= 10;
+							sumi += tmpSum;
+						}
+					}
+
+					tmpSum = 0, var = 1;
+					int sumj = 0;
+
+					for (int k = strlen(result[j]) - 3; k >= 3; k--)
+					{
+						if (isdigit(result[j][k]))
+						{
+							char tmp = result[j][k];
+							tmp -= '0';
+							tmpSum = tmp * var;
+							var *= 10;
+							sumj += tmpSum;
+						}
+					}
+
+					if (sumj > sumi)
+					{
+						char* tmpStr = result[i];
+						result[i] = result[j];
+						result[j] = tmpStr;
+					}
+				}
+			}
+		}
+
+		printf("%d ips found:\n", index);
+
+		// dup에다가 +1 해준이유?
+		// 모든 배열이 1이아닌 0으로 초기화되어서
+		for (int i = 0; i < index; i++)
+		{
+			printf("%s : %d\n", result[i], dup[i] + 1);
+		}
+	}
+
+	// ================================================
+
+	// -ip일때
+	else if (strcmp(search, "-ip") == 0)
+	{
+		search = strtok(NULL, " ");
+
+		// 기존 배열이랑 같이쓰면 데이터가 바뀌어버려서 (같은 함수써서)
+		// 전역변수로 선언하지않고 -ip일때랑 -date일때랑 구분해놓음.
+		char* newTime[DATA];
+		char* newURL[DATA];
+		char* newStatus[DATA];
+
+		for (int i = 0; i < n; i++)
+		{
+			if (strcmp(IP[i], search) == 0)
+			{
+				newTime[ipNum] = TIME[i];
+				newURL[ipNum] = URL[i];
+				newStatus[ipNum] = STATUS[i];
+				ipNum++;
+			}
+		}
+
+		DayTrans(ipNum, daytrans, timetrans, newTime);
+
+		// 정렬
+		for (int i = ipNum - 1; i >= 0; i--)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				if (daytrans[j] > daytrans[i])
+				{
+					int tmp = daytrans[i];
+					daytrans[i] = daytrans[j];
+					daytrans[j] = tmp;
+
+					tmp = timetrans[i];
+					timetrans[i] = timetrans[j];
+					timetrans[j] = tmp;
+
+					ChangeAll(i, j, trashIP, newTime, newURL, newStatus, trashSum);
+				}
+
+				else if (daytrans[j] == daytrans[i])
+				{
+					if (timetrans[j] > timetrans[i])
+					{
+						int tmp = daytrans[i];
+						daytrans[i] = daytrans[j];
+						daytrans[j] = tmp;
+
+						tmp = timetrans[i];
+						timetrans[i] = timetrans[j];
+						timetrans[j] = tmp;
+
+						ChangeAll(i, j, trashIP, newTime, newURL, newStatus, trashSum);
+					}
+				}
+			}
+		}
+
+		printf("%d logs found\n", ipNum);
+
+		for (int i = 0; i < ipNum; i++)
+		{
+			printf("%s,%s,%s", newTime[i], newURL[i], newStatus[i]);
+		}
+	}
+}
