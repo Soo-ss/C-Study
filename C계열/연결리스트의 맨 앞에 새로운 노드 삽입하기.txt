@@ -1,0 +1,71 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// 연결 리스트에서 하나의 노드를 표현하기 위한 구조체이다.
+// 각 노드에 저장될 데이터는 하나의 문자열이라고 가정하자.
+struct node
+{
+	char* data;
+
+	// 다음 노드의 주소를 저장할 필드이다.
+	// 이렇게 자신과 동일한 구조체에 대한 포인터를 멤버로 가진다는 의미에서
+	// "자기 참조형 구조체" 라고 부르기도 한다.
+	struct node* next;
+};
+
+typedef struct node NODE;
+NODE *head = NULL; // 연결리스트의 첫 번째 노드의 주소를 저장할 포인터이다.
+
+// <연결리스트의 맨 앞에 새로운 노드 삽입하기>
+// 새로운 노드의 next 필드가 현재의 head노드를 가리키도록 한다.
+// 새로운 노드를 새로운 head노드로 한다.
+
+/*
+연결 리스트를 다루는 프로그램에서 가장 주의할 점은 내가 작성한 코드가
+일반적인 경우만이 아니라 특수한 경우에도 문제 없이 작동하는지 확인하는 것이다.
+이 경우에는 기존의 연결 리스트의 길이가 0인 경우, 즉 head가 NULL인 경우에도
+문제가 없는지 확인해야 한다.
+*/
+
+int main()
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = "Ann";
+	tmp->next = head;
+	head = tmp;
+
+	return 0;
+}
+
+//// 첫번째 노드를 가리키는 포인터 head가 전역변수인 경우 함수를 만든다
+//void add_first(char* item)
+//{
+//	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+//	tmp->data = item;
+//	tmp->next = head;
+//	head = tmp;
+//}
+
+// 첫번째 노드를 가리키는 포인터 head가 전역변수가 아닌 경우 1
+// 포인터 변수 head의 주소를 매개변수로 받는다.
+// 이렇게 구현할 경우 이 함수는 다음과 같이 호출해야한다.
+// add_first(&head, item_to_store);
+void add_first(NODE** ptr_head, char *item)
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = *ptr_head;
+	*ptr_head = tmp;
+}
+
+// 첫번째 노드를 가리키는 포인터 head가 전역변수가 아닌 경우 2
+// 이렇게 구현할 경우 이 함수는 다음과 같이 호출해야한다.
+// head = add_first(head, item_to_store);
+NODE* add_first(NODE* head, char *item)
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = head;
+	return tmp;
+}

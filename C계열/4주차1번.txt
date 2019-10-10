@@ -85,6 +85,7 @@ void Input(FILE* fp)
 }
 
 // 거기에 해당하는 배열뿐만아니라 다른것도 모두 바꿔줘야함.
+// 이걸 안해서 2시간은 날려먹은듯 (왜 생각 못했는지 모르겠음)
 void ChangeAll(int i, int j, char* IP[], char* TIME[], 
 	char* URL[], char* STATUS[], int ipSum[])
 {

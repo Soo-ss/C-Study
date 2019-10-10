@@ -1,0 +1,80 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+// 변수를 선언하는 대신 프로그램의 요청으로 메모리를 할당할 수 있다.
+// 이것을 동적 메모리 할당이라고 부른다.
+// malloc함수를 호출하여 동적메모리할당을 요청하면 요구하는 크기의 메모리를
+// 할당하고 그 시작 주소를 반환한다.
+
+int main()
+{
+	int* p;
+
+	// malloc이 반환하는 주소는 타입이 없는 주소(void*)이다.
+	// 정수들을 저장하기 위해서 이것을 int*로 변환한다. 반드시 필요한건 아님.
+	// 할당받을 메모리의 크기를 byte단위로 지정한다. 여기서는 10개의 정수를
+	// 저장하기 위해서 40바이트를 요청하였다.
+	p = (int*)malloc(40);
+	if (p == NULL)
+	{
+		// 동적 메모리 할당이 실패
+		// 적절한 조치를 취한다.
+	}
+
+	// mallco으로 할당받은 메모리는 이렇게 보통의 배열처럼 사용한다.
+	p[0] = 12;
+	p[1] = 24;
+	*(p + 2) = 36;
+
+	free(p);
+
+	// 동적으로 할당된 배열은 공간이 부족할 경우 더 큰 배열을 할당하여 사용할 수 있다.
+
+	int* array = (int*)malloc(4 * sizeof(int));
+
+	// 배열 array의 크기가 부족한 상황이 발생한다.
+	
+	int* tmp = (int*)malloc(8 * sizeof(int));
+	int i;
+
+	// tmp에 데이터 옮기고
+	for (i = 0; i < 4; i++)
+		tmp[i] = array[i];
+
+	// 가비지를 없애기위해 해제시켜줌.
+	free(array);
+
+	// 시작주소를 준다.
+	array = tmp;
+
+	// 배열과 동적메모리할당의 차이?
+	// 포인터와 배열은 매우 긴밀히 연관되어 있다.
+	// 예를 들어 다음과 같이 선언된 배열 a가 있다고 하자.
+	int a[10];
+
+	// 배열의 이름은 배열의 시작 주소를 저장하는 포인터 변수임
+	// (단 그 값을 변경할 수 없음)
+	// 그래서 메모리 재할당 불가.
+	// 동적메모리할당은 힙 영역에 저장됨
+	// 배열은 정적메모리할당(변경불가)
+
+	// 구글링해서 찾은 다중 포인터의 동적 메모리 할당
+	char **str = (char**)malloc(sizeof(char*) * 3);
+	str[0] = (char*)malloc(sizeof(char) * 5);
+	str[1] = (char*)malloc(sizeof(char) * 4);
+	str[2] = (char*)malloc(sizeof(char) * 3);
+
+	strcpy(str[0], "abcd");
+	strcpy(str[1], "efg");
+	strcpy(str[2], "hi");
+
+	free(str[0]);
+	free(str[1]);
+	free(str[2]);
+	free(str);
+
+	return 0;
+}

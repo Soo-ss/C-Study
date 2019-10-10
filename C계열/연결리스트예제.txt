@@ -1,0 +1,71 @@
+
+// 리스트
+// 기본적인 연산 : 삽입, 삭제, 검색 등
+// 리스트를 구현하는 대표적인 두 가지 방법 : 배열, 연결리스트
+
+// 배열의 단점
+// 크기가 고정 - reallocation이 필요
+// 리스트의 중간에 원소를 삽입하거나 삭제할 경우 다수의 데이터를 옮겨야함.
+
+// 연결리스트
+// 다른 데이터의 이동없이 중간에 삽입이나 삭제가 가능하며,
+// 길이의 제한이 없음
+// 하지만 랜덤엑세스 불가능.
+
+// 리스트 (1,2,3) != (3,2,1)
+// 집합(set) {1,2,3} == {3,2,1}
+
+// 각각의 노드는 필요한 데이터 필드와 하나 혹은 그 이상의 링크 필드로 구성
+// 링크 필드는 다음 노드의 주소를 저장
+// 첫 번째 노드의 주소는 따로 저장해야함.
+// 연결리스트의 첫번째 노드의 주소는 따로 저장해야하며 절대 잊어버려서는 안된다.
+// 마지막 노드의 next필드에는 NULL을 저장하여 연결리스트의 끝임을 표시한다.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// 연결 리스트에서 하나의 노드를 표현하기 위한 구조체이다.
+// 각 노드에 저장될 데이터는 하나의 문자열이라고 가정하자.
+struct node
+{
+	char* data;
+
+	// 다음 노드의 주소를 저장할 필드이다.
+	// 이렇게 자신과 동일한 구조체에 대한 포인터를 멤버로 가진다는 의미에서
+	// "자기 참조형 구조체" 라고 부르기도 한다.
+	// 전체주소를 가리키므로 구조체포인터타입.
+	struct node* next;
+};
+
+typedef struct node NODE;
+NODE *head = NULL; // 연결리스트의 첫 번째 노드의 주소를 저장할 포인터이다.
+
+int main()
+{
+	// malloc하면 딱맞게들감
+	head = (NODE*)malloc(sizeof(NODE));
+	head->data = "Tuseday";
+	head->next = NULL;
+
+	NODE* q = (NODE*)malloc(sizeof(NODE));
+	q->data = "Thursday";
+	q->next = NULL;
+	head->next = q;
+
+	// q의 할일은 끝났음 head로 통제하기때문에.
+
+	// 맨앞에 새로운 노드를 만들어보자
+	q = (NODE*)malloc(sizeof(NODE));
+	q->data = "Monday";
+	q->next = head;
+	head = q; // head의 임무.
+
+	NODE* p = head; // 이거 안해주면 head가 NULL이됨
+	while (p != NULL)
+	{
+		printf("%s\n", p->data);
+		p = p->next; // 가장 많이쓰게될 문장
+	}
+
+	return 0;
+}

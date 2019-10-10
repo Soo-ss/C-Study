@@ -1,0 +1,221 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 연결 리스트에서 하나의 노드를 표현하기 위한 구조체이다.
+// 각 노드에 저장될 데이터는 하나의 문자열이라고 가정하자.
+struct node
+{
+	char* data;
+
+	// 다음 노드의 주소를 저장할 필드이다.
+	// 이렇게 자신과 동일한 구조체에 대한 포인터를 멤버로 가진다는 의미에서
+	// "자기 참조형 구조체" 라고 부르기도 한다.
+	struct node* next;
+};
+
+typedef struct node NODE;
+NODE *head = NULL; // 연결리스트의 첫 번째 노드의 주소를 저장할 포인터이다.
+
+				   // <어떤 노드 뒤에 새로운 노드 삽입하기>
+				   // (포인터 prev가 가리키는 노드 바로 뒤에 새로운 노드를 만들어 삽입한다.)
+				   // 새로운 노드를 만들고 데이터를 저장한다.
+				   // 새로운 노드의 next필드가 prev의 다음 노드를 가리키도록 한다.
+				   // 새로운 노드를 prev의 다음 노드로 만든다.
+
+				   /*
+				   연결 리스트를 다루는 프로그램에서 가장 주의할 점은 내가 작성한 코드가
+				   일반적인 경우만이 아니라 특수한 경우에도 문제 없이 작동하는지 확인하는 것이다.
+				   이 경우에는 기존의 연결 리스트의 길이가 0인 경우, 즉 head가 NULL인 경우에도
+				   문제가 없는지 확인해야 한다.
+				   */
+
+int main()
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = "Ann";
+	tmp->next = head;
+	head = tmp;
+
+	return 0;
+}
+
+void add_first(char* item)
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = head;
+	head = tmp;
+}
+
+// 연결리스트에 새로운 노드를 삽입할 때 삽입할 위치의 바로 앞 노드의
+// 주소가 필요하다. 즉 어떤 노드의 뒤에 삽입하는것은 간단하지만,
+// 반대로 어떤 노드의 앞에 삽입하는 것은 간단하지 않다.
+// 삽입에 성공하면 1, 아니면 0을 반환한다.
+int add_after(NODE* prev, char* item)
+{
+	if (prev == NULL)
+		return 0;
+
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = prev->next;
+	prev->next = tmp;
+
+	return 1;
+}
+
+// 첫번째 노드의 삭제
+// head가 현재 head노드의 다음노드를 가리키게 만든다.
+// 특별한 언급 없으면 head는 전역변수
+// 연결리스트의 첫번째 노드를 삭제하고 그 노드의 주소를 반환한다.
+NODE* remove_first()
+{
+	if (head == NULL)
+		return NULL;
+
+	else
+	{
+		NODE* tmp = head;
+		head = head->next;
+		return tmp;
+	}
+}
+
+// 어떤 노드의 다음 노드 삭제하기
+// (prev가 가리키는 다음 노드를 삭제한다.)
+// prev의 다음 노드가 null이 아니라면 prev의 next필드가
+// 현재 next노드의 다음 노드를 가리키게 만든다.
+// 단순연결리스트에 어떤 노드를 삭제할 때는
+// 삭제할 노드의 바로 앞 노드의 주소가 필요하다.
+// 삭제할 노드의 주소만으로는 삭제할 수 없다.
+NODE* remove_after(NODE* prev)
+{
+	NODE* tmp = prev->next;
+	if (tmp == NULL)
+		return NULL;
+
+	else
+	{
+		prev->next = tmp->next;
+		return tmp;
+	}
+}
+
+// 연결리스트의 노드들을 처음부터 순서대로 방문하는 것을
+// 순회한다고 말한다. 이 함수는 입력된 문자열 word와
+// 동일한 단어를 저장한 노드를 찾아서 그 노드의 주소를 반환한다.
+// 그것을 위해서 연결리스트를 순회한다.
+NODE* find(char* word)
+{
+	NODE* p = head;
+	while (p != NULL)
+	{
+		if (strcmp(p->data, word) == 0)
+			return p;
+
+		p = p->next;
+	}
+
+	return NULL;
+}
+
+// 연결리스트 순회
+// 연결리스트의 index번째 노드의 주소를 반환한다.
+NODE* get_node(int index)
+{
+	if (index < 0)
+		return NULL;
+
+	NODE* p = head;
+	for (int i = 0; i < index && p != NULL; i++)
+		p = p->next;
+
+	return p;
+}
+
+// 연결리스트의 index번째 위치에 새로운 노드를 만들어서 삽입한다.
+int add(int index, char* item)
+{
+	if (index < 0)
+		return 0;
+
+	if (index == 0)
+	{
+		add_first(item);
+		return 1;
+	}
+
+	NODE* prev = get_node(index - 1);
+
+	if (prev != NULL)
+	{
+		add_after(prev, item);
+		return 1;
+	}
+
+	return 0;
+}
+
+// index번째 노드를 삭제하고, 그 노드에 저장된 데이터를 반환한다.
+NODE* remove(int index)
+{
+	if (index < 0)
+		return NULL;
+
+	if (index == 0)
+		return remove_first();
+
+	// 삭제할라면 앞노드주소 알아야함
+	NODE* prev = get_node(index - 1);
+	if (prev == NULL)
+		return NULL;
+
+	else
+		return remove_after(prev);
+}
+
+// 입력된 스트링을 저장한 노드를 찾아 삭제한다.
+// 삭제된 노드에 저장된 스트링을 반환한다.
+// q는 항상 p의 직전 노드를 가리킴. (2개의 포인터를쓴다)
+// p가 첫번째 노드일 경우 q는 NULL임
+// 삭제할 노드를 찾았음. 하지만 노드를 삭제하기 위해서는
+// 삭제할 노드가 아니라 직전 노드의 주소가 필요함
+NODE* remove(char* item)
+{
+	NODE* p = head;
+	NODE* q = NULL;
+	while (p != NULL && strcmp(p->data, item) != 0)
+	{
+		q = p;
+		p = p->next; // p가 전진
+	}
+
+	if (p == NULL)
+		return NULL;
+
+	if (q == NULL) // 첫번째 노드가 삭제할 노드인 경우
+		return remove_first();
+	else
+		return remove_after(q);
+}
+
+// 연결된 데이터들이 오름차순으로 정렬되어있다는 가정하에 새로운 데이터를 삽입한다.
+void add_to_ordered_list(char* item)
+{
+	NODE* p = head;
+	NODE* q = NULL;
+
+	while (p != NULL && strcmp(p->data, item) <= 0)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	if (q == NULL)
+		add_first(item);
+
+	else
+		add_after(q);
+}

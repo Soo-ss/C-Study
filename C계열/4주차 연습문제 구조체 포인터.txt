@@ -1,0 +1,200 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 300
+
+typedef struct {
+	int year, month, day,
+		hour, minute, second;
+}MyDate;
+
+MyDate *dates[MAX];
+int n;
+int count = 0;
+
+void Input();
+void Output();
+void Sort();
+int Compare(char* ptr);
+
+int main()
+{
+	scanf("%d ", &n);
+
+	// 중요
+	for (int i = 0; i < n; i++)
+	{
+		dates[i] = (MyDate*)malloc(sizeof(MyDate));
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		Input();
+	}
+
+	Sort();
+	Output();
+
+	return 0;
+}
+
+int Compare(char* ptr)
+{
+	if (strcmp(ptr, "Jan") == 0)
+		return 1;
+	else if (strcmp(ptr, "Feb") == 0)
+		return 2;
+	else if (strcmp(ptr, "Mar") == 0)
+		return 3;
+	else if (strcmp(ptr, "Apr") == 0)
+		return 4;
+	else if (strcmp(ptr, "May") == 0)
+		return 5;
+	else if (strcmp(ptr, "Jun") == 0)
+		return 6;
+	else if (strcmp(ptr, "Jul") == 0)
+		return 7;
+	else if (strcmp(ptr, "Aug") == 0)
+		return 8;
+	else if (strcmp(ptr, "Sep") == 0)
+		return 9;
+	else if (strcmp(ptr, "Oct") == 0)
+		return 10;
+	else if (strcmp(ptr, "Nov") == 0)
+		return 11;
+	else if (strcmp(ptr, "Dec") == 0)
+		return 12;
+
+	return -1; // 이거 조심
+}
+
+void Input()
+{
+	char buffer[MAX];
+	char* ptr;
+	char* tmp;
+
+	fscanf(stdin, "%s", buffer);
+
+	ptr = strtok(buffer + 1, "/");
+
+	while (ptr != NULL)
+	{
+		tmp = ptr;
+		dates[count]->day = atoi(tmp);
+		ptr = strtok(NULL, "/");
+
+		dates[count]->month = Compare(ptr);
+		ptr = strtok(NULL, ":");
+
+		tmp = ptr;
+		dates[count]->year = atoi(tmp);
+		ptr = strtok(NULL, ":");
+
+		tmp = ptr;
+		dates[count]->hour = atoi(tmp);
+		ptr = strtok(NULL, ":");
+
+		tmp = ptr;
+		dates[count]->minute = atoi(tmp);
+		ptr = strtok(NULL, ":");
+
+		tmp = ptr;
+		dates[count]->second = atoi(tmp);
+		ptr = strtok(NULL, "]");
+
+		count++;
+	}
+}
+
+void Change(int i, int j)
+{
+	int tmp;
+
+	tmp = dates[i]->year;
+	dates[i]->year = dates[j]->year;
+	dates[j]->year = tmp;
+
+	tmp = dates[i]->month;
+	dates[i]->month = dates[j]->month;
+	dates[j]->month = tmp;
+
+	tmp = dates[i]->day;
+	dates[i]->day = dates[j]->day;
+	dates[j]->day = tmp;
+
+	tmp = dates[i]->hour;
+	dates[i]->hour = dates[j]->hour;
+	dates[j]->hour = tmp;
+
+	tmp = dates[i]->minute;
+	dates[i]->minute = dates[j]->minute;
+	dates[j]->minute = tmp;
+
+	tmp = dates[i]->second;
+	dates[i]->second = dates[j]->second;
+	dates[j]->second = tmp;
+}
+
+void Sort()
+{
+	for (int i = n - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (dates[j]->year > dates[i]->year)
+			{
+				Change(i, j);
+			}
+
+			else if (dates[j]->year == dates[i]->year &&
+				dates[j]->month > dates[i]->month)
+			{
+				Change(i, j);
+			}
+
+			else if (dates[j]->year == dates[i]->year &&
+				dates[j]->month == dates[i]->month &&
+				dates[j]->day > dates[i]->day)
+			{
+				Change(i, j);
+			}
+
+			else if (dates[j]->year == dates[i]->year &&
+				dates[j]->month == dates[i]->month &&
+				dates[j]->day == dates[i]->day)
+			{
+				int h1 = dates[j]->hour;
+				int m1 = dates[j]->minute;
+				int s1 = dates[j]->second;
+
+				int h2 = dates[i]->hour;
+				int m2 = dates[i]->minute;
+				int s2 = dates[i]->second;
+
+				/*if (h1 == 0)
+					h1 = 24;
+
+				if (h2 == 0)
+					h2 = 24;*/
+
+				if ((h1 * 3600 + m1 * 60 + s1) > (h2 * 3600 + m2 * 60 + s2))
+					Change(i, j);
+			}
+		}
+	}
+}
+
+void Output()
+{
+	for (int i = 0; i < n; i++)
+	{
+		printf("%02d-%02d-%02d:%02d:%02d:%02d\n",
+			dates[i]->year, dates[i]->month, dates[i]->day,
+			dates[i]->hour, dates[i]->minute, dates[i]->second);
+	}
+}
