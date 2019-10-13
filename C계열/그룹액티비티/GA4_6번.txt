@@ -1,0 +1,60 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct point
+{
+	double x;
+	double y;
+}POINT;
+
+typedef struct circle
+{
+	POINT* center;
+	double radius;
+}CIRCLE;
+
+CIRCLE** circles;
+
+int intersect(CIRCLE p, CIRCLE q)
+{
+	double distSq = (p.center->x - q.center->x) * (p.center->x - q.center->x)
+		+ (p.center->y - q.center->y) * (p.center->y - q.center->y);
+
+	if ((p.radius + q.radius) * (p.radius + q.radius) < distSq)
+		return 0;
+
+	return 1;
+}
+
+int main()
+{
+	int n;
+	double x, y, r;
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++)
+	{
+		circles[i] = (CIRCLE*)malloc(sizeof(CIRCLE));
+
+		scanf("%lf %lf %lf", &x, &y, &r);
+		circles[i]->center->x = x;
+		circles[i]->center->y = y;
+		circles[i]->radius = r;
+	}
+
+	int count = 0;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = i + 1; j < n; j++)
+		{
+			if (intersect(circles[i], circles[j]))
+				count++;
+		}
+	}
+
+	printf("The count is %d. \n", count);
+
+	return 0;
+}

@@ -1,0 +1,46 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct book
+{
+	// 이것땜에 ->쓰는거 아님.
+	char* title;
+	char* author;
+}BOOK;
+
+BOOK* collection[100]; // 이렇게 구조체포인터쓰면 ->씀
+
+int main()
+{
+	int n;
+	char buffer1[40], buffer2[40];
+
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++)
+	{
+		// BOOK* 은 무조건 4바이트, BOOK은 구조체 멤버만큼
+		// 지금은 char*형 2개 = 8바이트
+		collection[i] = (BOOK*)malloc(sizeof(BOOK));
+
+		fscanf(stdin, "%s", buffer1);
+		fscanf(stdin, "%s", buffer2);
+		collection[i]->title = strdup(buffer1);
+		collection[i]->author = strdup(buffer2);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		printf("Title : %s, Author : %s\n", collection[i]->title,
+											collection[i]->author);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		free(collection[i]);
+	}
+
+	return 0;
+}

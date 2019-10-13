@@ -10,10 +10,10 @@
 #define BUFFER_SIZE 100
 #define WORD_SIZE 2500
 
-char* words[WORD_SIZE];
-char* result[WORD_SIZE];
 int num = 0; // number of strings
 int resultNum = 0;
+char* words[WORD_SIZE];
+char* result[WORD_SIZE];
 int countArr[WORD_SIZE] = { 0 };
 
 void Input();
@@ -21,6 +21,7 @@ int crop_and_tolower(char* str);
 void Output();
 void Sort();
 void CatchDup();
+void Delim(char* arr);
 
 int main()
 {
@@ -47,6 +48,11 @@ void Input()
 	while (fscanf(fp, "%s", buffer) != EOF)
 	{
 		int len = crop_and_tolower(buffer);
+
+		if (len == -1)
+		{
+			Delim(buffer);
+		}
 
 		if (len >= 7)
 		{
@@ -83,9 +89,87 @@ void CatchDup()
 	}
 }
 
+void Delim(char* arr)
+{
+	int tmpNum = 0, tmpNumSecond = 0;
+	char tmp[BUFFER_SIZE] = { NULL, };
+	char tmpSecond[BUFFER_SIZE] = { NULL, };
+
+	int front = 0, back = 0;
+
+	bool isDouble = false;
+
+	int len = strlen(arr);
+
+	for (int i = 0; i < len; i++)
+	{
+		if (i > 1 && arr[i - 2] == '-' && arr[i - 1] == '-'
+			&& arr[i - 2] != '-')
+		{
+			isDouble = true;
+			front = i - 2;
+			back = i;
+			break;
+		}
+	}
+
+	if (isDouble)
+	{
+		for (int j = 0; j < front; j++)
+		{
+			tmp[tmpNum] = arr[j];
+			tmpNum++;
+		}
+
+		for (int j = back; j < len; j++)
+		{
+			tmpSecond[tmpNumSecond] = arr[j];
+			tmpNumSecond++;
+		}
+
+		if (strlen(tmp) >= 7)
+		{
+			words[num] = strdup(tmp);
+			num++;
+		}
+
+		if (strlen(tmpSecond) >= 7)
+		{
+			words[num] = strdup(tmpSecond);
+			num++;
+		}
+
+		// 초기화
+		for (int i = 0; i < tmpNum; i++)
+		{
+			tmp[i] = NULL;
+		}
+
+		for (int i = 0; i < tmpNumSecond; i++)
+		{
+			tmpSecond[i] = NULL;
+		}
+
+		tmpNum = 0;
+		tmpNumSecond = 0;
+		isDouble = false;
+	}
+
+	return;
+}
+
 int crop_and_tolower(char* str)
 {
 	int len = strlen(str);
+
+	for (int i = 0; i < len; i++)
+	{
+		if (i > 1 && str[i - 2] == '-' && str[i - 1] == '-'
+			&& str[i - 2] != '-')
+		{
+			return -1;
+		}
+	}
 
 	int s = 0, t = len - 1;
 

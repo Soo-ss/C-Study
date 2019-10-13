@@ -1,0 +1,42 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int crop_and_tolower(char* str)
+{
+	int s = 0, t = strlen(str) - 1;
+
+	while (s < strlen(str) && !isalpha(str[s]))
+		s++;
+
+	while (t >= 0 && !isalpha(str[t]))
+		t--;
+
+	if (s > t)
+		return 0;
+
+	int k = 0;
+
+	for (int i = s; i <= t; i++)
+		str[k++] = tolower(str[i]);
+
+	//for(int i = t-s+1; i < strlen(str); i++)
+		
+	str[t - s + 1] = '\0';
+
+	return t - s + 1;
+}
+
+int main()
+{
+	char str[100];
+	scanf("%s", str);
+	int len = crop_and_tolower(str);
+
+	if (len <= 0)
+		printf("Not a word.\n");
+
+	else
+		printf("%s\n", str);
+}
