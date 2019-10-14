@@ -1,4 +1,9 @@
 
+/*
+head hello part one is head hello hello
+and board is cool EOF
+*/
+
 #pragma warning (disable : 4996)
 
 #include <stdio.h>
@@ -44,6 +49,7 @@ int main()
 		p = p->next;
 	}
 
+	// 메모리해제
 	while (head != NULL)
 	{
 		p = head->next;
@@ -60,9 +66,11 @@ int main()
 // 아니라면 정렬된 순서로 연결리스트에 추가한다.
 NODE* Insert(NODE* head, char buf[])
 {
+	bool isEqual = false;
+
 	NODE* tmp = (NODE*)malloc(sizeof(NODE));
 	tmp->data = (ITEM*)malloc(sizeof(ITEM));
-	tmp->data->word = buf;
+	tmp->data->word = strdup(buf);
 	tmp->data->freq = 1;
 	tmp->next = NULL;
 
@@ -72,24 +80,56 @@ NODE* Insert(NODE* head, char buf[])
 		return tmp;
 	}
 
-	if (buf < head->data->word)
+	// 첫번째 같을경우
+	if (strcmp(buf, head->data->word) == 0)
 	{
+		head->data->freq++;
+		return head;
+	}
+
+	// 맨앞에 작은게 나올경우
+	if (strcmp(buf, head->data->word) < 0)
+	{
+		tmp->data->word = strdup(buf);
+		tmp->data->freq = 1;
 		tmp->next = head;
 		return tmp;
 	}
 
-	else
-	{
-		NODE* p = head;
-		NODE* prev = NULL;
+	// 클 경우
+	NODE* p = head;
+	NODE* prev = NULL;
 
-		while (p != NULL && buf > p->data->word)
+	while (p != NULL)
+	{
+		if (strcmp(buf, p->data->word) == 0)
 		{
-			prev = p;
-			p = p->next;
+			isEqual = true;
+			break;
 		}
 
+		if (strcmp(buf, p->data->word) < 0)
+		{
+			isEqual = false;
+			break;
+		}
+
+		prev = p;
+		p = p->next;
+	}
+
+	if (isEqual == false)
+	{
+		tmp->data->word = strdup(buf);
+		tmp->data->freq = 1;
 		tmp->next = prev->next;
 		prev->next = tmp;
+		return head;
+	}
+
+	else
+	{
+		p->data->freq++;
+		return head;
 	}
 }

@@ -7,27 +7,24 @@
 #include <string.h>
 #include <ctype.h>
 
-#define BUFFER_SIZE 100
-#define WORD_SIZE 2500
+#define BUFFER_SIZE 50
+#define WORD_SIZE 900
 
-int num = 0; // number of strings
-int resultNum = 0;
+int num = 0;
 char* words[WORD_SIZE];
-char* result[WORD_SIZE];
 int countArr[WORD_SIZE] = { 0 };
 
 void Input();
-int crop_and_tolower(char* str);
+int CutBothSide(char* str);
 void Output();
 void Sort();
-void CatchDup();
-void Delim(char* arr);
+int CatchDup(char* str);
+void Delim(char* str);
 
 int main()
 {
 	Input();
 	Sort();
-	CatchDup();
 	Output();
 
 	return 0;
@@ -47,7 +44,7 @@ void Input()
 
 	while (fscanf(fp, "%s", buffer) != EOF)
 	{
-		int len = crop_and_tolower(buffer);
+		int len = CutBothSide(buffer);
 
 		if (len == -1)
 		{
@@ -56,40 +53,39 @@ void Input()
 
 		if (len >= 7)
 		{
-			words[num] = strdup(buffer);
-			num++;
+			// 중복 아니면 단어와 카운트를 증가시킨다.
+			if (CatchDup(buffer) == -1)
+			{
+				words[num] = strdup(buffer);
+				countArr[num]++;
+				num++;
+			}
+
+			// 중복이면 해당 인덱스의 카운트만 증가시킨다.
+			else if (CatchDup(buffer) >= 0)
+			{
+				countArr[CatchDup(buffer)]++;
+			}
 		}
 	}
 
 	fclose(fp);
 }
 
-void CatchDup()
+// 중복되면 해당되는 인덱스리턴
+// 중복 아니면 -1리턴
+int CatchDup(char* str)
 {
-	int i = 0, count = 0;
-
-	// 새로운배열에 복사한다.
-	// 근데 왜 한칸앞으로땡기는건 한 700줄까진 되는데 그 이후론 안될까?
-	while (i < num - 1)
+	for (int i = 0; i < num; i++)
 	{
-		if (strcmp(words[i], words[i + 1]) != 0)
-		{
-			result[resultNum] = words[i];
-			countArr[resultNum] = count;
-			resultNum++;
-			i++;
-			count = 0;
-		}
-
-		else
-		{
-			count++;
-			i++;
-		}
+		if (strcmp(str, words[i]) == 0)
+			return i;
 	}
+
+	return -1;
 }
 
-void Delim(char* arr)
+void Delim(char* str)
 {
 	int tmpNum = 0, tmpNumSecond = 0;
 	char tmp[BUFFER_SIZE] = { '\0', };
@@ -99,45 +95,62 @@ void Delim(char* arr)
 
 	bool isDouble = false;
 
-	int length = strlen(arr);
+	int length = strlen(str);
 
 	for (int i = 0; i < length; i++)
 	{
-		if (i > 1 && isalpha(arr[i - 2]) == 0
-			&& isalpha(arr[i - 1]) == 0 && isalpha(arr[i]) != 0)
+		if (i > 1 && isalpha(str[i - 2]) == 0
+			&& isalpha(str[i - 1]) == 0 && isalpha(str[i]) != 0)
 		{
 			isDouble = true;
 		}
 
 		if ((i > 0 && i < length - 1 &&
-			isalpha(arr[i - 1]) != 0 && 
-			isalpha(arr[i]) == 0 &&
-			isalpha(arr[i]) == 0 && 
-			isalpha(arr[i + 1]) != 0) ||
-			(isalpha(arr[i]) != 0 && 
-			isDouble == false))
+			isalpha(str[i - 1]) != 0 &&
+			isalpha(str[i]) == 0 &&
+			isalpha(str[i + 1]) != 0) ||
+			(isalpha(str[i]) != 0 &&
+				isDouble == false))
 		{
-			tmp[tmpNum] = tolower(arr[i]);
+			tmp[tmpNum] = tolower(str[i]);
 			tmpNum++;
 		}
 
-		if (isDouble == true && isalpha(arr[i]) != 0)
+		if (isDouble == true && isalpha(str[i]) != 0)
 		{
-			tmpSecond[tmpNumSecond] = tolower(arr[i]);
+			tmpSecond[tmpNumSecond] = tolower(str[i]);
 			tmpNumSecond++;
 		}
 	}
 
 	if (strlen(tmp) >= 7)
 	{
-		words[num] = strdup(tmp);
-		num++;
+		if (CatchDup(tmp) == -1)
+		{
+			words[num] = strdup(tmp);
+			countArr[num]++;
+			num++;
+		}
+
+		else if (CatchDup(tmp) >= 0)
+		{
+			countArr[CatchDup(tmp)]++;
+		}
 	}
 
 	if (strlen(tmpSecond) >= 7)
 	{
-		words[num] = strdup(tmpSecond);
-		num++;
+		if (CatchDup(tmpSecond) == -1)
+		{
+			words[num] = strdup(tmpSecond);
+			countArr[num]++;
+			num++;
+		}
+
+		else if (CatchDup(tmpSecond) >= 0)
+		{
+			countArr[CatchDup(tmpSecond)]++;
+		}
 	}
 
 	// 초기화
@@ -156,7 +169,7 @@ void Delim(char* arr)
 	isDouble = false;
 }
 
-int crop_and_tolower(char* str)
+int CutBothSide(char* str)
 {
 	int len = strlen(str);
 
@@ -192,15 +205,16 @@ int crop_and_tolower(char* str)
 
 void Output()
 {
-	for (int i = 0; i < resultNum; i += 10)
+	for (int i = 0; i < num; i += 10)
 	{
-		printf("%s %d\n", result[i], countArr[i] + 1);
+		printf("%s %d\n", words[i], countArr[i]);
 	}
 }
 
 void Sort()
 {
 	char* tmp;
+	int intTmp;
 
 	for (int i = num - 1; i >= 0; i--)
 	{
@@ -211,6 +225,10 @@ void Sort()
 				tmp = words[i];
 				words[i] = words[j];
 				words[j] = tmp;
+
+				intTmp = countArr[i];
+				countArr[i] = countArr[j];
+				countArr[j] = intTmp;
 			}
 		}
 	}
