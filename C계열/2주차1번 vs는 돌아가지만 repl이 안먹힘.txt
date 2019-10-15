@@ -1,5 +1,7 @@
 
-// ctrl + h 글자변경
+// 양쪽을 잘라만 놓고 판별하는 함수로 들어가자.
+// 문자 3개 연속된 경우도있으니 2이상으로 코딩해야함.
+// 카운트를하자.
 
 #pragma warning (disable : 4996)
 
@@ -90,8 +92,8 @@ int CatchDup(char* str)
 void Delim(char* str)
 {
 	int tmpNum = 0, tmpNumSecond = 0;
-	char tmp[BUFFER_SIZE] = { '\0', };
-	char tmpSecond[BUFFER_SIZE] = { '\0', };
+	char tmp[BUFFER_SIZE];
+	char tmpSecond[BUFFER_SIZE];
 
 	int front = 0, back = 0;
 
@@ -124,6 +126,9 @@ void Delim(char* str)
 			tmpNumSecond++;
 		}
 	}
+
+	tmp[tmpNum] = '\0';
+	tmpSecond[tmpNumSecond] = '\0';
 
 	if (strlen(tmp) >= 7)
 	{
