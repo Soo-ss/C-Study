@@ -53,8 +53,10 @@ void Input()
 
 		if (len >= 7)
 		{
+			int index = CatchDup(buffer);
+
 			// 중복 아니면 단어와 카운트를 증가시킨다.
-			if (CatchDup(buffer) == -1)
+			if (index == -1)
 			{
 				words[num] = strdup(buffer);
 				countArr[num]++;
@@ -62,9 +64,9 @@ void Input()
 			}
 
 			// 중복이면 해당 인덱스의 카운트만 증가시킨다.
-			else if (CatchDup(buffer) >= 0)
+			else if (index >= 0)
 			{
-				countArr[CatchDup(buffer)]++;
+				countArr[index]++;
 			}
 		}
 	}
@@ -125,48 +127,37 @@ void Delim(char* str)
 
 	if (strlen(tmp) >= 7)
 	{
-		if (CatchDup(tmp) == -1)
+		int index = CatchDup(tmp);
+
+		if (index == -1)
 		{
 			words[num] = strdup(tmp);
 			countArr[num]++;
 			num++;
 		}
 
-		else if (CatchDup(tmp) >= 0)
+		else if (index >= 0)
 		{
-			countArr[CatchDup(tmp)]++;
+			countArr[index]++;
 		}
 	}
 
 	if (strlen(tmpSecond) >= 7)
 	{
-		if (CatchDup(tmpSecond) == -1)
+		int index = CatchDup(tmpSecond);
+
+		if (index == -1)
 		{
 			words[num] = strdup(tmpSecond);
 			countArr[num]++;
 			num++;
 		}
 
-		else if (CatchDup(tmpSecond) >= 0)
+		else if (index >= 0)
 		{
-			countArr[CatchDup(tmpSecond)]++;
+			countArr[index]++;
 		}
 	}
-
-	// 초기화
-	for (int i = 0; i < tmpNum; i++)
-	{
-		tmp[i] = '\0';
-	}
-
-	for (int i = 0; i < tmpNumSecond; i++)
-	{
-		tmpSecond[i] = '\0';
-	}
-
-	tmpNum = 0;
-	tmpNumSecond = 0;
-	isDouble = false;
 }
 
 int CutBothSide(char* str)
