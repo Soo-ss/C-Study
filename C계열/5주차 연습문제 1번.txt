@@ -1,0 +1,227 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct node
+{
+	int data;
+	struct node* next;
+}NODE;
+
+NODE* head = NULL;
+
+void Add();
+void Find();
+void Count();
+void Delete();
+void List();
+void AddFirst(int item);
+void AddAfter(NODE* prev, int item);
+NODE* GetNode(int index);
+void RemoveFirst();
+void RemoveAfter(NODE* prev);
+
+int main()
+{
+	char command[10];
+
+	while (1)
+	{
+		printf("$\n");
+
+		scanf("%s", command);
+
+		if (strcmp(command, "exit") == 0) break;
+		else if (strcmp(command, "add") == 0) Add();
+		else if (strcmp(command, "find") == 0) Find();
+		else if (strcmp(command, "count") == 0) Count();
+		else if (strcmp(command, "list") == 0) List();
+		else if (strcmp(command, "delete") == 0) Delete();
+	}
+
+	return 0;
+}
+
+void AddFirst(int item)
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = head;
+	head = tmp;
+}
+
+void AddAfter(NODE* prev, int item)
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = item;
+	tmp->next = prev->next;
+	prev->next = tmp;
+}
+
+NODE* GetNode(int index)
+{
+	if (index < 0)
+		return NULL;
+
+	NODE* p = head;
+	for (int i = 0; i < index && p != NULL; i++)
+		p = p->next;
+
+	return p;
+}
+
+void Add()
+{
+	int index, value;
+	scanf("%d%d", &index, &value);
+
+	if (index < 0)
+	{
+		printf("invalied index\n");
+		return;
+	}
+
+	if (index == 0)
+	{
+		AddFirst(value);
+		return;
+	}
+
+	NODE* prev = GetNode(index - 1);
+
+	if (prev == NULL)
+	{
+		printf("invalid index\n");
+		return;
+	}
+
+	if (prev != NULL)
+	{
+		AddAfter(prev, value);
+		return;
+	}
+}
+
+void Find()
+{
+	int value;
+	scanf("%d", &value);
+
+	int count = 0;
+
+	NODE* p = head;
+	while (p != NULL)
+	{
+		if (p->data == value)
+		{
+			printf("%d\n", count);
+			return;
+		}
+
+		p = p->next;
+		count++;
+	}
+
+	printf("-1\n");
+	return;
+}
+
+void Count()
+{
+	int value;
+	scanf("%d", &value);
+
+	int count = 0;
+
+	NODE* p = head;
+	while (p != NULL)
+	{
+		if (p->data == value)
+		{
+			count++;
+		}
+
+		p = p->next;
+	}
+
+	printf("%d\n", count);
+}
+
+void RemoveFirst()
+{
+	if (head == NULL)
+	{
+		printf("not exist\n");
+		return;
+	}
+
+	else
+	{
+		NODE* tmp = head;
+		head = head->next;
+		return;
+	}
+}
+
+void RemoveAfter(NODE* prev)
+{
+	NODE* tmp = prev->next;
+
+	if (tmp == NULL)
+	{
+		printf("not exist\n");
+		return;
+	}
+
+	else
+	{
+		prev->next = tmp->next;
+		return;
+	}
+}
+
+void Delete()
+{
+	int value;
+	scanf("%d", &value);
+
+	NODE* p = head;
+	NODE* q = NULL;
+
+	while (p != NULL && p->data != value)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	if (p == NULL)
+	{
+		printf("not exist\n");
+		return;
+	}
+
+	if (q == NULL)
+	{
+		RemoveFirst();
+		return;
+	}
+
+	else
+	{
+		RemoveAfter(q);
+		return;
+	}
+}
+
+void List()
+{
+	NODE* p = head;
+	while (p != NULL)
+	{
+		printf("%d ", p->data);
+		p = p->next;
+	}
+
+	printf("\n");
+}

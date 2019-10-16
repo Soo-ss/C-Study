@@ -1,0 +1,54 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+int main()
+{
+	// strtok쓰지말고 그냥 한번에보자
+	int n = 0, count = 0, bNum = 0;
+	int line = 0;
+	char* data[MAX], buffer[MAX], buffer2[MAX], tmp[MAX];
+	char delim[] = ",";
+
+	fgets(buffer, MAX, stdin);
+
+	buffer[strlen(buffer) - 1] = '\0';
+
+	for (int i = 0; i < strlen(buffer); i++)
+	{
+		if (buffer[i] == '"')
+		{
+			count++;
+			continue;
+		}
+
+		if (count == 0 && buffer[i] == ',')
+		{
+			buffer2[bNum++] = '\n';
+			line++;
+		}
+
+		if (count == 2 && buffer[i] == ',')
+		{
+			count = 0;
+			buffer2[bNum++] = '\n';
+			line++;
+		}
+
+		if(buffer[i] != ',')
+		{
+			buffer2[bNum++] = buffer[i];
+		}
+	}
+
+	printf("%d\n", line + 1);
+
+	for (int i = 0; i < bNum; i++)
+	{
+		printf("%c", buffer2[i]);
+	}
+
+	return 0;
+}

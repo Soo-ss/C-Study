@@ -47,6 +47,7 @@ void ProcessCommand()
 
 	buffer[strlen(buffer) - 1] = '\0';
 
+	// 생각해보니 함수라서 while문 쓰지 말고 count도 안써도 될듯
 	while (1)
 	{
 		int count = 0;

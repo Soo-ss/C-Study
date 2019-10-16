@@ -7,26 +7,23 @@
 #include <string.h>
 #include <ctype.h>
 
-#define BUFFER_SIZE 100
-#define WORD_SIZE 2500
+#define BUFFER_SIZE 50
+#define WORD_SIZE 1000
 
 char* words[WORD_SIZE];
-char* result[WORD_SIZE];
 int num = 0; // number of strings
-int resultNum = 0;
 int countArr[WORD_SIZE] = { 0 };
 
 void Input();
-int crop_and_tolower(char* str);
+int CutBothSide(char* str);
 void Output();
 void Sort();
-void CatchDup();
+int CatchDup(char* str);
 
 int main()
 {
 	Input();
 	Sort();
-	CatchDup();
 	Output();
 
 	return 0;
@@ -46,44 +43,45 @@ void Input()
 
 	while (fscanf(fp, "%s", buffer) != EOF)
 	{
-		int len = crop_and_tolower(buffer);
+		int len = CutBothSide(buffer);
 
 		if (len >= 7)
 		{
-			words[num] = strdup(buffer);
-			num++;
+			int index = CatchDup(buffer);
+
+			// 중복 아니면 단어와 카운트를 증가시킨다.
+			if (index == -1)
+			{
+				words[num] = strdup(buffer);
+				countArr[num]++;
+				num++;
+			}
+
+			// 중복이면 카운트만 증가시킨다.
+			else if (index >= 0)
+			{
+				countArr[index]++;
+			}
 		}
 	}
 
 	fclose(fp);
 }
 
-void CatchDup()
+// 중복되면 해당되는 인덱스리턴
+// 중복 아니면 -1리턴
+int CatchDup(char* str)
 {
-	int i = 0, count = 0;
-
-	// 새로운배열에 복사한다.
-	// 근데 왜 한칸앞으로땡기는건 한 700줄까진 되는데 왜 그 이후론 안될까?
-	while (i < num - 1)
+	for (int i = 0; i < num; i++)
 	{
-		if (strcmp(words[i], words[i + 1]) != 0)
-		{
-			result[resultNum] = words[i];
-			countArr[resultNum] = count;
-			resultNum++;
-			i++;
-			count = 0;
-		}
-
-		else
-		{
-			count++;
-			i++;
-		}
+		if (strcmp(str, words[i]) == 0)
+			return i;
 	}
+
+	return -1;
 }
 
-int crop_and_tolower(char* str)
+int CutBothSide(char* str)
 {
 	int len = strlen(str);
 
@@ -110,15 +108,16 @@ int crop_and_tolower(char* str)
 
 void Output()
 {
-	for (int i = 0; i < resultNum; i += 10)
+	for (int i = 0; i < num; i += 10)
 	{
-		printf("%s %d\n", result[i], countArr[i] + 1);
+		printf("%s %d\n", words[i], countArr[i]);
 	}
 }
 
 void Sort()
 {
 	char* tmp;
+	int intTmp;
 
 	for (int i = num - 1; i >= 0; i--)
 	{
@@ -129,6 +128,10 @@ void Sort()
 				tmp = words[i];
 				words[i] = words[j];
 				words[j] = tmp;
+
+				intTmp = countArr[i];
+				countArr[i] = countArr[j];
+				countArr[j] = intTmp;
 			}
 		}
 	}

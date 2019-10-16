@@ -1,0 +1,31 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+char delim[] = ",";
+
+int main()
+{
+	int n = 0;
+	char* data[MAX], tmp[MAX];
+
+	fgets(tmp, MAX, stdin);
+
+	char* ptr = strtok(tmp, delim);
+
+	while (ptr != NULL)
+	{
+		data[n++] = strdup(ptr);
+
+		ptr = strtok(NULL, delim);
+	}
+
+	printf("%d\n", n);
+
+	for (int i = 0; i < n; i++)
+		printf("%s\n", data[i]);
+
+	return 0;
+}

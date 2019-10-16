@@ -1,0 +1,137 @@
+
+/*
+head hello part one is head hello hello
+and board is cool EOF
+*/
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAXLEN 100
+
+// 하나의 단어와 그 단어의 빈도수를 저장하기 위한 구조체
+typedef struct
+{
+	char* word;
+	int freq;
+}ITEM;
+
+// 연결리스트의 노드의 구조를 정의하는 구조체
+typedef struct node
+{
+	ITEM* data;
+	struct node* next;
+}NODE;
+
+void Insert(NODE**, char buf[]);
+
+int main()
+{
+	char buf[MAXLEN];
+	NODE* head = NULL; // head는 지역변수이다.
+
+	while (1)
+	{
+		scanf("%s", buf);
+		if (strcmp(buf, "EOF") == 0)
+			break;
+
+		Insert(&head, buf);
+	}
+
+	NODE* p = head;
+	while (p != NULL)
+	{
+		printf("%s:%d\n", p->data->word, p->data->freq);
+		p = p->next;
+	}
+
+	// 메모리해제
+	while (head != NULL)
+	{
+		p = head->next;
+		free(head);
+		head = p;
+	}
+
+	return 0;
+}
+
+
+// 입력된 문자열을 연결리스트에 반영하고 head노드의 주소를 반환한다.
+// 이미 존재하는 문자열이면 카운트만 증가하고, 
+// 아니라면 정렬된 순서로 연결리스트에 추가한다.
+void Insert(NODE** head, char buf[])
+{
+	bool isEqual = false;
+
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = (ITEM*)malloc(sizeof(ITEM));
+	tmp->data->word = strdup(buf);
+	tmp->data->freq = 1;
+	tmp->next = NULL;
+
+	// 첫노드
+	if (*head == NULL)
+	{
+		*head = tmp;
+		return;
+	}
+
+	// 첫번째 같을경우
+	if (strcmp(buf, (*head)->data->word) == 0)
+	{
+		(*head)->data->freq++;
+		return;
+	}
+
+	// 맨앞에 작은게 나올경우
+	if (strcmp(buf, (*head)->data->word) < 0)
+	{
+		tmp->data->word = strdup(buf);
+		tmp->data->freq = 1;
+		tmp->next = *head;
+		*head = tmp;
+		return;
+	}
+
+	// 클 경우
+	NODE* p = *head;
+	NODE* prev = NULL;
+
+	while (p != NULL)
+	{
+		if (strcmp(buf, p->data->word) == 0)
+		{
+			isEqual = true;
+			break;
+		}
+
+		if (strcmp(buf, p->data->word) < 0)
+		{
+			isEqual = false;
+			break;
+		}
+
+		prev = p;
+		p = p->next;
+	}
+
+	if (isEqual == false)
+	{
+		tmp->data->word = strdup(buf);
+		tmp->data->freq = 1;
+		tmp->next = prev->next;
+		prev->next = tmp;
+		return;
+	}
+
+	else
+	{
+		p->data->freq++;
+		return;
+	}
+}
