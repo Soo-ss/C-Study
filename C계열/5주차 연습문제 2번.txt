@@ -132,4 +132,50 @@ NODE* Insert(NODE* head, char buf[])
 		p->data->freq++;
 		return head;
 	}
+
+	// ====================================================================
+
+	NODE* p = head, *q = NULL;
+	while (p != NULL && strcmp(p->data->word, buf) < 0)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	// p가 NULL일 가능성을 항상 따져준다.
+	if (p != NULL && strcmp(p->data->word, buf) == 0)
+	{
+		p->data->freq++;
+		return head;
+	}
+
+	// 또다른 함수를 하나 만들어서 하는게 좋을듯.
+	// 코드가 반복될 가능성
+	NODE* t = (NODE*)malloc(sizeof(NODE));
+	t->data = (ITEM*)malloc(sizeof(ITEM));
+	t->data->word = strdup(buf);
+	t->data->freq = 1;
+	t->next = NULL; // 이건 일단 해주는게 중요
+
+	// 맨앞의 노드이면
+	if (q == NULL)
+	{
+		t->next = head;
+		return t;
+	}
+
+	// 맨뒤의 노드이면
+	t->next = p;
+	q->next = t;
+	return head;
+}
+
+NODE* CreateNode(char* buf)
+{
+	NODE* t = (NODE*)malloc(sizeof(NODE));
+	t->data = (ITEM*)malloc(sizeof(ITEM));
+	t->data->word = strdup(buf);
+	t->data->freq = 1;
+	t->next = NULL; // 이건 일단 해주는게 중요
+	return t;
 }

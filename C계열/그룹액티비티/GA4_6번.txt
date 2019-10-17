@@ -17,12 +17,12 @@ typedef struct circle
 
 CIRCLE** circles;
 
-int intersect(CIRCLE p, CIRCLE q)
+int intersect(CIRCLE* p, CIRCLE* q)
 {
-	double distSq = (p.center->x - q.center->x) * (p.center->x - q.center->x)
-		+ (p.center->y - q.center->y) * (p.center->y - q.center->y);
+	double distSq = (p->center->x - q->center->x) * (p->center->x - q->center->x)
+		+ (p->center->y - q->center->y) * (p->center->y - q->center->y);
 
-	if ((p.radius + q.radius) * (p.radius + q.radius) < distSq)
+	if ((p->radius + q->radius) * (p->radius + q->radius) < distSq)
 		return 0;
 
 	return 1;
@@ -34,11 +34,15 @@ int main()
 	double x, y, r;
 	scanf("%d", &n);
 
+	// 배열 하지말고 이렇게 하면됨
+	// 이중포인터라서 CIRCLE*타입
+	circles = (CIRCLE**)malloc(sizeof(CIRCLE*)*n);
+
 	for (int i = 0; i < n; i++)
 	{
-		circles[i] = (CIRCLE*)malloc(sizeof(CIRCLE));
-
 		scanf("%lf %lf %lf", &x, &y, &r);
+		circles[i] = (CIRCLE*)malloc(sizeof(CIRCLE));
+		circles[i]->center = (POINT*)malloc(sizeof(POINT));
 		circles[i]->center->x = x;
 		circles[i]->center->y = y;
 		circles[i]->radius = r;

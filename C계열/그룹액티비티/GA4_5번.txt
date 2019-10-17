@@ -1,4 +1,6 @@
 
+#pragma warning (disable : 4996)
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -25,8 +27,15 @@ int main()
 		// 지금은 char*형 2개 = 8바이트
 		collection[i] = (BOOK*)malloc(sizeof(BOOK));
 
-		fscanf(stdin, "%s", buffer1);
-		fscanf(stdin, "%s", buffer2);
+		scanf("%s", buffer1);
+		scanf("%s", buffer2);
+
+		// strcpy는 둘다 문자배열 (만약 title이 포인터가 아니라
+		// title[30]과 같이 배열이면 가능)
+
+		// strcpy쓰고싶으면
+		// collection[i]->title = (char*)malloc(strlen(buffer1) + 1);
+		// 근데 이 두가지 하는일이 strdup임
 		collection[i]->title = strdup(buffer1);
 		collection[i]->author = strdup(buffer2);
 	}
@@ -34,7 +43,7 @@ int main()
 	for (int i = 0; i < n; i++)
 	{
 		printf("Title : %s, Author : %s\n", collection[i]->title,
-											collection[i]->author);
+			collection[i]->author);
 	}
 
 	for (int i = 0; i < n; i++)

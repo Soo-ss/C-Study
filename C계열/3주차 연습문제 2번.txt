@@ -6,6 +6,8 @@
 
 int main()
 {
+	// process token starting at s and ending at t
+	// 따옴표안에 들어온걸 bool타입써서 하는것도 좋을듯
 	// strtok쓰지말고 그냥 한번에보자
 	int n = 0, count = 0, bNum = 0;
 	int line = 0;
@@ -37,7 +39,7 @@ int main()
 			line++;
 		}
 
-		if(buffer[i] != ',')
+		if (buffer[i] != ',')
 		{
 			buffer2[bNum++] = buffer[i];
 		}
