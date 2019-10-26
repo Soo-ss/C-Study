@@ -1,0 +1,147 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 100
+
+int num = 0;
+char* words[MAX];
+int countArr[MAX] = { 0 };
+
+int CatchDup(char* str);
+void Output();
+void Input();
+void Sort();
+void SameCount();
+
+int main()
+{
+	Input();
+	Sort();
+	SameCount();
+	Output();
+
+	return 0;
+}
+
+void Input()
+{
+	char buffer[40];
+
+	FILE* fp = fopen("input3.txt", "r");
+
+	while (fscanf(fp, "%s", buffer) != EOF)
+	{
+		int index = CatchDup(buffer);
+
+		if (index == -1)
+		{
+			words[num] = strdup(buffer);
+			countArr[num]++;
+			num++;
+		}
+
+		else
+			countArr[index]++;
+	}
+}
+
+int CatchDup(char* str)
+{
+	int i = 0;
+
+	while (num > 0 && i < num)
+	{
+		if (strcmp(words[i], str) == 0)
+			return i;
+
+		i++;
+	}
+
+	return -1;
+}
+
+void Sort()
+{
+	for (int i = num - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (countArr[j] < countArr[j+1])
+			{
+				int tmp = countArr[j];
+				countArr[j] = countArr[j + 1];
+				countArr[j + 1] = tmp;
+
+				char* strTmp = words[j];
+				words[j] = words[j + 1];
+				words[j + 1] = strTmp;
+			}
+		}
+	}
+}
+
+void SameCount()
+{
+	bool isDup = false;
+	int start, end;
+
+	for (int i = 0; i < num - 1; i++)
+	{
+		if (isDup == false && countArr[i] == countArr[i + 1])
+		{
+			isDup = true;
+			start = i;
+		}
+
+		// 맨 끝
+		else if (i == num - 2 && countArr[num - 2] == countArr[num - 1])
+		{
+			isDup = false;
+			end = num - 1;
+
+			for (int a = end; a >= start; a--)
+			{
+				for (int b = start; b < a; b++)
+				{
+					if (strcmp(words[b], words[b + 1]) > 0)
+					{
+						char* tmp = words[b];
+						words[b] = words[b + 1];
+						words[b + 1] = tmp;
+					}
+				}
+			}
+		}
+
+		else if (i == num - 1 && countArr[num - 2] == countArr[num - 1] ||
+			isDup == true && countArr[i] != countArr[i + 1])
+		{
+			isDup = false;
+			end = i;
+
+			for (int a = end; a >= start; a--)
+			{
+				for (int b = start; b < a; b++)
+				{
+					if (strcmp(words[b], words[b + 1]) > 0)
+					{
+						char* tmp = words[b];
+						words[b] = words[b + 1];
+						words[b + 1] = tmp;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Output()
+{
+	for (int i = 0; i < num; i++)
+		printf("%s:%d\n", words[i], countArr[i]);
+}

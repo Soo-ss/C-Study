@@ -1,0 +1,160 @@
+
+// create 9 23 8 40 -9 72 6 0 25 8
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct node
+{
+	int data;
+	struct node* next;
+}NODE;
+
+NODE* head = NULL;
+
+void Input();
+void Create();
+void Print();
+void Floor();
+void Ceiling();
+void Remove();
+
+int main()
+{
+	Input();
+	
+	return 0;
+}
+
+void Input()
+{
+	char command[10];
+
+	while (1)
+	{
+		printf("$\n");
+
+		scanf("%s", command);
+
+		if (strcmp(command, "exit") == 0) break;
+		else if (strcmp(command, "create") == 0) Create();
+		else if (strcmp(command, "print") == 0) Print();
+		else if (strcmp(command, "floor") == 0) Floor();
+		else if (strcmp(command, "ceiling") == 0) Ceiling();
+		else if (strcmp(command, "remove") == 0) Remove();
+	}
+
+}
+
+void Create()
+{
+	int a, buffer;
+	scanf("%d", &a);
+
+	for (int i = 0; i < a; i++)
+	{
+		scanf("%d", &buffer);
+
+		NODE* p = head, *q = NULL;
+		while (p != NULL && p->data < buffer)
+		{
+			q = p;
+			p = p->next;
+		}
+		
+		NODE* t = (NODE*)malloc(sizeof(NODE));
+		t->data = buffer;
+		t->next = NULL;
+
+		// 맨앞의 노드이면
+		if (q == NULL)
+		{
+			t->next = head;
+			head = t;
+			continue;
+		}
+
+		// 맨뒤의 노드이면
+		t->next = p;
+		q->next = t;
+	}
+}
+
+void Print()
+{
+	NODE* p = head;
+	while (p != NULL)
+	{
+		printf("%d ", p->data);
+		p = p->next;
+	}
+}
+
+void Floor()
+{
+	int buffer;
+	scanf("%d", &buffer);
+
+	NODE* p = head, *q = NULL;
+	while (p != NULL && p->data <= buffer)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	if (q == NULL)
+	{
+		printf("Not exists\n");
+		return;
+	}
+
+	printf("%d\n", q->data);
+}
+
+void Ceiling()
+{
+	int buffer;
+	scanf("%d", &buffer);
+
+	NODE* p = head, *q = NULL;
+	while (p != NULL && p->data < buffer)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	if (p == NULL)
+	{
+		printf("Not exists\n");
+		return;
+	}
+
+	printf("%d\n", p->data);
+}
+
+void Remove()
+{
+	int lower, upper;
+	scanf("%d%d", &lower, &upper);
+	int count = 0;
+
+	NODE* p = head, *q = NULL;
+	while (p != NULL)
+	{
+		if (lower <= p->data && p->data <= upper)
+		{
+			NODE* tmp = q->next;
+			q->next = tmp->next;
+			p = p->next;
+			free(tmp);
+			count++;
+			continue;
+		}
+
+		q = p;
+		p = p->next;
+	}
+
+	printf("%d\n", count);
+}

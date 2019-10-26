@@ -1,0 +1,53 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+void swap(char* ch1, char* ch2)
+{
+	char tmp = *ch1;
+	*ch1 = *ch2;
+	*ch2 = tmp;
+}
+
+void reverse(char** str)
+{
+	int len = strlen(*str);
+	for (int i = 0; i < len / 2; i++)
+	{
+		swap((*str + i), (*str + len - i - 1));
+	}
+}
+
+//void convertToCapital(char* ch)
+//{
+//	*ch = 'A' + (*ch - 'a');
+//}
+//
+//void convertString(char** str)
+//{
+//	int len = strlen(*str);
+//	for (int i = 0; i < len; i++)
+//	{
+//		if (*(*str + i) >= 'a' && *(*str + i) <= 'z')
+//			convertToCapital((*str + i));
+//	}
+//}
+
+int main()
+{
+	char* str = (char*)malloc(sizeof(char) * 20);
+	strcpy(str, "Exam is fun");
+	reverse(&str);
+	printf("%s\n", str);
+
+	/*char* str = (char*)malloc(sizeof(char) * 20);
+	strcpy(str, "Exam is fun");
+	convertString(&str);
+	printf("%s\n", str);*/
+
+	return 0;
+}

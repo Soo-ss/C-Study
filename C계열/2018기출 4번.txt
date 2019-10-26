@@ -1,0 +1,112 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define MAX 1000
+
+int dictNum = 0, inputNum = 0;
+char* dictWord[MAX];
+char* inputWord[MAX];
+int countArr[MAX] = { 0 };
+
+void Output();
+void Input();
+int CatchDup(char* str);
+void Sort();
+
+int main()
+{
+	Input();
+	Sort();
+	Output();
+
+	return 0;
+}
+
+void Input()
+{
+	char buffer[40];
+
+	FILE* dict = fopen("dict.txt", "r");
+	FILE* input1 = fopen("input1.txt", "r");
+
+	while (fscanf(dict, "%s", buffer) != EOF)
+	{
+		dictWord[dictNum++] = strdup(buffer);
+	}
+
+	while (fscanf(input1, "%s", buffer) != EOF)
+	{
+		for (int i = 0; i < dictNum; i++)
+		{
+			if (strcmp(dictWord[i], buffer) == 0)
+			{
+				int index = CatchDup(buffer);
+
+				if (index == -1)
+				{
+					inputWord[inputNum] = strdup(buffer);
+					countArr[inputNum]++;
+					inputNum++;
+				}
+
+				else
+				{
+					countArr[index]++;
+				}
+
+				break;
+			}
+		}
+	}
+
+	fclose(dict);
+	fclose(input1);
+}
+
+int CatchDup(char* str)
+{
+	int i = 0;
+
+	while (inputNum > 0 && i < inputNum)
+	{
+		if (strcmp(str, inputWord[i]) == 0)
+			return i;
+
+		i++;
+	}
+
+	return -1;
+}
+
+void Sort()
+{
+	for (int i = inputNum - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (strcmp(inputWord[j], inputWord[j + 1]) > 0)
+			{
+				char* strTmp = inputWord[j];
+				inputWord[j] = inputWord[j + 1];
+				inputWord[j + 1] = strTmp;
+
+				int tmp = countArr[j];
+				countArr[j] = countArr[j + 1];
+				countArr[j + 1] = tmp;
+			}
+		}
+	}
+}
+
+void Output()
+{
+	for (int i = 0; i < inputNum; i++)
+	{
+		printf("%s : %d\n", inputWord[i], countArr[i]);
+	}
+}

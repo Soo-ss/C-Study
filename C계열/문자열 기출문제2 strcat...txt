@@ -1,0 +1,25 @@
+
+#pragma warning (disable : 4996)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char* myStrCat(char* a, char* b)
+{
+	char* str = (char*)malloc(sizeof(char) * 20);
+	strcpy(str, a);
+	strcat(str, b);
+	return str;
+}
+
+int main()
+{
+	char str1[] = "Enjoy ";
+	char str2[] = { 'E', 'x', 'a', 'm', '\0' };
+	char* merged = myStrCat(str1, str2);
+	printf("%s\n", merged);
+	free(merged);
+	return 0;
+}

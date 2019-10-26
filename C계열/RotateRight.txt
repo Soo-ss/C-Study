@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+	int data;
+	NODE* next;
+}NODE;
+
+NODE* head = NULL;
+
+NODE* RotateRight(NODE* head)
+{
+	if (head == NULL || head->next == NULL)
+	{
+		return head;
+	}
+
+	NODE* p = head;
+	NODE* q = NULL;
+	while (p->next != NULL)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	q->next = NULL;
+	p->next = head;
+	return head;
+}
+
+int main()
+{
+	
+
+	return 0;
+}

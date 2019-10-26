@@ -1,0 +1,140 @@
+
+// create 23 8 40 -9 72 6 0 25 8
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct node
+{
+	int data;
+	struct node* next;
+}NODE;
+
+NODE* head = NULL;
+
+void Input();
+void Create();
+void Print(); 
+void CountSum();
+void Remove();
+
+int main()
+{
+	Input();
+	
+	return 0;
+}
+
+void Input()
+{
+	char command[10];
+
+	while (1)
+	{
+		printf("$\n");
+
+		scanf("%s", command);
+
+		if (strcmp(command, "exit") == 0) break;
+		else if (strcmp(command, "create") == 0) Create();
+		else if (strcmp(command, "print") == 0) Print();
+		else if (strcmp(command, "countsum") == 0) CountSum();
+		else if (strcmp(command, "remove") == 0) Remove();
+	}
+
+}
+
+void Create()
+{
+	int buffer;
+	while (getc(stdin) == ' ') // 엔터 칠때 까지
+	{
+		scanf("%d", &buffer);
+
+		NODE* p = head;
+		NODE* q = NULL;
+		while (p != NULL)
+		{
+			q = p;
+			p = p->next;
+		}
+
+		NODE* tmp = (NODE*)malloc(sizeof(NODE));
+		tmp->data = buffer;
+		tmp->next = NULL;
+
+		// 맨 앞
+		if (q == NULL)
+		{
+			tmp->next = head;
+			head = tmp;
+			continue;
+		}
+
+		// 맨 뒤
+		tmp->next = p;
+		q->next = tmp;
+	}
+}
+
+void Print()
+{
+	NODE* p = head;
+	while (p != NULL)
+	{
+		printf("%d ", p->data);
+		p = p->next;
+	}
+}
+
+void CountSum()
+{
+	int k, count = 0, num = 0;
+	int arr[20];
+	scanf("%d", &k);
+
+	NODE* p = head;
+	while (p != NULL)
+	{
+		arr[num++] = p->data;
+		p = p->next;
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = i + 1; j < num; j++)
+		{
+			if (arr[i] + arr[j] == k)
+				count++;
+		}
+	}
+
+	printf("%d\n", count);
+}
+
+void Remove()
+{
+	char buffer[5];
+	scanf("%s", buffer);
+
+	int k;
+	scanf("%d", &k);
+
+	NODE* p = head;
+	NODE* q = NULL;
+	while (p != NULL)
+	{
+		if (p->data % k == 0)
+		{
+			NODE* tmp = q->next;
+			q->next = tmp->next;
+			p = p->next;
+			free(tmp);
+			continue;
+		}
+
+		q = p;
+		p = p->next;
+	}
+}

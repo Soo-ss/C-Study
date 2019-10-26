@@ -133,7 +133,7 @@ NODE* Insert(NODE* head, char buf[])
 		return head;
 	}
 
-	// ====================================================================
+	// ==========================================
 
 	NODE* p = head, *q = NULL;
 	while (p != NULL && strcmp(p->data->word, buf) < 0)
