@@ -1,0 +1,296 @@
+
+// 계수는 정수
+// 차수는 양의정수
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX_POLYS 10
+#define BUFFER_LENGTH 100
+
+typedef struct term {
+	int coef;
+	int expo;
+	TERM* next;
+}TERM;
+
+typedef struct polynomial {
+	char name; // 다항식 이름 ex) f, g, h....
+	TERM* first; // 첫번째 주소
+	int size = 0; // 항의 개수
+}POLYNOMIAL;
+
+POLYNOMIAL* polys[MAX_POLYS]; // polys는 다항식들에 대한 포인터의 배열이다.
+int n = 0; // 저장된 다항식의 개수이다.
+
+int main()
+{
+
+
+	return 0;
+}
+
+/*
+동적으로 생성된 객체를 적절하게 초기화해주지 않는 것이
+종종 프로그램의 오류를 야기한다.
+이렇게 객체를 생성하고 기본값으로 초기화해주는 함수를
+따로 만들어 사용하는 것은 좋은 방법이다.
+*/
+
+TERM* CreateTermInstance()
+{
+	TERM* t = (TERM*)malloc(sizeof(TERM));
+	t->coef = 0;
+	t->expo = 0;
+	return t;
+}
+
+// 다항식 객체를 생성할 때 이름을 지정해주도록 만들어 보았다.(char name)
+POLYNOMIAL* CreatePolynomialInstance(char name)
+{
+	POLYNOMIAL* ptrPoly = (POLYNOMIAL*)malloc(sizeof(POLYNOMIAL));
+	ptrPoly->name = name;
+	ptrPoly->size = 0;
+	ptrPoly->first = NULL;
+	return ptrPoly;
+}
+
+// c*(x의 e승)
+void AddTerm(int c, int e, POLYNOMIAL* poly)
+{
+	if (c == 0)
+		return;
+
+	TERM* p = poly->first;
+	TERM* q = NULL;
+	while (p != NULL && p->expo > e)
+	{
+		q = p;
+		p = p->next;
+	}
+
+	// 동일 차수의 항이 존재하는 경우
+	if (p != NULL && p->expo == e)
+	{
+		p->coef += c;
+		if (p->coef == 0) // 더했더니 계수가 0이 되는 경우
+		{
+			// q의 다음 노드를 삭제한다.
+			// 단, q가 NULL이면 첫번째 노드를 삭제한다.
+			if (q == NULL)
+				poly->first = p->next;
+
+			else
+				q->next = p->next;
+
+			poly->size--;
+			free(p); // 불필요해진 노드 p를 free시킨다.
+		}
+
+		return;
+	}
+
+	TERM* term = CreateTermInstance();
+	term->coef = c;
+	term->expo = e;
+
+	// 맨 앞에 삽입하는 경우
+	if (q == NULL)
+	{
+		term->next = poly->first;
+		poly->first = term;
+	}
+
+	else
+	{
+		term->next = p;
+		q->next = term;
+	}
+
+	poly->size++;
+}
+
+// 다항식의 값을 계산하는 함수
+int Eval(POLYNOMIAL* poly, int x)
+{
+	int result = 0;
+	TERM* t = poly->first;
+	while (t != NULL)
+	{
+		// 각각의 항의 값을 계산하여 더한다.
+		result += eval(t, x);
+		t = t->next;
+	}
+
+	return result;
+}
+
+// 하나의 항의 값을 계산하는 함수
+int Eval(TERM* term, int x)
+{
+	int result = term->coef;
+	for (int i = 0; i < term->expo; i++)
+	{
+		result *= x;
+	}
+
+	return result;
+}
+
+void PrintPoly(POLYNOMIAL* p)
+{
+	printf("%c=", p->name);
+	TERM* t = p->first;
+	while (t != NULL)
+	{
+		PrintTerm(t);
+		printf("+");
+		t = t->next;
+	}
+}
+
+// 이 함수는 완벽하지 않다.
+// 개선하는것은 과제로 남겨 둔다.
+// 3x^2+-5x^1+3x^0 -> +-겹치면 +제거, 1승과 0승제거
+void PrintTerm(TERM* pTerm)
+{
+	printf("%dx^%d", pTerm->coef, pTerm->expo);
+}
+
+void ProcessCommand()
+{
+	char command_line[BUFFER_LENGTH];
+	char copied[BUFFER_LENGTH];
+	char *command, *arg1, *arg2;
+
+	while (1)
+	{
+		printf("$ ");
+		if (ReadLine(stdin, command_line, BUFFER_LENGTH) <= 0)
+			continue;
+
+		strcpy(copied, command_line); // 입력라인을 복사해둔다.
+		command = strtok(command_line, " ");
+		if (strcmp(command, "print") == 0)
+		{
+			arg1 = strtok(NULL, " ");
+
+			if (arg1 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			HandlePrint(arg1[0]);
+		}
+
+		else if (strcmp(command, "calc") == 0)
+		{
+			arg1 = strtok(NULL, " ");
+			if (arg1 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			arg2 = strtok(NULL, " ");
+			if (arg2 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			HandleCalc(arg1[0], arg2);
+		}
+
+		else if (strcmp(command, "exit") == 0)
+			break;
+
+		else
+		{
+			// 다항식을 입력받아 정의하는 일을 한다.
+			HandleDefinition(copied);
+		}
+	}
+}
+
+void HandlePrint(char name)
+{
+
+}
+
+void HandleCalc(char name, char* x_str)
+{
+
+}
+
+void HandleDefinition(char* expression)
+{
+	// 모든 공백 제거하고 하는게 나음.
+	// 모든 공백 문자들을 제거한다.
+	EraseBlanks(expression);
+
+	char* f_name = strtok(expression, "=");
+	if (f_name == NULL || strlen(f_name) != 1)
+	{
+		printf("Unsupported command.");
+		return;
+	}
+
+	char* exp_body = strtok(NULL, "=");
+	if (exp_body == NULL || strlen(exp_body) <= 0)
+	{
+		printf("Invalid expression format.--");
+		return;
+	}
+
+	if (exp_body[0] >= 'a' && exp_body[0] <= 'z' && exp_body[0] != 'x')
+	{
+		char* former = strtok(exp_body, "+");
+		if (former == NULL || strlen(former) != 1)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		char* later = strtok(NULL, "+");
+		if (later == NULL || strlen(later) != 1)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		POLYNOMIAL* pol = CreateByAddTwoPolynomias(f_name[0],
+			former[0], later[0]);
+
+		if (pol == NULL)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		InsertPolynomial(pol);
+	}
+
+	// 새로 정의되는 경우
+	else
+	{
+		POLYNOMIAL* pol = CreateByParsePolynomial(f_name[0], exp_body);
+		if (pol == NULL)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		InsertPolynomial(pol);
+	}
+}
+
+// 문자배열 expression에서 모든 공백 문자들을 제거하여 압축한다.
+// 새로운 배열 필요없고 그냥 앞으로 땡기면됨.
+// 문자열의 끝에 '\0'를 추가해준다.
+void EraseBlanks(char* expression)
+{
+
+}

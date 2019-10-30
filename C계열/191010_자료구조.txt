@@ -1,0 +1,76 @@
+
+// 19.10.10
+// 1번 first가 NULL일 경우엔 작동하지 않는다. (예외처리)
+
+/*
+// 1번
+if(first == NULL)
+return second;
+
+if(second == NULL)
+return first;
+
+Node* p = first;
+while(p->next != NULL) // 일반적인 경우는 적절하지 않지만 여기선 적절함.
+p = p->next;
+
+p->next = second;
+return first;
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct node
+{
+	char* data;
+
+	struct node* next;
+};
+
+typedef struct node NODE;
+
+int main()
+{
+	//// 2번
+	//// p의 다음노드를 삭제함
+	//// while문을 빠져나오지못함
+	//// 첫번째 노드를 검사못함
+	//// p->next != NULL 넣어줌, p도 NULL이면 안됨
+	//// 노드가 NULL인경우, 노드가 한개인 경우
+	//NODE* p = head, *q = NULL;
+	//while (p != NULL && p->data % 3 != 0)
+	//{
+	//	q = p;
+	//	p = p->next;
+	//}
+
+	//if (p == NULL)
+	//	return head;
+
+	//if (q == NULL) // p의 첫번째 노드가 3의배수
+	//{
+	//	p = q->next;
+	//	free(head);
+	//	return p;
+	//}
+
+	//q->next = p->next;
+	//free(p);
+	//return head;
+
+	// loop ahead (p->next->data는 좋은방법이 아님)
+
+	// 3번
+	// 역순출력 (prev, cur, next 나란히 오른쪽으로 이동)
+	// return prev(마지막)
+
+	// 4번
+	// 3번만 문제가됨.
+
+	// 7번
+	// 2개씩 교환
+
+	return 0;
+}
