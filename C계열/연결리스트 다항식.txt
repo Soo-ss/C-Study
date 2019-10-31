@@ -119,7 +119,7 @@ int Eval(POLYNOMIAL* poly, int x)
 	while (t != NULL)
 	{
 		// 각각의 항의 값을 계산하여 더한다.
-		result += eval(t, x);
+		result += Eval(t, x);
 		t = t->next;
 	}
 
@@ -291,6 +291,148 @@ void HandleDefinition(char* expression)
 // 새로운 배열 필요없고 그냥 앞으로 땡기면됨.
 // 문자열의 끝에 '\0'를 추가해준다.
 void EraseBlanks(char* expression)
+{
+
+}
+
+// 맨 첫번째 항은 +혹은 -기호로 시작되지 않을수도 있음
+POLYNOMIAL* CreateByParsePolynomial(char name, char* body)
+{
+	POLYNOMIAL* ptr_poly = CreatePolynomialInstance(name);
+
+	int i = 0, begin_term = 0;
+	while (i < strlen(body))
+	{
+		// +혹은 -기호를 읽음
+		if (body[i] == '+' || body[i] == '-')
+			i++;
+
+		// 하나의 항이 끝날때 까지 전진
+		while (i < strlen(body) && body[i] != '+' && body[i] != '-')
+			i++;
+
+		// body[begin_term, i)까지가 하나의 항이다.
+		// 이 항을 인식해서 다항식에 추가한다.
+		int result = ParseAndAddTerm(body, begin_term, i, ptr_poly);
+
+		// 잘못된 항일 경우 0을 반환하고, 그런 경우 만들고 있던 다항식 자체를
+		// destroy한다.
+		if (result == 0)
+		{
+			DestroyPolynomial(ptr_poly);
+			return NULL;
+		}
+
+		// 다음 항의 시작 위치는 i가 된다.
+		begin_term = i;
+	}
+
+	return ptr_poly;
+}
+
+int ParseAndAddTerm(char* expr, int begin, int end, POLYNOMIAL* p_poly)
+{
+	int i = begin;
+	int sign_coef = 1, coef = 0, expo = 1;
+
+	if (expr[i] == '+')
+		i++;
+
+	// +혹은 -기호로 부터 계수의 부호를 결정한다. 
+	// 하지만 +혹은 -기호가 없을 수도 있다.(첫 번째 항의 경우)
+	else if (expr[i] == '-')
+	{
+		sign_coef = -1;
+		i++;
+	}
+
+	// digit들을 읽어서 계수의 절대값(coef)를 계산한다.
+	// 하지만 digit들이 하나도 없을 수도 있다.(계수가 1혹은 -1인 경우)
+	while (i < end && '0' <= expr[i] && expr[i] <= '9')
+	{
+		coef = coef * 10 + (int)(expr[i] - '0');
+		i++;
+	}
+
+	// coef가 0인 경우 계수는 0이 아니라 1혹은 -1이다.
+	if (coef == 0)
+		coef = sign_coef;
+
+	else
+		coef *= sign_coef;
+
+	// 더 이상 항을 구성하는 문자가 없다면 상수항이라는 의미이다.
+	if (i >= end)
+	{
+		AddTerm(coef, 0, p_poly);
+		return 1;
+	}
+
+	// 계수 다음에 x가 아닌 다른 문자가 등장해서는 안된다.
+	if (expr[i] != 'x')
+		return 0;
+
+	i++;
+
+	// 계수 다음에 x가 나오고 문자열이 끝난다면 1차항이라는 의미이다.
+	if (i >= end)
+	{
+		AddTerm(coef, 1, p_poly);
+		return 1;
+	}
+
+	// x 다음에 ^가 아닌 다른문자가 등장해서는 안된다.
+	if (expr[i] != '^')
+		return 0;
+
+	i++;
+
+	// 지수 부분을 읽는다.
+	expo = 0;
+	while (i < end && '0' <= expr[i] && expr[i] <= '9')
+	{
+		expo = expo * 10 + (int)(expr[i] - '0');
+		i++;
+	}
+
+	AddTerm(coef, expo, p_poly);
+	return 1;
+}
+
+void InsertPolynomial(POLYNOMIAL* ptr_poly)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (polys[i]->name == ptr_poly->name)
+		{
+			// 다항식을 덮어쓸 경우에는 기존의 다항식 객체를 free시켜줘야 한다.
+			DestroyPolynomial(polys[i]);
+			polys[i] = ptr_poly;
+			return;
+		}
+	}
+
+	polys[n++] = ptr_poly;
+}
+
+void DestroyPolynomial(POLYNOMIAL* ptr_poly)
+{
+	if (ptr_poly == NULL)
+		return;
+
+	TERM* t = ptr_poly->first;
+	TERM* tmp;
+	while (t != NULL)
+	{
+		tmp = t;
+		t = t->next; // 다항식에 속한 모든 항들을 free시킨다.
+		free(tmp);
+	}
+
+	free(ptr_poly); // ptr_poly가 가리키는 다항식 객체를 free시킨다.
+}
+
+POLYNOMIAL* CreateByAddTwoPolynomials(char name, char f, char g)
 {
 
 }
