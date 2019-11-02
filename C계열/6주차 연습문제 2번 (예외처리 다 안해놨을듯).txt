@@ -1,0 +1,226 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+typedef struct term {
+	int coef;
+	int expo_x, expo_y;
+}TERM;
+
+int ParseAndAddTerm(char* expr, int begin, int end, TERM* pPoly)
+{
+	int i = begin;
+	int sign_coef = 1, coef = 0, expX = 1, expY = 1;
+
+	if (expr[i] == '+')
+		i++;
+
+	// +혹은 -기호로 부터 계수의 부호를 결정한다. 
+	// 하지만 +혹은 -기호가 없을 수도 있다.(첫 번째 항의 경우)
+	else if (expr[i] == '-')
+	{
+		sign_coef = -1;
+		i++;
+	}
+
+	// digit들을 읽어서 계수의 절대값(coef)를 계산한다.
+	// 하지만 digit들이 하나도 없을 수도 있다.(계수가 1혹은 -1인 경우)
+	while (i < end && '0' <= expr[i] && expr[i] <= '9')
+	{
+		coef = coef * 10 + (int)(expr[i] - '0');
+		i++;
+	}
+
+	// coef가 0인 경우 계수는 0이 아니라 1혹은 -1이다.
+	if (coef == 0)
+		coef = sign_coef;
+
+	else
+		coef *= sign_coef;
+
+	// 더 이상 항을 구성하는 문자가 없다면 상수항이라는 의미이다.
+	if (i >= end)
+	{
+		pPoly->coef = coef;
+		pPoly->expo_x = 0;
+		pPoly->expo_y = 0;
+		return 1;
+	}
+
+	//// 계수 다음에 x가 아닌 다른 문자가 등장해서는 안된다.
+	//if (expr[i] != 'x')
+	//	return 0;
+
+	char parseExpr = expr[i];
+
+	i++;
+
+	// 계수 다음에 x가 나오고 문자열이 끝난다면 1차항이라는 의미이다.
+	if (i >= end)
+	{
+		// x의1승
+		if (parseExpr == 'x')
+		{
+			pPoly->coef = coef;
+			pPoly->expo_x = 1;
+			pPoly->expo_y = 0;
+			return 1;
+		}
+
+		// y의 1승
+		pPoly->coef = coef;
+		pPoly->expo_x = 0;
+		pPoly->expo_y = 1;
+		return 1;
+	}
+
+	//// x 다음에 ^가 아닌 다른문자가 등장해서는 안된다.
+	//if (expr[i] != '^')
+	//	return 0;
+
+	// y^12
+	if (parseExpr == 'y')
+	{
+		i++;
+		expY = 0;
+		while (i < end && '0' <= expr[i] && expr[i] <= '9')
+		{
+			expY = expY * 10 + (int)(expr[i] - '0');
+			i++;
+		}
+
+		pPoly->coef = coef;
+		pPoly->expo_x = 0;
+		pPoly->expo_y = expY;
+		return 1;
+	}
+
+	// 6xy^2처럼 바로 y나오는경우
+	if (expr[i] == 'y')
+	{
+		i++;
+
+		// 그런데 -xy같은경우
+		if (expr[i] != '^')
+		{
+			pPoly->coef = coef;
+			pPoly->expo_x = 1;
+			pPoly->expo_y = 1;
+			return 1;
+		}
+
+		i++;
+
+		expY = 0;
+		while (i < end && '0' <= expr[i] && expr[i] <= '9')
+		{
+			expY = expY * 10 + (int)(expr[i] - '0');
+			i++;
+		}
+
+		pPoly->coef = coef;
+		pPoly->expo_x = 1;
+		pPoly->expo_y = expY;
+		return 1;
+	}
+
+	i++;
+
+	// 지수
+	expX = 0;
+	while (i < end && '0' <= expr[i] && expr[i] <= '9')
+	{
+		expX = expX * 10 + (int)(expr[i] - '0');
+		i++;
+	}
+
+	// 4x^2처럼 x에서 끝나는경우
+	if (i >= end)
+	{
+		pPoly->coef = coef;
+		pPoly->expo_x = expX;
+		pPoly->expo_y = 0;
+		return 1;
+	}
+
+	// -1112x^21y처럼 x가 2차항이상, y가1차항이 나오는경우
+	if (expr[i] == 'y')
+	{
+		i++;
+		if (i == end)
+		{
+			pPoly->coef = coef;
+			pPoly->expo_x = expX;
+			pPoly->expo_y = 1;
+			return 1;
+		}
+	}
+
+	// 2x^4y^2처럼 y^2가 나오는경우
+
+	/*if (term[i] != '^')
+	return 0;*/
+
+	i++;
+
+	// y지수
+	expY = 0;
+	while (i < end && '0' <= expr[i] && expr[i] <= '9')
+	{
+		expY = expY * 10 + (int)(expr[i] - '0');
+		i++;
+	}
+
+	pPoly->coef = coef;
+	pPoly->expo_x = expX;
+	pPoly->expo_y = expY;
+	return 1;
+}
+
+TERM* recognize(char* expr)
+{
+	TERM* t = (TERM*)malloc(sizeof(TERM));
+	t->coef = 0;
+	t->expo_x = 0;
+	t->expo_y = 0;
+
+	int i = 0, begin_term = 0;
+	while (i < strlen(expr))
+	{
+		// +혹은 -기호를 읽음
+		if (expr[i] == '+' || expr[i] == '-')
+			i++;
+
+		// 하나의 항이 끝날때 까지 전진
+		while (i < strlen(expr) && expr[i] != '+' && expr[i] != '-')
+			i++;
+
+		// body[begin_term, i)까지가 하나의 항이다.
+		// 이 항을 인식해서 다항식에 추가한다.
+		int result = ParseAndAddTerm(expr, begin_term, i, t);
+
+		// 잘못된 항일 경우 0을 반환하고, 그런 경우 만들고 있던 다항식 자체를
+		// destroy한다.
+		if (result == 0)
+		{
+			return NULL;
+		}
+
+		// 다음 항의 시작 위치는 i가 된다.
+		begin_term = i;
+	}
+
+	return t;
+}
+
+int main()
+{
+	char expr[30];
+	int coef, exp_x, exp_y;
+	scanf("%s", expr);
+	TERM *t = recognize(expr);
+	printf("%d %d %d\n", t->coef, t->expo_x, t->expo_y);
+	return 0;
+}

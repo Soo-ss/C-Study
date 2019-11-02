@@ -1,0 +1,854 @@
+
+/*
+$ def f = 2x^4y^2 – x^3y^4 – 6xy^2 + 4x^2 - 4y + 10x + 3
+$ calc f 1 2 // x=1, y=2일 때 다항식의 값을 계산하여 출력한다.
+-23
+$ print f
+f = 2x ^ 4y ^ 2 - x ^ 3y ^ 4 + 4x ^ 2 - 6xy ^ 2 + 10x - 4y + 3
+$ def g = 2x ^ 2 – xy + 1
+$ print g
+g = 2x ^ 2 - xy + 1
+$ calc g 3 2
+13
+$ add h = f + g // add 명령은 두 다항식을 더해서 새로운 다항식을 정의한다.
+$ print h
+h = 2x ^ 4y ^ 2–x ^ 3y ^ 4 + 6x ^ 2–6xy ^ 2 - xy + 10x - 4y + 4
+$ def f = x ^ 2y ^ 2 - 1
+$ print f
+f = x ^ 2y ^ 2 - 1
+$ list // 다항식이 정의된 순서대로 한 줄에 하나씩 출력한다.
+f = x ^ 2y ^ 2 - 1  // 다항식 f가 수정되긴 했지만 어쨌든 가장 먼저 정의되었으므로 먼저 출력
+g = 2x ^ 2–xy + 1
+h = 2x ^ 4y ^ 2–x ^ 3y ^ 4 + 6x ^ 2–6xy ^ 2 - xy + 10x - 4y + 4
+$ exit
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define MAX_POLYS 10
+#define BUFFER_LENGTH 100
+
+struct term {
+	int coef;
+	int exp_x, exp_y;
+	struct term* next;
+};
+typedef struct term TERM;
+
+typedef struct polynomial {
+	char name;
+	TERM* first;
+	int size;
+} POLYNOMIAL;
+
+POLYNOMIAL* polys[MAX_POLYS];
+int n = 0; // number of polys
+
+TERM* CreateTermInstance();
+POLYNOMIAL* CreatePolynomialInstance(char name);
+void AddTerm(int c, int x, int y, POLYNOMIAL* pPoly);
+int EvalPoly(POLYNOMIAL* pPoly, int x, int y);
+int EvalTerm(TERM* pTerm, int x, int y);
+void PrintPoly(POLYNOMIAL* pPoly);
+void PrintTerm(TERM* pTerm);
+void ProcessCommand();
+int ReadLine(FILE* fp, char* str, int length);
+void HandlePrint(char name);
+void HandleCalc(char name, char* x_str, char* y_str);
+void List();
+void HandleDefinition(char* expression);
+void EraseBlanks(char* expression);
+POLYNOMIAL* CreateByParsePolynomial(char name, char* body);
+POLYNOMIAL* CreateByAddTwoPolynomias(char fName,
+	char former, char later);
+void InsertPolynomial(POLYNOMIAL* pPoly);
+void DestroyPolynomial(POLYNOMIAL* pPoly);
+int ParseAndAddTerm(char* term, int begin, int end, POLYNOMIAL* pPoly);
+
+int main()
+{
+	ProcessCommand();
+
+	return 0;
+}
+
+TERM* CreateTermInstance()
+{
+	TERM* pTerm = (TERM*)malloc(sizeof(TERM));
+	pTerm->coef = 0;
+	pTerm->exp_x = 0;
+	pTerm->exp_y = 0;
+	return pTerm;
+}
+
+POLYNOMIAL* CreatePolynomialInstance(char name)
+{
+	POLYNOMIAL* pPoly = (POLYNOMIAL*)malloc(sizeof(POLYNOMIAL));
+	pPoly->name = name;
+	pPoly->size = 0;
+	pPoly->first = NULL;
+	return pPoly;
+}
+
+void AddTerm(int c, int x, int y, POLYNOMIAL* pPoly)
+{
+	if (c == 0)
+		return;
+
+	TERM* p = pPoly->first;
+	TERM* q = NULL;
+	while ((p != NULL && p->exp_x > x) ||
+		(p != NULL && p->exp_x == x && p->exp_y > y))
+	{
+		q = p;
+		p = p->next;
+	}
+
+	// 동일한 차수 항 존재
+	if (p != NULL && p->exp_x == x && p->exp_y == 0 && y == 0)
+	{
+		p->coef += c;
+
+		// 값만 넣고 삭제
+		if (p->coef == 0)
+		{
+			if (q == NULL)
+				pPoly->first = p->next;
+
+			else
+				q->next = p->next;
+
+			pPoly->size--;
+			free(p);
+		}
+
+		return;
+	}
+
+	// 동일한 차수 항 존재안함
+
+	TERM* pTerm = CreateTermInstance();
+	pTerm->coef = c;
+	pTerm->exp_x = x;
+	pTerm->exp_y = y;
+
+	if (q == NULL)
+	{
+		pTerm->next = pPoly->first;
+		pPoly->first = pTerm;
+	}
+
+	else
+	{
+		pTerm->next = p;
+		q->next = pTerm;
+	}
+
+	pPoly->size++;
+}
+
+int EvalPoly(POLYNOMIAL* pPoly, int x, int y)
+{
+	int result = 0;
+	TERM* pTerm = pPoly->first;
+	while (pTerm != NULL)
+	{
+		result += EvalTerm(pTerm, x, y);
+		pTerm = pTerm->next;
+	}
+
+	return result;
+}
+
+int EvalTerm(TERM* pTerm, int x, int y)
+{
+	int result = pTerm->coef;
+
+	// x만 나올 경우
+	if (y == 0)
+	{
+		for (int i = 0; i < pTerm->exp_x; i++)
+		{
+			result *= x;
+		}
+
+		return result;
+	}
+
+	// y만 나올 경우
+	if (x == 0)
+	{
+		for (int i = 0; i < pTerm->exp_y; i++)
+		{
+			result *= y;
+		}
+
+		return result;
+	}
+
+
+	// x, y나올 경우
+	for (int i = 0; i < pTerm->exp_x; i++)
+	{
+		result *= x;
+	}
+
+	for (int i = 0; i < pTerm->exp_y; i++)
+	{
+		result *= y;
+	}
+
+	return result;
+}
+
+void PrintPoly(POLYNOMIAL* pPoly)
+{
+	printf("%c=", pPoly->name);
+	TERM* pTerm = pPoly->first;
+	while (pTerm != NULL)
+	{
+		if (pTerm->coef == 1)
+		{
+			if (pTerm->exp_x == 0 && pTerm->exp_y == 0)
+			{
+				printf("1");
+			}
+
+			else if (pTerm->exp_x == 0)
+			{
+				if (pTerm->exp_y == 1)
+				{
+					printf("y");
+				}
+
+				else
+				{
+					printf("y^%d", pTerm->exp_y);
+				}
+			}
+
+			else if (pTerm->exp_y == 0)
+			{
+				if (pTerm->exp_x == 1)
+				{
+					printf("x");
+				}
+
+				else
+				{
+					printf("x^%d", pTerm->exp_x);
+				}
+			}
+
+			else if (pTerm->exp_x == 1 && pTerm->exp_y == 1)
+			{
+				printf("xy");
+			}
+
+			else if (pTerm->exp_x == 1)
+			{
+				printf("xy^%d", pTerm->exp_y);
+			}
+
+			else if (pTerm->exp_y == 1)
+			{
+				printf("x^%dy", pTerm->exp_x);
+			}
+
+			else
+			{
+				printf("x^%dy^%d", pTerm->exp_x, pTerm->exp_y);
+			}
+
+			if (pTerm->next == NULL)
+			{
+				printf("\n");
+				return;
+			}
+
+			if (pTerm->next->coef > 0)
+				printf("+");
+
+			pTerm = pTerm->next;
+		}
+
+		else if (pTerm->coef == -1)
+		{
+			if (pTerm->exp_x == 0 && pTerm->exp_y == 0)
+			{
+				printf("-1");
+			}
+
+			else if (pTerm->exp_x == 0)
+			{
+				if (pTerm->exp_y == 1)
+				{
+					printf("-y");
+				}
+
+				else
+				{
+					printf("-y^%d", pTerm->exp_y);
+				}
+			}
+
+			else if (pTerm->exp_y == 0)
+			{
+				if (pTerm->exp_x == 1)
+				{
+					printf("-x");
+				}
+
+				else
+				{
+					printf("-x^%d", pTerm->exp_x);
+				}
+			}
+
+			else if (pTerm->exp_x == 1 && pTerm->exp_y == 1)
+			{
+				printf("-xy");
+			}
+
+			else if (pTerm->exp_x == 1)
+			{
+				printf("-xy^%d", pTerm->exp_y);
+			}
+
+			else if (pTerm->exp_y == 1)
+			{
+				printf("-x^%dy", pTerm->exp_x);
+			}
+
+			else
+			{
+				printf("-x^%dy^%d", pTerm->exp_x, pTerm->exp_y);
+			}
+
+			if (pTerm->next == NULL)
+			{
+				printf("\n");
+				return;
+			}
+
+			if (pTerm->next->coef > 0)
+				printf("+");
+
+			pTerm = pTerm->next;
+		}
+
+		// coef가 1또는 -1이 아닌경우
+		else
+		{
+			if (pTerm->exp_x == 0 && pTerm->exp_y == 0)
+			{
+				printf("%d", pTerm->coef);
+			}
+
+			else if (pTerm->exp_x == 0)
+			{
+				if (pTerm->exp_y == 1)
+				{
+					printf("%dy", pTerm->coef);
+				}
+
+				else
+				{
+					printf("%dy^%d", pTerm->coef, pTerm->exp_y);
+				}
+			}
+
+			else if (pTerm->exp_y == 0)
+			{
+				if (pTerm->exp_x == 1)
+				{
+					printf("%dx", pTerm->coef);
+				}
+
+				else
+				{
+					printf("%dx^%d", pTerm->coef, pTerm->exp_x);
+				}
+			}
+
+			else if (pTerm->exp_x == 1)
+			{
+				printf("%dxy^%d", pTerm->coef, pTerm->exp_y);
+			}
+
+			else if (pTerm->exp_y == 1)
+			{
+				printf("%dx^%dy", pTerm->coef, pTerm->exp_x);
+			}
+
+			else if (pTerm->exp_x == 1 && pTerm->exp_y == 1)
+			{
+				printf("%dxy", pTerm->coef);
+			}
+
+			else
+			{
+				printf("%dx^%dy^%d", pTerm->coef, pTerm->exp_x, pTerm->exp_y);
+			}
+
+			if (pTerm->next == NULL)
+			{
+				printf("\n");
+				return;
+			}
+
+			if (pTerm->next->coef > 0)
+				printf("+");
+
+			pTerm = pTerm->next;
+		}
+	}
+}
+
+void PrintTerm(TERM* pTerm)
+{
+	printf("%dx^%dy^%d", pTerm->coef, pTerm->exp_x, pTerm->exp_y);
+}
+
+void ProcessCommand()
+{
+	char commandLine[BUFFER_LENGTH];
+	char copied[BUFFER_LENGTH];
+	char* command;
+	char* arg1;
+	char* arg2;
+	char* arg3;
+
+	while (1)
+	{
+		printf("$ \n");
+		if (ReadLine(stdin, commandLine, BUFFER_LENGTH) <= 0)
+			continue;
+
+		strcpy(copied, commandLine);
+		command = strtok(commandLine, " ");
+		if (strcmp(command, "print") == 0)
+		{
+			arg1 = strtok(NULL, " ");
+
+			if (arg1 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			HandlePrint(arg1[0]);
+		}
+
+		else if (strcmp(command, "calc") == 0)
+		{
+			arg1 = strtok(NULL, " ");
+			if (arg1 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			arg2 = strtok(NULL, " ");
+			if (arg2 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			arg3 = strtok(NULL, " ");
+			if (arg3 == NULL)
+			{
+				printf("Invalid arguments.\n");
+				continue;
+			}
+
+			HandleCalc(arg1[0], arg2, arg3);
+		}
+
+		else if (strcmp(command, "def") == 0 ||
+			strcmp(command, "add") == 0)
+		{
+			HandleDefinition(copied);
+		}
+
+		else if (strcmp(command, "list") == 0)
+		{
+			List();
+		}
+
+		else
+			break;
+	}
+}
+
+int ReadLine(FILE* fp, char* str, int length)
+{
+	int ch, i = 0;
+
+	while ((ch = fgetc(fp)) != '\n')
+	{
+		if (i < length)
+			str[i++] = ch;
+	}
+
+	str[i] = '\0';
+	return i;
+}
+
+void HandlePrint(char name)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (polys[i]->name == name)
+		{
+			PrintPoly(polys[i]);
+			return;
+		}
+	}
+}
+
+void HandleCalc(char name, char* x_str, char* y_str)
+{
+	int x = atoi(x_str);
+	int y = atoi(y_str);
+
+	for (int i = 0; i < n; i++)
+	{
+		if (polys[i]->name == name)
+		{
+			printf("%d\n", EvalPoly(polys[i], x, y));
+			return;
+		}
+	}
+}
+
+void List()
+{
+	for (int i = 0; i < n; i++)
+	{
+		PrintPoly(polys[i]);
+	}
+}
+
+void HandleDefinition(char* expression)
+{
+	EraseBlanks(expression);
+
+	// 함수이름?
+	char* fName = strtok(expression, "=");
+	if (fName == NULL || strlen(fName) != 1)
+	{
+		printf("Unsupported command.");
+		return;
+	}
+
+	// add인 경우
+	char* expBody = strtok(NULL, "=");
+	if (expBody == NULL || strlen(expBody) <= 0)
+	{
+		printf("Invalid expression format.--");
+		return;
+	}
+
+	if ('a' <= expBody[0] && expBody[0] <= 'z'
+		&& expBody[0] != 'x' && expBody[0] != 'y')
+	{
+		char* former = strtok(expBody, "+");
+		if (former == NULL || strlen(former) != 1)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		char* later = strtok(NULL, "+");
+		if (later == NULL || strlen(later) != 1)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		POLYNOMIAL* pPoly = CreateByAddTwoPolynomias(fName[0],
+			former[0], later[0]);
+
+		if (pPoly == NULL)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		InsertPolynomial(pPoly);
+	}
+
+	// def인 경우
+	else
+	{
+		POLYNOMIAL* pPoly = CreateByParsePolynomial(fName[0], expBody);
+		if (pPoly == NULL)
+		{
+			printf("Invalid expression format.");
+			return;
+		}
+
+		InsertPolynomial(pPoly);
+	}
+}
+
+void EraseBlanks(char* expression)
+{
+	int length = strlen(expression);
+
+	// ex. "def " (공백까지) 제거한다.
+	for (int a = 0; a < 4; a++)
+	{
+		int i;
+		for (i = 0; i < length - 1; i++)
+		{
+			expression[i] = expression[i + 1];
+		}
+
+		expression[i] = '\0';
+		length--;
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		if (expression[i] == ' ')
+		{
+			int start;
+			for (start = i; start < length; start++)
+			{
+				expression[start] = expression[start + 1];
+			}
+
+			expression[start] = '\0';
+			length--;
+		}
+	}
+}
+
+POLYNOMIAL* CreateByParsePolynomial(char name, char* body)
+{
+	POLYNOMIAL* pPoly = CreatePolynomialInstance(name);
+	int i = 0, beginTerm = 0;
+	int length = strlen(body);
+
+	while (i < length)
+	{
+		if (body[i] == '+' || body[i] == '-')
+			i++;
+
+		// 하나의 항이 끝날때까지 전진
+		while (i < length && body[i] != '+' && body[i] != '-')
+			i++;
+
+		int result = ParseAndAddTerm(body, beginTerm, i, pPoly);
+
+		if (result == 0)
+		{
+			DestroyPolynomial(pPoly);
+			return NULL;
+		}
+
+		beginTerm = i;
+	}
+
+	return pPoly;
+}
+
+POLYNOMIAL* CreateByAddTwoPolynomias(char fName,
+	char former, char later)
+{
+	POLYNOMIAL* tmp = CreatePolynomialInstance(fName);
+	int formerIndex, laterIndex;
+
+	for (int i = 0; i < n; i++)
+	{
+		if (polys[i]->name == former)
+			formerIndex = i;
+
+		if (polys[i]->name == later)
+			laterIndex = i;
+	}
+
+	TERM* formerTerm = polys[formerIndex]->first;
+	TERM* laterTerm = polys[laterIndex]->first;
+
+	while (formerTerm != NULL)
+	{
+		AddTerm(formerTerm->coef, formerTerm->exp_x, formerTerm->exp_y, tmp);
+		formerTerm = formerTerm->next;
+	}
+
+	while (laterTerm != NULL)
+	{
+		AddTerm(laterTerm->coef, laterTerm->exp_x, laterTerm->exp_y, tmp);
+		laterTerm = laterTerm->next;
+	}
+
+	return tmp;
+}
+
+void InsertPolynomial(POLYNOMIAL* pPoly)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (polys[i]->name == pPoly->name)
+		{
+			DestroyPolynomial(polys[i]);
+			polys[i] = pPoly;
+			return;
+		}
+	}
+
+	polys[n++] = pPoly;
+}
+
+void DestroyPolynomial(POLYNOMIAL* pPoly)
+{
+	if (pPoly == NULL)
+		return;
+
+	TERM* pTerm = pPoly->first;
+	TERM* tmp;
+	while (pTerm != NULL)
+	{
+		tmp = pTerm;
+		pTerm = pTerm->next;
+		free(tmp);
+	}
+
+	free(pPoly);
+}
+
+// 성공 1
+// 실패 0
+int ParseAndAddTerm(char* term, int begin, int end, POLYNOMIAL* pPoly)
+{
+	int i = begin;
+	int signCoef = 1, coef = 0, expX = 1, expY = 1;
+
+	if (term[i] == '+')
+	{
+		i++;
+	}
+
+	else if (term[i] == '-')
+	{
+		signCoef = -1;
+		i++;
+	}
+
+	while (i < end && '0' <= term[i] && term[i] <= '9')
+	{
+		coef = coef * 10 + (int)(term[i] - '0');
+		i++;
+	}
+
+	// coef == 0
+	if (coef == 0)
+		coef = signCoef;
+
+	else
+		coef *= signCoef;
+
+	// constant
+	if (i >= end)
+	{
+		AddTerm(coef, 0, 0, pPoly);
+		return 1;
+	}
+
+	/*if (term[i] != 'x')
+	return 0;
+
+	if (term[i] != 'y')
+	return 0;*/
+
+	char parseExpr = term[i];
+
+	i++;
+
+	// 1차항
+	if (i >= end)
+	{
+		// x의1승
+		if (parseExpr == 'x')
+		{
+			AddTerm(coef, 1, 0, pPoly);
+			return 1;
+		}
+
+		// y의 1승
+		AddTerm(coef, 0, 1, pPoly);
+		return 1;
+	}
+
+	/*if (term[i] != '^')
+	return 0;*/
+
+	// 6xy^2처럼 바로 y나오는경우
+	if (term[i] == 'y')
+	{
+		i++;
+
+		// 그런데 -xy같은경우
+		if (term[i] != '^')
+		{
+			AddTerm(coef, 1, 1, pPoly);
+			return 1;
+		}
+
+		i++;
+
+		expY = 0;
+		while (i < end && '0' <= term[i] && term[i] <= '9')
+		{
+			expY = expY * 10 + (int)(term[i] - '0');
+			i++;
+		}
+
+		AddTerm(coef, 1, expY, pPoly);
+		return 1;
+	}
+
+	i++;
+
+	// 지수
+	expX = 0;
+	while (i < end && '0' <= term[i] && term[i] <= '9')
+	{
+		expX = expX * 10 + (int)(term[i] - '0');
+		i++;
+	}
+
+	// 4x^2처럼 x에서 끝나는경우
+	if (i >= end)
+	{
+		AddTerm(coef, expX, 0, pPoly);
+		return 1;
+	}
+
+	// 2x^4y^2처럼 y가 나오는경우
+
+	i++;
+
+	/*if (term[i] != '^')
+	return 0;*/
+
+	i++;
+
+	// y지수
+	expY = 0;
+	while (i < end && '0' <= term[i] && term[i] <= '9')
+	{
+		expY = expY * 10 + (int)(term[i] - '0');
+		i++;
+	}
+
+	AddTerm(coef, expX, expY, pPoly);
+	return 1;
+}
