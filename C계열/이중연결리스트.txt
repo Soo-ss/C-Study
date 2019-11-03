@@ -1,0 +1,119 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+struct node
+{
+	const char* data;
+	struct node* next;
+	struct node* prev;
+};
+
+typedef struct node NODE;
+
+NODE* head = NULL;
+NODE* tail = NULL;
+int size = 0;
+
+int main()
+{
+
+
+	return 0;
+}
+
+// p가 가리키는 노드 앞에 새로운 노드를 삽입하는 경우
+void AddNode()
+{
+	NODE* newNode = CreateNodeInstance();
+	newNode->data = "Sharon";
+	newNode->next = p;
+	newNode->prev = p->prev;
+	p->prev->next = newNode;
+	p->prev = newNode;
+}
+
+// p가 가리키는 노드를 삭제하는 경우
+void Remove()
+{
+	p->prev->next = p->next;
+	p->next->prev = p->prev;
+
+	/*
+	remove는 4가지 경우로 나뉨.
+	1. p가 유일한 노드인 경우
+	2. p가 head인 경우
+	3. p가 tail인 경우
+	4. 그밖의 일반적인 경우
+	*/
+}
+
+NODE* CreateNodeInstance()
+{
+	NODE* tmp = (NODE*)malloc(sizeof(NODE));
+	tmp->data = NULL;
+	tmp->next = NULL;
+	tmp->prev = NULL;
+
+	return tmp;
+}
+
+void AddAllCase(NODE* pre, const char* item)
+{
+	NODE* newNode = CreateNodeInstance();
+	newNode->data = item;
+	newNode->next = NULL;
+	newNode->prev = NULL;
+
+	// head가 NULL이면 빈 노드
+	// 그러므로 newNode는 첫번째이자 마지막 노드가 됨.
+	if (pre == NULL && head == NULL)
+	{
+		head = newNode;
+		tail = newNode;
+	}
+
+	// at the head
+	// else if이므로 head != NULL
+	else if (pre == NULL)
+	{
+		newNode->next = head;
+		head->prev = newNode;
+		head = newNode;
+	}
+
+	// at the tail
+	else if (pre == tail)
+	{
+		newNode->prev = tail;
+		tail->next = newNode;
+		tail = newNode;
+	}
+
+	// at the middle
+	// pre가 가리키는 노드 뒤에 삽입
+	else
+	{
+		newNode->next = pre->next;
+		newNode->prev = pre;
+		pre->next->prev = newNode;
+		pre = newNode;
+	}
+
+	size++;
+}
+
+void AddOrderedList(const char* item)
+{
+	// 뒤에서부터 앞으로
+	NODE* p = tail;
+	while (p != NULL && strcmp(item, p->data) < 0)
+	{
+		p = p->prev;
+	}
+
+	// 모든 경우 대응 가능
+	AddAllCase(p, item);
+}
