@@ -1,0 +1,112 @@
+
+// 배열로 구현
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stackADT.h"
+
+#define INIT_CAPACITY 100
+
+struct stackType
+{
+	item* contents; // 배열
+	int top;
+	int size;
+};
+
+static void Terminate(const char* message)
+{
+	printf("%s\n", message);
+	exit(1);
+}
+
+int main()
+{
+	// ======== 사용 예시 ==========
+	STACK s1 = Create();
+	STACK s2 = Create();
+
+	Push(s1, 12);
+	Push(s2, 9);
+
+	// ============================
+
+	return 0;
+}
+
+// STACK이 포인터타입임
+STACK Create()
+{
+	STACK s = (STACK)malloc(sizeof(struct stackType));
+	if (s == NULL)
+		Terminate("Error in create : stack could not be created.");
+
+	s->contents = (item*)malloc(INIT_CAPACITY * sizeof(item));
+
+	if (s->contents == NULL)
+	{
+		free(s);
+		Terminate("Error in create : stack could not be created.");
+	}
+
+	s->top = -1;
+	s->size = INIT_CAPACITY;
+	return s;
+}
+
+void Destroy(STACK s)
+{
+	free(s->contents);
+	free(s);
+}
+
+// 스택의 내용만 비우는 함수
+void MakeEmpty(STACK s)
+{
+	s->top = -1;
+}
+
+bool IsEmpty(STACK s)
+{
+	return s->top == -1;
+}
+
+void Push(STACK s, item i)
+{
+	if (IsFull(s))
+		Reallocate(s);
+
+	s->top++;
+	s->contents[s->top] = i;
+}
+
+item Pop(STACK s)
+{
+	if (IsEmpty(s))
+		Terminate("Error in pop : stack is empty.");
+
+	s->top--;
+	return s->contents[s->top + 1]; // 감소시키기전의 값 리턴
+}
+
+item Peek(STACK s)
+{
+	if (IsEmpty(s))
+		Terminate("Error in peek : stack is empty.");
+
+	return s->contents[s->top];
+}
+
+void Reallocate(STACK s)
+{
+	item* tmp = (item*)malloc(2 * s->size * sizeof(item));
+	if (tmp == NULL)
+		Terminate("Error in create : stack could not be created.");
+
+	for (int i = 0; i < s->size; i++)
+		tmp[i] = s->contents[i];
+
+	free(s->contents);
+	s->contents = tmp;
+	s->size *= 2;
+}

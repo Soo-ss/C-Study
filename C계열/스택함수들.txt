@@ -1,0 +1,200 @@
+
+/*
+스택은 일종의 리스트
+단, 데이터의 삽입과 삭제가 한쪽 끝에서만 이루어짐
+LIFO (Last-In, First-Out)
+삽입/삭제가 일어나는 쪽을 스택의 top이라고 부름
+
+push : 스택에 새로운 원소를 삽입하는 연산
+pop : 스택의 top에 있는 원소를 스택에서 제거하고 반환
+peek : 스택 top의 원소를 제거하지 않고 반환
+empty : 스택이 비었는지 검사
+
+스택 응용 예 : 괄호 검사 문제
+입력 수식의 괄호가 올바른지 검사
+	예 : [ a + b * { c / ( d - e ) } ] + ( d / e )
+단순히 여는 괄호와 닫는 괄호의 개수 비교 만으로는 부족
+스택을 이용하여 검사
+여는 괄호에는 스택에 push
+닫는 괄호가 나오면 스택에서 pop한 후, 두 괄호가 같은 유형이어야함.
+마지막에 스택에 남는 괄호가 없어야함.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+//#include "stack.h" // 문자(char)들을 저장하는 스택이 stack.c 파일에 구현되어 있다고 가정.
+
+#define MAX_LENGTH 100
+#define MAX_CAPACITY 100
+
+struct node
+{
+	char* data; // 문자열들을 저장하는 스택이라고 가정하자.
+	struct node* next;
+};
+
+typedef struct node NODE;
+
+NODE* top = NULL;
+
+int top = -1; // index of the top element
+
+// 스택에 저장되는 데이터의 타입을 문자(char)라고 가정하자.
+char stack[MAX_CAPACITY];
+char OPEN[] = "([{";
+char CLOSE[] = ")]}";
+
+int IsBalanced(char* expr);
+int IsOpen(char ch);
+int IsClose(char ch);
+
+int main()
+{
+	char expr[MAX_LENGTH];
+	// 입력은 괄호만으로 이루어진 하나의 문자열이다. 
+	scanf("%s", expr);
+	if (IsBalanced(expr))
+		printf("%s : balanced.\n", expr);
+
+	else
+		printf("%s : unbalanced.\n", expr);
+
+	return 0;
+}
+
+// ========================== 배열로 구현 ==========================
+
+char Peek()
+{
+	return stack[top];
+}
+
+int IsEmpty()
+{
+	return top == -1;
+}
+
+int IsFull()
+{
+	return top == MAX_CAPACITY - 1;
+}
+
+void Push(char ch)
+{
+	// 스택이 가득차면 더이상 push할 수 없다.
+	// 이렇게하는게 좋은 방법은 아님
+	if (IsFull())
+		return;
+
+	top++;
+	stack[top] = ch;
+}
+
+// pop을 호출하기 전에 먼저 empty인지 검사해야 한다. (미구현)
+char Pop()
+{
+	char tmp = stack[top];
+	top--;
+	return tmp;
+}
+
+// ===============================================================
+
+// 연결리스트로 구현 (맨 앞이 삭제/삽입이 편하므로 맨 앞을 top으로 한다.)
+
+char* Peek()
+{
+	if (IsEmpty())
+		return NULL;
+
+	return top->data;
+}
+
+int IsEmpty()
+{
+	return top == NULL;
+}
+
+// AddFirst
+void Push(char* item)
+{
+	NODE* p = (NODE*)malloc(sizeof(NODE));
+	p->data = item;
+	p->next = top;
+	top = p;
+}
+
+// RemoveFirst
+char* Pop()
+{
+	// 좋은 방법은 아님
+	if (IsEmpty())
+		return NULL;
+
+	char* result = top->data;
+	top = top->next;
+	return result;
+}
+
+// ============================================================
+
+int IsBalanced(char* expr)
+{
+	int balanced = 1; // 1은 수식이 잘되어있다, 0은 잘못되어있다.
+	int index = 0;
+	while (balanced && index < strlen(expr))
+	{
+		char ch = expr[index];
+
+		// 여는괄호는 스택에 push한다.
+		if (IsOpen(ch) > -1)
+			Push(ch);
+
+		else if (IsClose(ch) > -1)
+		{
+			if (IsEmpty())
+			{
+				balanced = 0;
+				break;
+			}
+
+			// 닫는 괄호가 나오면 스택에서 pop하여
+			// 같은 유형의 괄호인지 검사한다.
+			char topCh = Pop();
+			if (IsOpen(topCh) != IsClose(ch))
+			{
+				balanced = 0;
+			}
+		}
+
+		index++;
+	}
+
+	return (balanced == 1 && isEmpty() == 1);
+}
+
+// 소괄호는 0, 대괄호는 1, 중괄호는 2를 반환하고
+// 여는 괄호가 아니면 -1을 반환한다.
+int IsClose(char ch)
+{
+	for (int i = 0; i < strlen(CLOSE); i++)
+	{
+		if (CLOSE[i] == ch)
+			return i;
+	}
+
+	return -1;
+}
+
+int IsOpen(char ch)
+{
+	int i;
+	for (i = 0; i < strlen(OPEN); i++)
+	{
+		if (OPEN[i] == ch)
+			return i;
+	}
+
+	return i;
+}

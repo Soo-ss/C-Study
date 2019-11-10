@@ -1,0 +1,57 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "stackADT.h"
+
+static char OPERATORS[] = "+-*/";
+
+// 피연산자들을 저장할 스택이다.
+STACK operandStack;
+
+int main()
+{
+	return 0;
+}
+
+// 문자 ch가 연산자인지 검사한다.
+// 아니면 -1리턴
+int IsOperator(char ch)
+{
+	for (int i = 0; i < strlen(OPERATORS); i++)
+	{
+		if (OPERATORS[i] == ch)
+			return i;
+
+		return -1;
+	}
+}
+
+// expr == 후위표기식
+int Eval(char* expr)
+{
+	operandStack = Create();
+	char* token = strtok(expr, " "); // 공백으로되어있다고 가정
+
+	while (token != NULL)
+	{
+		if (token[0] >= '0' && token[0] <= '9')
+		{
+			int value = atoi(token);
+			Push(operandStack, value);
+		}
+
+		else if (IsOperator(token[0] > -1))
+		{
+			int result = EvalOp(token[0]);
+			Push(operandStack, result);
+		}
+
+		else
+		{
+			HandleException("Syntax Error: invalid character encountered.");
+		}
+
+		token = strtok(NULL, " ");
+	}
+}

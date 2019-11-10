@@ -1,0 +1,26 @@
+
+// 스택이 2개인경우
+
+#ifndef STACKADT_H
+#define STACKADT_H
+
+#include <stdbool.h> // C99 only
+
+// 만약 내가 float형으로 바꾸고싶다면
+// typedef float item 이렇게 해주면 됨.
+// 코드의 재사용
+typedef int item;
+
+// ex. struct node* next;
+typedef struct stackType* STACK;
+typedef struct node NODE;
+
+STACK Create();
+void Destroy(STACK s);
+void MakeEmpty(STACK s);
+bool IsEmpty(STACK s);
+void Push(STACK s, item i);
+item Pop(STACK s);
+item Peek(STACK s);
+
+#endif

@@ -1,0 +1,102 @@
+
+// 연결리스트로 구현
+// stackADT.h 똑같이 써도됨
+
+/*
+Generic ADTs (로직은 같은데 데이터타입만 다름)
+
+1가지 타입의 데이터만을 저장할 수 있음
+- 데이터 타입이 달라지면 item타입 정의를 수정해야 함
+- 서로 다른 타입의 데이터를 저장하는 2개의 스택을 만들 수 없음
+
+void* 타입을 이용하여 generic한 스택을 구현할 수 있으나 단점이 있음
+객체지향 프로그래밍 언어 써야함
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stackADT.h"
+
+struct node
+{
+	item data;
+	struct node* next;
+};
+
+struct stackType
+{
+	struct node* top;
+};
+
+int main()
+{
+
+	return 0;
+}
+
+static void Terminate(const char* message)
+{
+	printf("%s\n", message);
+	exit(EXIT_FAILURE);
+}
+
+STACK Create()
+{
+	STACK s = (STACK)malloc(sizeof(struct stackType));
+	if (s == NULL)
+		Terminate("Error in create : stack could not be created.");
+
+	s->top = NULL;
+	return s;
+}
+
+void Destroy(STACK s)
+{
+	MakeEmpty(s);
+	free(s);
+}
+
+void MakeEmpty(STACK s)
+{
+	while (!IsEmpty(s))
+		Pop(s);
+}
+
+bool IsEmpty(STACK s)
+{
+	return s->top == NULL;
+}
+
+void Push(STACK s, item i)
+{
+	NODE* newNode = (NODE*)malloc(sizeof(struct node));
+	if (newNode == NULL)
+		Terminate("Error in push : stack is full.");
+
+	newNode->data = i;
+	newNode->next = s->top;
+	s->top = newNode;
+}
+
+item Pop(STACK s)
+{
+	NODE* oldTop;
+	item i;
+
+	if (IsEmpty(s))
+		Terminate("Error in pop : stack is empty.");
+
+	oldTop = s->top;
+	i = oldTop->data;
+	s->top = oldTop->next;
+	free(oldTop);
+	return i;
+}
+
+item Peek(STACK s)
+{
+	if (IsEmpty(s))
+		Terminate("Error in peek : stack is empty.");
+
+	return s->top->data;
+}
